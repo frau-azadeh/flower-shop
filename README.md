@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flower Shop
 
-## Getting Started
+Minimal, fast e-commerce starter for selling flowers. Built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**.
 
-First, run the development server:
+State is handled by **Redux Toolkit** , and forms by , **React Hook Form + Zod**. RTL-ready.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Live Demo: https://flower-shop-beta-taupe.vercel.app/
+
+Repo: https://github.com/frau-azadeh/flower-shop
+
+## 🚀 Tech Stack
+
+- ⚛️ **React (TypeScript)** – Component-based UI development
+
+- 💨 **Tailwind CSS** – Utility-first styling framework
+
+- 🧩 **React Hook Form + Zod** – Form state management and schema validation
+
+- 🎯 **Redux Toolkit** – Global state with local persistence
+
+- 🧼 **Prettier** – Code formatting and consistency
+
+- 🧱 **Headless UI & Lucide** – Accessible components & icons
+
+---
+
+## 💻 Getting Started
+
+1.Clone the repository:
+
+        git clone https://github.com/faru-azadeh/Flower-Shop.git
+
+        cd flower-shop
+
+2.Install dependencies:
+
+        npm i
+
+3.Start the development server:
+
+        npm run dev
+
+---
+
+## 📁 Project Structure
+
+```
+    src/
+    app/            # routes & layouts (App Router)
+    components/     # UI components
+    features/       # Redux slices (e.g., cart)
+    lib/            # store & helpers
+    styles/         # global & font styles
+    public/
+    icons/          # favicons & app icons
+    fonts/          # local fonts
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🤝 Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are warmly welcomed!
 
-## Learn More
+Feel free to fork this repo, create a feature branch, and submit a pull request.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌻Developed by
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Azadeh Sharifi Soltani
