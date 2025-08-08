@@ -8,11 +8,8 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Vazir', 'ui-sans-serif', 'system-ui', /* ... */],
-      },
-    },
-  },
+          },
+  },  
   plugins: [],
 };
 
