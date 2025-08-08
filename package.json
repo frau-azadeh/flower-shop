@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "dependencies": {
     "@adonisjs/lucid": "^21.8.0",
     "next": "15.4.6",
+    "prettier": "^3.6.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
