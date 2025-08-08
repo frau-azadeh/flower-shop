@@ -1,6 +1,6 @@
 # Flower Shop
 
-Minimal, fast e-commerce starter for selling flowers. Built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**. 
+Minimal, fast e-commerce starter for selling flowers. Built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**.
 
 State is handled by **Redux Toolkit** , and forms by , **React Hook Form + Zod**. RTL-ready.
 
@@ -39,7 +39,8 @@ Repo: https://github.com/frau-azadeh/flower-shop
 3.Start the development server:
 
         npm run dev
---- 
+
+---
 
 ## 📁 Project Structure
 
@@ -55,9 +56,11 @@ Repo: https://github.com/frau-azadeh/flower-shop
     fonts/          # local fonts
 
 ```
+
 ---
 
 ## 🤝 Contributing
+
 Contributions are warmly welcomed!
 
 Feel free to fork this repo, create a feature branch, and submit a pull request.
@@ -65,4 +68,5 @@ Feel free to fork this repo, create a feature branch, and submit a pull request.
 ---
 
 ## 🌻Developed by
+
 Azadeh Sharifi Soltani
