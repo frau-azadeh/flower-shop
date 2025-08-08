@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
-
 @layer base {
   :root {
     --font-sans: "Vazir", ui-sans-serif, system-ui, sans-serif;
   }
 }
-
-

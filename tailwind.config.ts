@@ -7,9 +7,8 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-          },
-  },  
+    extend: {},
+  },
   plugins: [],
 };
 
