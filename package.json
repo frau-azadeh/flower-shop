@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@adonisjs/lucid": "^21.8.0",
+    "@hookform/resolvers": "^5.2.1",
     "next": "15.4.6",
     "prettier": "^3.6.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.62.0"
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.0.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
