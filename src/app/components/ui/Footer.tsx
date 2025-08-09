@@ -196,7 +196,7 @@ export default function Footer() {
 
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
-                 مجله گل فروش
+                  مجله گل فروش
                 </h4>
                 <ul className="space-y-2 text-sm">
                   <li>

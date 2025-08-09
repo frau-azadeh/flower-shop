@@ -13,7 +13,10 @@ import {
 } from "lucide-react";
 import React from "react";
 
-type Feature = { title: string; Icon: React.ComponentType<React.SVGProps<SVGSVGElement>> };
+type Feature = {
+  title: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
 
 const FEATURES: Feature[] = [
   { title: "قیمت رقابتی", Icon: DollarSign },
@@ -30,7 +33,7 @@ export default function WhyUs() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 md:pt-14 pb-24 md:pb-32">
         {/* عنوان */}
         <h2 className="flex items-center justify-center gap-2 text-center text-2xl md:text-3xl font-extrabold text-primary">
-         چرا خرید از گل فروش
+          چرا خرید از گل فروش
           <Leaf className="w-6 h-6 text-accent" />
         </h2>
 
@@ -42,7 +45,9 @@ export default function WhyUs() {
                 key={title}
                 className="rounded-2xl border border-border bg-surface shadow-sm p-5 flex items-center justify-between"
               >
-                <span className="text-base font-semibold text-text">{title}</span>
+                <span className="text-base font-semibold text-text">
+                  {title}
+                </span>
                 <Icon className="w-8 h-8 text-accent" />
               </div>
             ))}
@@ -54,7 +59,9 @@ export default function WhyUs() {
             <div className="w-28 h-28 rounded-xl bg-muted flex items-center justify-center mb-4">
               <Leaf className="w-10 h-10 text-primary" />
             </div>
-            <p className="mb-4 text-text font-semibold">مشاوره و پشتیبانی آنلاین</p>
+            <p className="mb-4 text-text font-semibold">
+              مشاوره و پشتیبانی آنلاین
+            </p>
             <Link
               href="tel:09122764435"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white px-5 py-3 text-sm font-semibold transition-colors"
