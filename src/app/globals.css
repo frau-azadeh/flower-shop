@@ -5,3 +5,26 @@
     --font-sans: "Vazir", ui-sans-serif, system-ui, sans-serif;
   }
 }
+
+@theme {
+  /* Brand */
+  --color-primary: #2F855A;
+  --color-primary-hover: #276B4B;
+
+  /* Accent (Dusty Rose) */
+  --color-accent: #E6A4B4;
+  --color-accent-hover: #D68DA2;
+
+  /* Surfaces */
+  --color-background: #FFFCF7;
+  --color-surface: #FFFFFF;
+  --color-muted: #F7F8F5;
+
+  /* Text & Border */
+  --color-text: #1F2937;
+  --color-text-muted: #6B7280;
+  --color-border: #E5E7EB;
+
+  /* Focus ring (اختیاری) */
+  --color-ring: #2F855A;
+}
