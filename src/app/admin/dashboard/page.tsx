@@ -1,4 +1,3 @@
-import WhyUs from "@/app/components/WhyUs";
 
 export default function Dashboard() {
   return (
