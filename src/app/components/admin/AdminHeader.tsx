@@ -16,18 +16,26 @@ export default function AdminHeader() {
       {/* سایدبار دسکتاپ */}
       <aside className="hidden md:block border-l border-border bg-surface p-4 sticky top-0 h-screen w-[240px]">
         <div className="text-lg font-extrabold text-primary mb-3">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-              <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-              <span className="text-xl font-extrabold text-primary">
-               پنل ادمین
-              </span>
-            </Link>
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
+            <span className="text-xl font-extrabold text-primary">
+              پنل ادمین
+            </span>
+          </Link>
         </div>
         <nav className="space-y-2 text-sm">
-          <a href="/admin/dashboard" className={item}>داشبورد</a>
-          <a href="/admin/products"  className={item}>محصولات</a>
-          <a href="/admin/orders"    className={item}>سفارش‌ها</a>
-          <a href="/admin/users"     className={item}>کاربران</a>
+          <a href="/admin/dashboard" className={item}>
+            داشبورد
+          </a>
+          <a href="/admin/products" className={item}>
+            محصولات
+          </a>
+          <a href="/admin/orders" className={item}>
+            سفارش‌ها
+          </a>
+          <a href="/admin/users" className={item}>
+            کاربران
+          </a>
         </nav>
       </aside>
 
@@ -41,11 +49,9 @@ export default function AdminHeader() {
           <Menu className="w-5 h-5" />
         </button>
         <Link href="/" className="flex items-center gap-2 shrink-0">
-              <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-              <span className="text-xl font-extrabold text-primary">
-               پنل ادمین
-              </span>
-            </Link>
+          <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
+          <span className="text-xl font-extrabold text-primary">پنل ادمین</span>
+        </Link>
         <span className="w-6" />
       </header>
 
@@ -77,10 +83,34 @@ export default function AdminHeader() {
         </div>
 
         <nav className="space-y-2 text-sm">
-          <a href="/admin/dashboard" className={item} onClick={() => setOpen(false)}>داشبورد</a>
-          <a href="/admin/products"  className={item} onClick={() => setOpen(false)}>محصولات</a>
-          <a href="/admin/orders"    className={item} onClick={() => setOpen(false)}>سفارش‌ها</a>
-          <a href="/admin/users"     className={item} onClick={() => setOpen(false)}>کاربران</a>
+          <a
+            href="/admin/dashboard"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+            داشبورد
+          </a>
+          <a
+            href="/admin/products"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+            محصولات
+          </a>
+          <a
+            href="/admin/orders"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+            سفارش‌ها
+          </a>
+          <a
+            href="/admin/users"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+            کاربران
+          </a>
         </nav>
       </aside>
     </>
