@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/fonts.css";
 import Navbar from "./components/ui/Navbar";
+import ScrollToTop from "./components/ui/ScrollToTop";
 
 export const metadata: Metadata = {
   title: "Flower Shop",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <ScrollToTop />
       </body>
     </html>
   );
