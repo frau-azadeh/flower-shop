@@ -244,7 +244,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-10 border-t border-border pt-6 text-center text-xs text-text-muted">
+          <div className="mt-10 border-t border-border pt-6 text-center text-xs text-text-muted mb-5 md:mb-0">
             <span>
               تمامی حقوق این وب سایت متعلق به{" "}
               <a

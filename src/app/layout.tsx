@@ -5,6 +5,7 @@ import Navbar from "./components/ui/Navbar";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import Footer from "./components/ui/Footer";
 import ContactFab from "./components/ui/ContactFab";
+import MobileNavBar from "./components/ui/MobileNavbar";
 
 export const metadata: Metadata = {
   title: "Flower Shop",
@@ -23,6 +24,7 @@ export default function RootLayout({
         {children}
         <ContactFab />
         <ScrollToTop />
+        <MobileNavBar />
         <Footer />
       </body>
     </html>
