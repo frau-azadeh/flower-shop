@@ -6,7 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   variant?: "primary" | "outline" | "danger" | "success" | "ghost";
   icon?: ReactNode;
-  size?: "xs" | "md" | "lg";
+  size?: "xs" | "md" | "lg" | "icon";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -46,6 +46,7 @@ const Button: React.FC<ButtonProps> = ({
           "h-8 px-3 text-xs": size === "xs",
           "h-10 px-4 text-sm": size === "md",
           "h-12 px-6 text-base": size === "lg",
+          "w-12 h-12 p-0": size === "icon",
         },
         className,
       )}
