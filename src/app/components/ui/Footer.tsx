@@ -89,7 +89,7 @@ export default function Footer() {
             </div>
 
             {/* ستون‌های لینک */}
-            <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-6">
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   خدمات مشتریان
@@ -196,7 +196,7 @@ export default function Footer() {
 
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
-                  مجله سارینالند
+                 مجله گل فروش
                 </h4>
                 <ul className="space-y-2 text-sm">
                   <li>
