@@ -40,8 +40,7 @@ const Button: React.FC<ButtonProps> = ({
           "bg-success text-white hover:bg-success-hover focus-visible:ring-success":
             variant === "success",
           "bg-transparent text-inherit hover:bg-transparent hover:text-primary focus:ring-primary":
-          variant === "ghost",
-
+            variant === "ghost",
 
           // Sizes
           "h-8 px-3 text-xs": size === "xs",

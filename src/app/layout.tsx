@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <Navbar/>
+        <Navbar />
         {children}
       </body>
     </html>

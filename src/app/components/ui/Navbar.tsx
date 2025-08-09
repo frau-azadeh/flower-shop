@@ -3,9 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  Menu, X, Search, Heart, ShoppingBag, ChevronDown,
-} from "lucide-react";
+import { Menu, X, Search, Heart, ShoppingBag, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
@@ -46,7 +44,9 @@ function MobileMenu({
   useEffect(() => {
     if (!mounted) return;
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open, mounted]);
 
   if (!mounted || !open) return null;
@@ -72,7 +72,7 @@ function MobileMenu({
           onClick={onClose}
           className={clsx(
             "block px-3 py-2 rounded-lg text-sm font-semibold",
-            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted"
+            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted",
           )}
         >
           صفحه اصلی
@@ -103,7 +103,7 @@ function MobileMenu({
             onClick={onClose}
             className={clsx(
               "block px-3 py-2 rounded-lg text-sm font-semibold",
-              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted"
+              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted",
             )}
           >
             {i.label}
@@ -125,7 +125,7 @@ function MobileMenu({
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 
@@ -144,7 +144,9 @@ export default function Navbar() {
             {/* Logo (right) */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-              <span className="text-xl font-extrabold text-primary">گل‌فروش</span>
+              <span className="text-xl font-extrabold text-primary">
+                گل‌فروش
+              </span>
             </Link>
 
             {/* Desktop nav */}
@@ -153,7 +155,7 @@ export default function Navbar() {
                 href="/"
                 className={clsx(
                   "text-sm font-semibold hover:text-primary transition-colors",
-                  isActive("/") ? "text-primary" : "text-text"
+                  isActive("/") ? "text-primary" : "text-text",
                 )}
               >
                 صفحه اصلی
@@ -162,7 +164,7 @@ export default function Navbar() {
               {/* Products + dropdown w/o jump */}
               <div className="relative group">
                 <Button
-                variant="ghost"
+                  variant="ghost"
                   type="button"
                   className="flex items-center gap-1 text-sm font-semibold hover:text-primary transition-colors"
                 >
@@ -172,13 +174,15 @@ export default function Navbar() {
 
                 {/* Use pt-2 & top-full to keep hover bridge */}
                 <div className="absolute right-0 top-full pt-2">
-                  <div className="
+                  <div
+                    className="
                     w-56 rounded-xl border border-border bg-surface shadow-lg p-2
                     invisible opacity-0 translate-y-2 pointer-events-none
                     transition duration-150
                     group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto
                     group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto
-                  ">
+                  "
+                  >
                     {CATEGORIES.map((c) => (
                       <Link
                         key={c.href}
@@ -198,7 +202,7 @@ export default function Navbar() {
                   href={item.href}
                   className={clsx(
                     "text-sm font-semibold hover:text-primary transition-colors",
-                    isActive(item.href) ? "text-primary" : "text-text"
+                    isActive(item.href) ? "text-primary" : "text-text",
                   )}
                 >
                   {item.label}
@@ -208,15 +212,25 @@ export default function Navbar() {
 
             {/* Actions (left) */}
             <div className="ms-auto flex items-center gap-3">
-              <Button 
-              variant="ghost"
-              className=" p-2 rounded-full hover:bg-muted" aria-label="جستجو">
+              <Button
+                variant="ghost"
+                className=" p-2 rounded-full hover:bg-muted"
+                aria-label="جستجو"
+              >
                 <Search className="w-5 h-5 " />
               </Button>
-              <Link href="/wishlist" className="p-2 rounded-full hover:bg-muted" aria-label="علاقه‌مندی">
+              <Link
+                href="/wishlist"
+                className="p-2 rounded-full hover:bg-muted"
+                aria-label="علاقه‌مندی"
+              >
                 <Heart className="w-5 h-5" />
               </Link>
-              <Link href="/cart" className="relative p-2 rounded-full hover:bg-muted" aria-label="سبد خرید">
+              <Link
+                href="/cart"
+                className="relative p-2 rounded-full hover:bg-muted"
+                aria-label="سبد خرید"
+              >
                 <ShoppingBag className="w-5 h-5" />
                 <span className="absolute -top-0.5 -left-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface" />
               </Link>
@@ -235,7 +249,11 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Menu (portal; covers full screen; locks scroll) */}
-      <MobileMenu open={open} onClose={() => setOpen(false)} isActive={isActive} />
+      <MobileMenu
+        open={open}
+        onClose={() => setOpen(false)}
+        isActive={isActive}
+      />
     </>
   );
 }
