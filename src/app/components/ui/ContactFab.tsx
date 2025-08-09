@@ -35,7 +35,7 @@ export default function ContactFab({
     <>
       {/* بک‌دراپ برای کلیک خارج */}
       {open && (
-        <button
+        <Button
           className="fixed inset-0 z-[85] bg-black/0"
           onClick={() => setOpen(false)}
           aria-label="بستن منو"
@@ -93,19 +93,20 @@ export default function ContactFab({
         {/* دکمهٔ شناور */}
         <Button
           type="button"
+          size="icon"
           aria-expanded={open}
           aria-controls="contact-panel"
           onClick={() => setOpen((v) => !v)}
-          className={`w-14 h-14 rounded-full shadow-lg text-white flex items-center justify-center transition-colors bottom-20 ${
+          className={`w-12 h-12 rounded-full shadow-lg text-white flex items-center justify-center transition-colors bottom-20 ${
             open
               ? "bg-accent hover:bg-accent-hover"
               : "bg-primary hover:bg-primary-hover"
           }`}
         >
           {open ? (
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           ) : (
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className="w-4 h-4" />
           )}
         </Button>
       </div>
