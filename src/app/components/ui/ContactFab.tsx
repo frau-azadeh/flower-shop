@@ -2,18 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  Phone,
-  MessageCircle,
-  Instagram,
-  X,
-} from "lucide-react";
+import { Phone, MessageCircle, Instagram, X } from "lucide-react";
 import Button from "./Button";
 
 type Props = {
-  phone?: string;        
-  whatsapp?: string;    
-  instagram?: string;    
+  phone?: string;
+  whatsapp?: string;
+  instagram?: string;
 };
 
 export default function ContactFab({
@@ -33,7 +28,7 @@ export default function ContactFab({
   // لینک واتساپ
   const waHref = useMemo(
     () => `https://wa.me/${whatsapp.replace(/\D/g, "")}`,
-    [whatsapp]
+    [whatsapp],
   );
 
   return (
@@ -102,10 +97,16 @@ export default function ContactFab({
           aria-controls="contact-panel"
           onClick={() => setOpen((v) => !v)}
           className={`w-14 h-14 rounded-full shadow-lg text-white flex items-center justify-center transition-colors ${
-            open ? "bg-accent hover:bg-accent-hover" : "bg-primary hover:bg-primary-hover"
+            open
+              ? "bg-accent hover:bg-accent-hover"
+              : "bg-primary hover:bg-primary-hover"
           }`}
         >
-          {open ? <X className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
+          {open ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <MessageCircle className="w-5 h-5" />
+          )}
         </Button>
       </div>
     </>

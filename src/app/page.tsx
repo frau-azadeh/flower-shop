@@ -12,7 +12,6 @@ export default function Home() {
         خرید
         <ShoppingCart className="w-4 h-4" />
       </Button>
-      
     </div>
   );
 }

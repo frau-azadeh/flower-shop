@@ -21,9 +21,9 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
-        <ContactFab/>
+        <ContactFab />
         <ScrollToTop />
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );
