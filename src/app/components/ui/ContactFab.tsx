@@ -12,8 +12,8 @@ type Props = {
 };
 
 export default function ContactFab({
-  phone = "09122764435",
-  whatsapp = "989122764435",
+  phone = "09012764435",
+  whatsapp = "989012764435",
   instagram = "frau_azadeh",
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -42,7 +42,7 @@ export default function ContactFab({
         />
       )}
 
-      <div className="fixed bottom-6 right-6 z-[90]">
+      <div className="fixed bottom-20 right-6 z-[90]">
         {/* پنل */}
         {open && (
           <div
@@ -96,7 +96,7 @@ export default function ContactFab({
           aria-expanded={open}
           aria-controls="contact-panel"
           onClick={() => setOpen((v) => !v)}
-          className={`w-14 h-14 rounded-full shadow-lg text-white flex items-center justify-center transition-colors ${
+          className={`w-14 h-14 rounded-full shadow-lg text-white flex items-center justify-center transition-colors bottom-20 ${
             open
               ? "bg-accent hover:bg-accent-hover"
               : "bg-primary hover:bg-primary-hover"

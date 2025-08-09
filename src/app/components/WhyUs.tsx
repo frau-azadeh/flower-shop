@@ -63,11 +63,11 @@ export default function WhyUs() {
               مشاوره و پشتیبانی آنلاین
             </p>
             <Link
-              href="tel:09122764435"
+              href="tel:09012764435"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white px-5 py-3 text-sm font-semibold transition-colors"
             >
               <Phone className="w-4 h-4" />
-              09122764435
+             09012764435
             </Link>
           </aside>
         </div>
