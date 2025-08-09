@@ -151,7 +151,6 @@ export default function Navbar() {
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-6 mx-auto">
-              
               <Link
                 href="/"
                 className={clsx(
@@ -235,9 +234,9 @@ export default function Navbar() {
                 <ShoppingBag className="w-5 h-5" />
                 <span className="absolute -top-0.5 -left-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface" />
               </Link>
-</div>
-              {/* Hamburger */}
-              <div className="ms-auto  items-center gap-3">
+            </div>
+            {/* Hamburger */}
+            <div className="ms-auto  items-center gap-3">
               <Button
                 className="lg:hidden p-2 rounded-full hover:bg-muted "
                 onClick={() => setOpen(true)}

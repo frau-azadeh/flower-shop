@@ -67,7 +67,7 @@ export default function WhyUs() {
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white px-5 py-3 text-sm font-semibold transition-colors"
             >
               <Phone className="w-4 h-4" />
-             09012764435
+              09012764435
             </Link>
           </aside>
         </div>

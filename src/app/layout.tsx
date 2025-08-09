@@ -24,7 +24,7 @@ export default function RootLayout({
         {children}
         <ContactFab />
         <ScrollToTop />
-        <MobileNavBar/>
+        <MobileNavBar />
         <Footer />
       </body>
     </html>
