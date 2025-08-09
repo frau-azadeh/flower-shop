@@ -25,6 +25,23 @@
   --color-text-muted: #6B7280;
   --color-border: #E5E7EB;
 
-  /* Focus ring (اختیاری) */
+  /* Focus ring */
   --color-ring: #2F855A;
+
+  /* Button */
+  --color-primary: #2F855A;
+  --color-primary-hover: #276B4B;
+
+  --color-success: #22C55E;
+  --color-success-hover: #16A34A;
+
+  --color-danger: #E11D48;
+  --color-danger-hover: #BE123C;
+
+  /* outline  */
+  --color-outline-hover: #E9F5EF;
+
+  /* muted */
+  --color-muted-200: #E5E7EB; /* bg/border */
+  --color-muted-400: #9CA3AF; /* text */
 }
