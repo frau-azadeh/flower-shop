@@ -88,7 +88,7 @@ export default function WhyUs() {
         {/* موبایل: دکمه مشاوره زیر لیست */}
         <div className="md:hidden mt-4">
           <Link
-            href="tel:09121140140"
+            href="tel:09012764435"
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white px-5 py-3 text-sm font-semibold transition-colors"
           >
             <Phone className="w-4 h-4" />
