@@ -45,11 +45,16 @@ const Button: React.FC<ButtonProps> = ({
           "h-10 px-4 text-sm": size === "md",
           "h-12 px-6 text-base": size === "lg",
         },
-        className
+        className,
       )}
     >
       {loading ? (
-        <Loader2 className={clsx(size === "xs" ? "w-4 h-4" : size === "md" ? "w-5 h-5" : "w-6 h-6", "animate-spin")} />
+        <Loader2
+          className={clsx(
+            size === "xs" ? "w-4 h-4" : size === "md" ? "w-5 h-5" : "w-6 h-6",
+            "animate-spin",
+          )}
+        />
       ) : (
         icon
       )}

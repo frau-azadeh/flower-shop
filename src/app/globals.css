@@ -8,40 +8,40 @@
 
 @theme {
   /* Brand */
-  --color-primary: #2F855A;
-  --color-primary-hover: #276B4B;
+  --color-primary: #2f855a;
+  --color-primary-hover: #276b4b;
 
   /* Accent (Dusty Rose) */
-  --color-accent: #E6A4B4;
-  --color-accent-hover: #D68DA2;
+  --color-accent: #e6a4b4;
+  --color-accent-hover: #d68da2;
 
   /* Surfaces */
-  --color-background: #FFFCF7;
-  --color-surface: #FFFFFF;
-  --color-muted: #F7F8F5;
+  --color-background: #fffcf7;
+  --color-surface: #ffffff;
+  --color-muted: #f7f8f5;
 
   /* Text & Border */
-  --color-text: #1F2937;
-  --color-text-muted: #6B7280;
-  --color-border: #E5E7EB;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
 
   /* Focus ring */
-  --color-ring: #2F855A;
+  --color-ring: #2f855a;
 
   /* Button */
-  --color-primary: #2F855A;
-  --color-primary-hover: #276B4B;
+  --color-primary: #2f855a;
+  --color-primary-hover: #276b4b;
 
-  --color-success: #22C55E;
-  --color-success-hover: #16A34A;
+  --color-success: #22c55e;
+  --color-success-hover: #16a34a;
 
-  --color-danger: #E11D48;
-  --color-danger-hover: #BE123C;
+  --color-danger: #e11d48;
+  --color-danger-hover: #be123c;
 
   /* outline  */
-  --color-outline-hover: #E9F5EF;
+  --color-outline-hover: #e9f5ef;
 
   /* muted */
-  --color-muted-200: #E5E7EB; /* bg/border */
-  --color-muted-400: #9CA3AF; /* text */
+  --color-muted-200: #e5e7eb; /* bg/border */
+  --color-muted-400: #9ca3af; /* text */
 }
