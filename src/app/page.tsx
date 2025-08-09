@@ -12,27 +12,7 @@ export default function Home() {
         خرید
         <ShoppingCart className="w-4 h-4" />
       </Button>
-      <h1 className="text-primary font-bold text-2xl">
-        به فروشگاه گل من خوش آمدید
-      </h1>
-      <Button>
-        خرید
-        <ShoppingCart className="w-4 h-4" />
-      </Button>
-      <h1 className="text-primary font-bold text-2xl">
-        به فروشگاه گل من خوش آمدید
-      </h1>
-      <Button>
-        خرید
-        <ShoppingCart className="w-4 h-4" />
-      </Button>
-      <h1 className="text-primary font-bold text-2xl">
-        به فروشگاه گل من خوش آمدید
-      </h1>
-      <Button>
-        خرید
-        <ShoppingCart className="w-4 h-4" />
-      </Button>
+      
     </div>
   );
 }
