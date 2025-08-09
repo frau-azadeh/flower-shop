@@ -4,7 +4,7 @@ import React, { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
-  variant?: "primary" | "outline" | "danger" | "success";
+  variant?: "primary" | "outline" | "danger" | "success" | "ghost";
   icon?: ReactNode;
   size?: "xs" | "md" | "lg";
 }
@@ -39,6 +39,8 @@ const Button: React.FC<ButtonProps> = ({
             variant === "danger",
           "bg-success text-white hover:bg-success-hover focus-visible:ring-success":
             variant === "success",
+          "bg-transparent text-inherit hover:bg-transparent hover:text-primary focus:ring-primary":
+            variant === "ghost",
 
           // Sizes
           "h-8 px-3 text-xs": size === "xs",
