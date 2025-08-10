@@ -27,6 +27,9 @@ export default function AdminHeader() {
           <a href="/admin/dashboard" className={item}>
             داشبورد
           </a>
+          <a href="/admin/belog" className={item}>
+           وبلاگ
+          </a>
           <a href="/admin/products" className={item}>
             محصولات
           </a>
@@ -89,6 +92,13 @@ export default function AdminHeader() {
             onClick={() => setOpen(false)}
           >
             داشبورد
+          </a>
+          <a
+            href="/admin/belog"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+           وبلاگ
           </a>
           <a
             href="/admin/products"
