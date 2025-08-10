@@ -1,10 +1,10 @@
-import React from "react";
+import React, { Suspense } from "react";
 import UserAddress from "@/app/components/user/UserAddress";
 const Adress: React.FC = () => {
   return (
-    <div>
+    <Suspense fallback={null}>
       <UserAddress />
-    </div>
+    </Suspense>
   );
 };
 
