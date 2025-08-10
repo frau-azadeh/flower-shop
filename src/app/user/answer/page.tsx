@@ -1,11 +1,11 @@
 import Answer from "@/app/components/user/Answer";
-import React from "react";
+import React, { Suspense } from "react";
 
 const AnswerUser: React.FC = () => {
   return (
-    <div>
+    <Suspense fallback={null}>
       <Answer />
-    </div>
+    </Suspense>
   );
 };
 
