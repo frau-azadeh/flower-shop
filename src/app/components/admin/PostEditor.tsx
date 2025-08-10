@@ -2,15 +2,26 @@
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import {
-  Bold, Italic, List, ListOrdered, Heading2, Link as LinkIcon,
-  ImagePlus, Eye, Save, Upload, Tag, FileText, Settings2
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Heading2,
+  Link as LinkIcon,
+  ImagePlus,
+  Eye,
+  Save,
+  Upload,
+  Tag,
+  FileText,
+  Settings2,
 } from "lucide-react";
 
 type Status = "draft" | "published";
 
 export default function PostEditor() {
   const [title, setTitle] = useState("");
-  const [slug, setSlug]   = useState("");
+  const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState<Status>("draft");
   const [tags, setTags] = useState<string>("");
@@ -23,8 +34,14 @@ export default function PostEditor() {
     setSlug(slugify(title));
   }, [title]);
 
-  const tagList = useMemo(() =>
-    tags.split(",").map(t => t.trim()).filter(Boolean), [tags]);
+  const tagList = useMemo(
+    () =>
+      tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+    [tags],
+  );
 
   return (
     <section dir="rtl" className="mx-auto max-w-6xl p-4 md:p-6">
@@ -37,7 +54,7 @@ export default function PostEditor() {
         <div className="flex items-center gap-2">
           <button
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50"
-            onClick={() => setPreview(v => !v)}
+            onClick={() => setPreview((v) => !v)}
           >
             <Eye className="size-4" />
             پیش‌نمایش
@@ -110,7 +127,9 @@ export default function PostEditor() {
             <article className="prose prose-slate rtl:prose-ul:text-right rtl:prose-ol:text-right max-w-none mt-4">
               {/* پیش‌نمایش خیلی ساده؛ بعداً می‌تونی Markdown/Tiptap وصل کنی */}
               {content ? (
-                <div className="whitespace-pre-wrap text-slate-800">{content}</div>
+                <div className="whitespace-pre-wrap text-slate-800">
+                  {content}
+                </div>
               ) : (
                 <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-12 text-center text-slate-500">
                   <FileText className="size-10 mb-3" />
@@ -151,7 +170,10 @@ export default function PostEditor() {
             {tagList.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {tagList.map((t) => (
-                  <span key={t} className="rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600">
+                  <span
+                    key={t}
+                    className="rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600"
+                  >
                     {t}
                   </span>
                 ))}
@@ -161,7 +183,9 @@ export default function PostEditor() {
 
           {/* Cover */}
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <h4 className="mb-3 text-sm font-semibold text-slate-700">تصویر کاور</h4>
+            <h4 className="mb-3 text-sm font-semibold text-slate-700">
+              تصویر کاور
+            </h4>
             <input
               value={coverUrl}
               onChange={(e) => setCoverUrl(e.target.value)}
@@ -170,7 +194,11 @@ export default function PostEditor() {
             />
             {coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={coverUrl} alt="" className="aspect-video w-full rounded-xl object-cover" />
+              <img
+                src={coverUrl}
+                alt=""
+                className="aspect-video w-full rounded-xl object-cover"
+              />
             ) : (
               <div className="aspect-video w-full rounded-xl border border-dashed border-slate-200 bg-slate-50" />
             )}

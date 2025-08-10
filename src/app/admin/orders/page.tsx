@@ -5,7 +5,7 @@ import { Suspense } from "react";
 export default function OrdersAdmin() {
   return (
     <Suspense fallback={null}>
-        <OrdersCard/>
+      <OrdersCard />
     </Suspense>
   );
 }

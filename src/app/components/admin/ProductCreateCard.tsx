@@ -3,8 +3,16 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Package, Tag, DollarSign, Percent, Layers,
-  Eye, Save, ImagePlus, Upload, CheckCircle2
+  Package,
+  Tag,
+  DollarSign,
+  Percent,
+  Layers,
+  Eye,
+  Save,
+  ImagePlus,
+  Upload,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function ProductCreateCard() {
@@ -28,7 +36,10 @@ export default function ProductCreateCard() {
   }, [name]);
 
   useEffect(() => {
-    if (!coverFile) { setCoverPreview(""); return; }
+    if (!coverFile) {
+      setCoverPreview("");
+      return;
+    }
     const url = URL.createObjectURL(coverFile);
     setCoverPreview(url);
     return () => URL.revokeObjectURL(url);
@@ -127,7 +138,9 @@ export default function ProductCreateCard() {
                 placeholder="مثلاً 450000"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
-              <span className="mt-1 block text-[11px] text-slate-500">{priceLabel}</span>
+              <span className="mt-1 block text-[11px] text-slate-500">
+                {priceLabel}
+              </span>
             </label>
 
             <label className="block">
@@ -142,7 +155,9 @@ export default function ProductCreateCard() {
                 placeholder="مثلاً 399000"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
-              <span className="mt-1 block text-[11px] text-slate-500">{saleLabel}</span>
+              <span className="mt-1 block text-[11px] text-slate-500">
+                {saleLabel}
+              </span>
             </label>
 
             <label className="block">
@@ -190,7 +205,9 @@ export default function ProductCreateCard() {
         <aside className="space-y-4">
           {/* Cover */}
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <h4 className="mb-3 text-sm font-semibold text-slate-700">تصویر کاور</h4>
+            <h4 className="mb-3 text-sm font-semibold text-slate-700">
+              تصویر کاور
+            </h4>
             <div className="flex items-start gap-3">
               <button
                 type="button"
@@ -228,7 +245,7 @@ export default function ProductCreateCard() {
             <label className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 px-3 py-2">
               <span className="text-sm text-slate-700">فعال باشد</span>
               <span
-                onClick={() => setActive(v => !v)}
+                onClick={() => setActive((v) => !v)}
                 className={`inline-flex items-center gap-2 text-sm ${
                   active ? "text-emerald-600" : "text-slate-400"
                 }`}

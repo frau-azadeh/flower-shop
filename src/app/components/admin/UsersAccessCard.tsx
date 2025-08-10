@@ -22,7 +22,9 @@ export default function UserAccessCard() {
       <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right">
         {/* Header */}
         <div className="mb-5 flex flex-col-reverse gap-4 md:mb-6 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl md:text-2xl font-bold text-slate-800">کاربران و سطح دسترسی</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-800">
+            کاربران و سطح دسترسی
+          </h2>
           <div className="flex items-center gap-2">
             <label className="relative w-52 md:w-72">
               <input
@@ -85,7 +87,9 @@ function EmptyUsers() {
       <p className="mt-3 text-sm md:text-base text-slate-700">
         هنوز کاربری ثبت نشده است.
       </p>
-      <p className="mt-1 text-xs text-slate-500">از دکمه «افزودن کاربر» استفاده کنید.</p>
+      <p className="mt-1 text-xs text-slate-500">
+        از دکمه «افزودن کاربر» استفاده کنید.
+      </p>
     </div>
   );
 }
@@ -126,7 +130,9 @@ function NewUserModal({ onClose }: { onClose: () => void }) {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block">
-              <span className="mb-1 block text-xs text-slate-600">نام و نام خانوادگی</span>
+              <span className="mb-1 block text-xs text-slate-600">
+                نام و نام خانوادگی
+              </span>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
