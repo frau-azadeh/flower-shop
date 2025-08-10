@@ -1,8 +1,9 @@
 import OrderHistory from "@/app/components/user/OrderHistory";
+import { Suspense } from "react";
 export default function UserDashboard() {
   return (
-    <div>
+    <Suspense fallback={null}>
       <OrderHistory />
-    </div>
+    </Suspense>
   );
 }
