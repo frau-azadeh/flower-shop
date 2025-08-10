@@ -162,7 +162,8 @@ export default function Navbar() {
               </Link>
 
               {/* Products + dropdown w/o jump */}
-              <div className="relative group">
+              {/* Products + dropdown (only on hover) */}
+              <div className="relative group/menu">
                 <Button
                   variant="ghost"
                   type="button"
@@ -172,17 +173,16 @@ export default function Navbar() {
                   <ChevronDown className="w-4 h-4" />
                 </Button>
 
-                {/* Use pt-2 & top-full to keep hover bridge */}
-                <div className="absolute right-0 top-full pt-2">
-                  <div
-                    className="
-                    w-56 rounded-xl border border-border bg-surface shadow-lg p-2
-                    invisible opacity-0 translate-y-2 pointer-events-none
-                    transition duration-150
-                    group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto
-                    group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto
-                  "
-                  >
+                {/* wrapper: hidden by default; opens only on group-hover */}
+                <div
+                  className="
+      absolute right-0 top-full z-50 pt-2
+      opacity-0 invisible pointer-events-none translate-y-2
+      transition duration-150
+      group-hover/menu:opacity-100 group-hover/menu:visible group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0
+    "
+                >
+                  <div className="w-56 rounded-xl border border-border bg-surface shadow-lg p-2">
                     {CATEGORIES.map((c) => (
                       <Link
                         key={c.href}

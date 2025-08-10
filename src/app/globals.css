@@ -11,12 +11,13 @@
   --color-primary: #2f855a;
   --color-primary-hover: #276b4b;
 
-  /* Accent (Dusty Rose) */
-  --color-accent: #e6a4b4;
-  --color-accent-hover: #d68da2;
+  /* Accent (Yellow) */
+  --color-accent: #ffd400;
+  --color-accent-hover: #e6b800;
 
   /* Surfaces */
-  --color-background: #fbf7f3;
+  /* Background (Very Lighet Yellow) */
+  --color-background: #faffca;
   --color-surface: #ffffff;
   --color-muted: #f7f8f5;
 
