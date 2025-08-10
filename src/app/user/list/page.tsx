@@ -1,11 +1,11 @@
 import Wishlists from "@/app/components/user/WishLists";
-import React from "react";
+import React, { Suspense } from "react";
 
 const UserList = () => {
   return (
-    <div>
+    <Suspense fallback={null}>
       <Wishlists />
-    </div>
+    </Suspense>
   );
 };
 
