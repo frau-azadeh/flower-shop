@@ -1,11 +1,11 @@
-import React from 'react'
-import UserAddress from '@/app/components/user/UserAddress'
-const Adress:React.FC = () => {
+import React from "react";
+import UserAddress from "@/app/components/user/UserAddress";
+const Adress: React.FC = () => {
   return (
     <div>
-       <UserAddress/>
+      <UserAddress />
     </div>
-  )
-}
+  );
+};
 
-export default Adress
+export default Adress;

@@ -7,7 +7,11 @@ import ContactFab from "./components/ui/ContactFab";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import MobileNavBar from "./components/ui/MobileNavbar";
 
-export default function SiteChrome({ children }: { children: React.ReactNode }) {
+export default function SiteChrome({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const isUser = pathname.startsWith("/user");

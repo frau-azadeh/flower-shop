@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Handbag, Heart, LogOut, MapPin, Menu, MessageCircle, User, X } from "lucide-react";
+import {
+  Bell,
+  Handbag,
+  Heart,
+  LogOut,
+  MapPin,
+  Menu,
+  MessageCircle,
+  User,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -17,38 +27,45 @@ const UserNavbar = () => {
       <aside className="hidden md:block border-l border-border bg-surface p-4 sticky top-0 h-screen w-[240px] ">
         <div className="text-lg font-extrabold text-primary mb-3">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-                       <span className="text-xl font-extrabold text-primary">
-             خلاصه وضعیت
+            <span className="text-xl font-extrabold text-primary">
+              خلاصه وضعیت
             </span>
           </Link>
         </div>
         <nav className="space-y-2 text-sm ">
-          <a href="/user/dashboard" className={`${item} flex items-center gap-2`}>
-            <Handbag className="w-4 h-4"/>سفارش ها
+          <a
+            href="/user/dashboard"
+            className={`${item} flex items-center gap-2`}
+          >
+            <Handbag className="w-4 h-4" />
+            سفارش ها
           </a>
           <a href="/user/list" className={`${item} flex items-center gap-2`}>
-          <Heart className="w-4 h-4"/>
+            <Heart className="w-4 h-4" />
             لسیت های من
           </a>
           <a href="/user/answer" className={`${item} flex items-center gap-2`}>
-          <MessageCircle className="w-4 h-4"/>
+            <MessageCircle className="w-4 h-4" />
             دیدگاه و پرسش
           </a>
           <a href="/user/address" className={`${item} flex items-center gap-2`}>
-          <MapPin className="w-4 h-4"/>
+            <MapPin className="w-4 h-4" />
             آدرس ها
           </a>
           <a href="/user/message" className={`${item} flex items-center gap-2`}>
-          <Bell className="w-4 h-4"/>
+            <Bell className="w-4 h-4" />
             پیام ها
           </a>
-          <a href="/user/information" className={`${item} flex items-center gap-2`}>
-          <User className="w-4 h-4"/>
-           اطلاعات حساب
+          <a
+            href="/user/information"
+            className={`${item} flex items-center gap-2`}
+          >
+            <User className="w-4 h-4" />
+            اطلاعات حساب
           </a>
           <a href="/user/logout" className={`${item} flex items-center gap-2`}>
-          <LogOut className="w-4 h-4"/>
-           خروج از حساب
+            <LogOut className="w-4 h-4" />
+            خروج از حساب
           </a>
         </nav>
       </aside>
@@ -63,7 +80,9 @@ const UserNavbar = () => {
           <Menu className="w-5 h-5" />
         </button>
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-xl font-extrabold text-primary">خلاصه وضعیت</span>
+          <span className="text-xl font-extrabold text-primary">
+            خلاصه وضعیت
+          </span>
         </Link>
         <span className="w-6" />
       </header>
@@ -97,65 +116,65 @@ const UserNavbar = () => {
 
         <nav className="space-y-2 text-sm">
           <a
-           href="/user/dashboard"
+            href="/user/dashboard"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-             <Handbag className="w-4 h-4"/>
-             سفارش ها
+            <Handbag className="w-4 h-4" />
+            سفارش ها
           </a>
           <a
-           href="/user/list"
+            href="/user/list"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-             <Heart className="w-4 h-4"/>
-              لسیت های من
+            <Heart className="w-4 h-4" />
+            لسیت های من
           </a>
           <a
-           href="/user/answer"
+            href="/user/answer"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-            <MessageCircle className="w-4 h-4"/>
-               دیدگاه و پرسش
+            <MessageCircle className="w-4 h-4" />
+            دیدگاه و پرسش
           </a>
           <a
             href="/user/address"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-            <MapPin className="w-4 h-4"/>
-           آدرس ها
+            <MapPin className="w-4 h-4" />
+            آدرس ها
           </a>
 
           <a
-          href="/user/message"
+            href="/user/message"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-             <Bell className="w-4 h-4"/>
-               پیام ها
+            <Bell className="w-4 h-4" />
+            پیام ها
           </a>
           <a
-           href="/user/information"
+            href="/user/information"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-            <User className="w-4 h-4"/>
+            <User className="w-4 h-4" />
             اطلاعات حساب
           </a>
           <a
-       href="/user/logout"
+            href="/user/logout"
             className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
-             <LogOut className="w-4 h-4"/>
-                خروج از حساب
+            <LogOut className="w-4 h-4" />
+            خروج از حساب
           </a>
         </nav>
       </aside>
     </>
   );
-}
-export default UserNavbar
+};
+export default UserNavbar;

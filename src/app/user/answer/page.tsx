@@ -1,12 +1,12 @@
-import Answer from '@/app/components/user/Answer'
-import React from 'react'
+import Answer from "@/app/components/user/Answer";
+import React from "react";
 
-const AnswerUser:React.FC = () => {
+const AnswerUser: React.FC = () => {
   return (
     <div>
-        <Answer/>
+      <Answer />
     </div>
-  )
-}
+  );
+};
 
-export default AnswerUser
+export default AnswerUser;

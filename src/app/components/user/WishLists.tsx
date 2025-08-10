@@ -4,14 +4,18 @@
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
-import { Bell, Heart, List, Info,  ToggleRight } from "lucide-react";
+import { Bell, Heart, List, Info, ToggleRight } from "lucide-react";
 
 type Tab = "favorites" | "others" | "alerts";
 
 const TABS: { key: Tab; label: string; icon: ReactNode }[] = [
-  { key: "favorites", label: "لیست علاقه‌مندی", icon: <Heart className="size-4" /> },
-  { key: "others",    label: "لیست‌های دیگر",   icon: <List  className="size-4" /> },
-  { key: "alerts",    label: "اطلاع‌رسانی‌ها",  icon: <Info  className="size-4" /> },
+  {
+    key: "favorites",
+    label: "لیست علاقه‌مندی",
+    icon: <Heart className="size-4" />,
+  },
+  { key: "others", label: "لیست‌های دیگر", icon: <List className="size-4" /> },
+  { key: "alerts", label: "اطلاع‌رسانی‌ها", icon: <Info className="size-4" /> },
 ];
 
 export default function Wishlists() {
@@ -32,7 +36,9 @@ export default function Wishlists() {
 
   const current = (() => {
     const t = (searchParams.get("activeTab") ?? "favorites") as Tab;
-    return (["favorites","others","alerts"] as const).includes(t) ? t : "favorites";
+    return (["favorites", "others", "alerts"] as const).includes(t)
+      ? t
+      : "favorites";
   })();
 
   // برای حفظ سایر پارامترها
@@ -45,7 +51,10 @@ export default function Wishlists() {
   const showAlertsUI = current === "alerts";
 
   return (
-    <section dir="rtl" className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right">
+    <section
+      dir="rtl"
+      className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right"
+    >
       {/* Tabs با لینک پویا ?activeTab=... */}
       <div className="mb-3 flex gap-2 text-sm">
         {TABS.map((t) => {
@@ -61,7 +70,9 @@ export default function Wishlists() {
             >
               {t.icon}
               <span>{t.label}</span>
-              {active && <span className="h-[3px] w-10 -mb-2 block rounded-full bg-accent self-end" />}
+              {active && (
+                <span className="h-[3px] w-10 -mb-2 block rounded-full bg-accent self-end" />
+              )}
             </Link>
           );
         })}
@@ -82,20 +93,24 @@ export default function Wishlists() {
               <ToggleRight className="size-8" />
             </button>
           </div>
-          <p className="mb-3 text-xs text-slate-500">اطلاع‌رسانی تخفیف و موجودی این کالاها</p>
+          <p className="mb-3 text-xs text-slate-500">
+            اطلاع‌رسانی تخفیف و موجودی این کالاها
+          </p>
           <hr className="mb-8 border-slate-200" />
         </>
       )}
 
       {/* Empty state مخصوص هر تب */}
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        {current === "favorites" && <Heart className="size-24 text-slate-300" />}
-        {current === "others"    && <List  className="size-24 text-slate-300" />}
-        {current === "alerts"    && <Bell  className="size-24 text-slate-300" />}
+        {current === "favorites" && (
+          <Heart className="size-24 text-slate-300" />
+        )}
+        {current === "others" && <List className="size-24 text-slate-300" />}
+        {current === "alerts" && <Bell className="size-24 text-slate-300" />}
         <p className="mt-6 text-sm md:text-base text-slate-700">
           {current === "favorites" && "لیست علاقه‌مندی‌های شما خالی است."}
-          {current === "others"    && "هنوز لیست دیگری ایجاد نکرده‌اید."}
-          {current === "alerts"    && "هنوز هیچ اعلان فعالی ندارید."}
+          {current === "others" && "هنوز لیست دیگری ایجاد نکرده‌اید."}
+          {current === "alerts" && "هنوز هیچ اعلان فعالی ندارید."}
         </p>
       </div>
     </section>

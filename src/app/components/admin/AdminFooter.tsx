@@ -1,6 +1,4 @@
-
-
-import React from 'react'
+import React from "react";
 
 const AdminFooter = () => {
   return (
@@ -18,7 +16,7 @@ const AdminFooter = () => {
         </span>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default AdminFooter
+export default AdminFooter;

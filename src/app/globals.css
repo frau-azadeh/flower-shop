@@ -11,14 +11,14 @@
   --color-primary: #2f855a;
   --color-primary-hover: #276b4b;
 
- /* Accent (Yellow) */
- --color-accent: #FFD400;
- --color-accent-hover: #E6B800;
+  /* Accent (Yellow) */
+  --color-accent: #ffd400;
+  --color-accent-hover: #e6b800;
 
   /* Surfaces */
- /* Background (Very Lighet Yellow) */
- --color-background: #FAFFCA;
- --color-surface: #ffffff;
+  /* Background (Very Lighet Yellow) */
+  --color-background: #faffca;
+  --color-surface: #ffffff;
   --color-muted: #f7f8f5;
 
   /* Text & Border */

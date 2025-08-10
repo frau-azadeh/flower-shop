@@ -1,12 +1,12 @@
-import Wishlists from '@/app/components/user/WishLists'
-import React from 'react'
+import Wishlists from "@/app/components/user/WishLists";
+import React from "react";
 
 const UserList = () => {
   return (
-<div>
-    <Wishlists/>
-</div>
-)
-}
+    <div>
+      <Wishlists />
+    </div>
+  );
+};
 
-export default UserList
+export default UserList;

@@ -14,16 +14,37 @@ import {
 type Tab = "waiting" | "opinion" | "question";
 
 const TABS: { key: Tab; label: string; icon: ReactNode }[] = [
-  { key: "waiting",  label: "در انتظار دیدگاه", icon: <MessageCircleWarning className="size-4" /> },
-  { key: "opinion",  label: "دیدگاه من",        icon: <MessageCircleHeart className="size-4" /> },
-  { key: "question", label: "پرسش و پاسخ",      icon: <MessageSquare className="size-4" /> },
+  {
+    key: "waiting",
+    label: "در انتظار دیدگاه",
+    icon: <MessageCircleWarning className="size-4" />,
+  },
+  {
+    key: "opinion",
+    label: "دیدگاه من",
+    icon: <MessageCircleHeart className="size-4" />,
+  },
+  {
+    key: "question",
+    label: "پرسش و پاسخ",
+    icon: <MessageSquare className="size-4" />,
+  },
 ];
 
 // آیکن و متن مخصوص هر تب
 const CONTENT: Record<Tab, { text: string; icon: ReactNode }> = {
-  waiting:  { text: "هیچ موردی در انتظار بررسی نیست.", icon: <MessageCircleWarning className="size-24 text-slate-300" /> },
-  opinion:  { text: "هنوز دیدگاهی ثبت نکرده‌اید.",     icon: <MessageCircleHeart   className="size-24 text-slate-300" /> },
-  question: { text: "لیست سوال‌های شما خالی است.",     icon: <MessageSquare        className="size-24 text-slate-300" /> },
+  waiting: {
+    text: "هیچ موردی در انتظار بررسی نیست.",
+    icon: <MessageCircleWarning className="size-24 text-slate-300" />,
+  },
+  opinion: {
+    text: "هنوز دیدگاهی ثبت نکرده‌اید.",
+    icon: <MessageCircleHeart className="size-24 text-slate-300" />,
+  },
+  question: {
+    text: "لیست سوال‌های شما خالی است.",
+    icon: <MessageSquare className="size-24 text-slate-300" />,
+  },
 };
 
 export default function Answer() {
@@ -57,9 +78,16 @@ export default function Answer() {
   const { text, icon } = CONTENT[current];
 
   return (
-    <section dir="rtl" className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right">
+    <section
+      dir="rtl"
+      className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right"
+    >
       {/* Tabs */}
-      <div className="mb-3 flex gap-2 text-sm" role="tablist" aria-label="تب‌های دیدگاه و پرسش">
+      <div
+        className="mb-3 flex gap-2 text-sm"
+        role="tablist"
+        aria-label="تب‌های دیدگاه و پرسش"
+      >
         {TABS.map((t) => {
           const active = current === t.key;
           return (

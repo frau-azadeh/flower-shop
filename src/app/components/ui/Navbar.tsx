@@ -162,40 +162,39 @@ export default function Navbar() {
               </Link>
 
               {/* Products + dropdown w/o jump */}
-             {/* Products + dropdown (only on hover) */}
-<div className="relative group/menu">
-  <Button
-    variant="ghost"
-    type="button"
-    className="flex items-center gap-1 text-sm font-semibold hover:text-primary transition-colors"
-  >
-    محصولات
-    <ChevronDown className="w-4 h-4" />
-  </Button>
+              {/* Products + dropdown (only on hover) */}
+              <div className="relative group/menu">
+                <Button
+                  variant="ghost"
+                  type="button"
+                  className="flex items-center gap-1 text-sm font-semibold hover:text-primary transition-colors"
+                >
+                  محصولات
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
 
-  {/* wrapper: hidden by default; opens only on group-hover */}
-  <div
-    className="
+                {/* wrapper: hidden by default; opens only on group-hover */}
+                <div
+                  className="
       absolute right-0 top-full z-50 pt-2
       opacity-0 invisible pointer-events-none translate-y-2
       transition duration-150
       group-hover/menu:opacity-100 group-hover/menu:visible group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0
     "
-  >
-    <div className="w-56 rounded-xl border border-border bg-surface shadow-lg p-2">
-      {CATEGORIES.map((c) => (
-        <Link
-          key={c.href}
-          href={c.href}
-          className="block rounded-lg px-3 py-2 text-sm hover:bg-muted hover:text-primary transition-colors"
-        >
-          {c.label}
-        </Link>
-      ))}
-    </div>
-  </div>
-</div>
-
+                >
+                  <div className="w-56 rounded-xl border border-border bg-surface shadow-lg p-2">
+                    {CATEGORIES.map((c) => (
+                      <Link
+                        key={c.href}
+                        href={c.href}
+                        className="block rounded-lg px-3 py-2 text-sm hover:bg-muted hover:text-primary transition-colors"
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
               {NAV.slice(1).map((item) => (
                 <Link
