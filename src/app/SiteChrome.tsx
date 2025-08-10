@@ -7,24 +7,27 @@ import ContactFab from "./components/ui/ContactFab";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import MobileNavBar from "./components/ui/MobileNavbar";
 
-export default function SiteChrome({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const isUser = pathname.startsWith("/user");
 
-  if (isAdmin) return <>{children}</>; // بدون هدر/فوتر
+  // ادمین: کاملاً بدون هدر/فوتر
+  if (isAdmin) return <>{children}</>;
 
+  // سایر مسیرها (از جمله /user): Navbar عمومی نمایش داده شود
   return (
     <>
       <Navbar />
       {children}
+
+      {/* اینها اختیاری‌اند؛ اگه برای /user نمی‌خوایشون، شرط بذار */}
       <ContactFab />
       <ScrollToTop />
       <MobileNavBar />
-      <Footer />
+
+      {/* Footer عمومی فقط وقتی که مسیر user نیست */}
+      {!isUser && <Footer />}
     </>
   );
 }
