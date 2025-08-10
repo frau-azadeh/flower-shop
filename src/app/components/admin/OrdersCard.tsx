@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode, useState } from "react";
 import {
   Search,
@@ -62,7 +62,6 @@ const CONTENT: Record<StatusTab, { icon: ReactNode; text: string }> = {
 export default function OrdersCard() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // وضعیت فعلی از URL
   const STATUSES: StatusTab[] = [
