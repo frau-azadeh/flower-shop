@@ -2,8 +2,8 @@
 
 import { Archive, Inbox, Mail, Star } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { ReactNode, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, { ReactNode } from "react";
 
 type Tab = "inbox" | "unread" | "starred" | "archive";
 
@@ -36,7 +36,6 @@ const CONTENT: Record<Tab, { text: string; icon: ReactNode }> = {
 const UserMessage: React.FC = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const KEYS: Tab[] = ["inbox", "unread", "starred", "archive"];
   const current: Tab = (() => {
