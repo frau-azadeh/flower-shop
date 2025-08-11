@@ -35,7 +35,6 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-
       {/* ناوبری تب‌ها */}
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
         {tabs.map((t) => {

@@ -5,12 +5,12 @@ import { useState } from "react";
 import Tabs, { TabItem } from "@/app/components/ui/Tabs";
 import {
   Search,
-  Flower2,   // all
-  Clock,       // pending
-  Loader2,     // processing
-  PackageCheck,// delivered
-  XCircle,     // canceled
-  Undo2,       // returned
+  Flower2, // all
+  Clock, // pending
+  Loader2, // processing
+  PackageCheck, // delivered
+  XCircle, // canceled
+  Undo2, // returned
 } from "lucide-react";
 
 export default function OrdersCard() {
@@ -66,7 +66,9 @@ export default function OrdersCard() {
       <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right">
         {/* Header */}
         <div className="mb-5 flex flex-col-reverse gap-4 md:mb-6 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl md:text-2xl font-bold text-slate-800">سفارشات</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-800">
+            سفارشات
+          </h2>
 
           <label className="relative w-full md:w-72">
             <input

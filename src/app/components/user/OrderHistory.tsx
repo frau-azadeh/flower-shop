@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import Tabs, { TabItem } from "@/app/components/ui/Tabs";
-import {
-  Search,
-  Clock,
-  PackageCheck,
-  Undo2,
-  XCircle,
-} from "lucide-react";
+import { Search, Clock, PackageCheck, Undo2, XCircle } from "lucide-react";
 
 export default function OrderHistory() {
   const [q, setQ] = useState("");
