@@ -6,15 +6,17 @@ import { ReactNode } from "react";
 export type TabItem = {
   key: string;
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   header?: ReactNode;
   emptyIcon?: ReactNode;
   emptyText?: string;
+  badgeCount?: number; // 👈 شمارش کنار تب
+  text?: string;
 };
 
 interface TabsProps {
   tabs: TabItem[];
-  paramName?: string; // اسم پارامتر در URL - پیش‌فرض activeTab
+  paramName?: string; // پیش‌فرض activeTab
 }
 
 export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
@@ -33,8 +35,9 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
+
       {/* ناوبری تب‌ها */}
-      <div className="mb-3 flex gap-2 text-sm">
+      <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
         {tabs.map((t) => {
           const active = current === t.key;
           return (
@@ -43,14 +46,27 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
               href={makeHref(t.key)}
               replace
               scroll={false}
-              className={`relative rounded-full px-3 py-1.5 ${
+              className={`relative rounded-full px-3.5 py-1.5 transition ${
                 active ? "text-accent" : "text-slate-600 hover:text-slate-800"
               }`}
             >
               {t.icon}
               <span>{t.label}</span>
+
+              {typeof t.badgeCount === "number" && (
+                <span
+                  className={`mr-2 inline-block rounded-md px-1.5 py-0.5 text-[11px] leading-none ${
+                    active
+                      ? "bg-background text-accent"
+                      : "bg-slate-200 text-slate-700"
+                  }`}
+                >
+                  {t.badgeCount}
+                </span>
+              )}
+
               {active && (
-                <span className="h-[3px] w-10 -mb-2 block rounded-full bg-accent self-end" />
+                <span className="absolute -bottom-2 left-1/2 h-[3px] w-10 -translate-x-1/2 rounded-full bg-accent" />
               )}
             </Link>
           );
