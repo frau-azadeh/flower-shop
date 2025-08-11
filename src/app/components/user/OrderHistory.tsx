@@ -2,8 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ReactNode, useState } from "react";
 import {
   Search,
   FileText,
@@ -45,7 +45,6 @@ const CONTENT: Record<Status, { icon: ReactNode; text: string }> = {
 export default function OrderHistory() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [q, setQ] = useState("");
 
@@ -55,17 +54,6 @@ export default function OrderHistory() {
     const s = searchParams.get("status") as Status | null;
     return s && KEYS.includes(s) ? s : "current";
   })();
-
-  // اگر hash قدیمی بود (#returned)، به ?status=... تبدیلش کن
-  useEffect(() => {
-    const h = window.location.hash.replace("#", "");
-    if (h && KEYS.includes(h as Status)) {
-      const sp = new URLSearchParams(searchParams.toString());
-      sp.set("status", h);
-      router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const makeHref = (s: Status) => {
     const sp = new URLSearchParams(searchParams.toString());

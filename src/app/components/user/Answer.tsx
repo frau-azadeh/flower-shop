@@ -2,8 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ReactNode } from "react";
 import {
   FileText,
   MessageCircleHeart,
@@ -50,24 +50,12 @@ const CONTENT: Record<Tab, { text: string; icon: ReactNode }> = {
 export default function Answer() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const KEYS: Tab[] = ["waiting", "opinion", "question"];
   const current: Tab = (() => {
     const t = searchParams.get("activeTab") as Tab | null;
     return t && KEYS.includes(t) ? t : "waiting";
   })();
-
-  // اگر قبلاً #hash داشتی، به ?activeTab=... تبدیل شود (اختیاری)
-  useEffect(() => {
-    const h = window.location.hash.replace("#", "");
-    if (h && KEYS.includes(h as Tab)) {
-      const sp = new URLSearchParams(searchParams.toString());
-      sp.set("activeTab", h);
-      router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const makeHref = (t: Tab) => {
     const sp = new URLSearchParams(searchParams.toString());
