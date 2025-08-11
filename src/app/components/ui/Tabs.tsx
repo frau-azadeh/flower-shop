@@ -11,7 +11,6 @@ export type TabItem = {
   emptyIcon?: ReactNode;
   emptyText?: string;
   badgeCount?: number; // 👈 شمارش کنار تب
-  text?: string;
 };
 
 interface TabsProps {
