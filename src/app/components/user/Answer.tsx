@@ -34,7 +34,7 @@ const answerTabs: TabItem[] = [
 const Answer: React.FC = () => {
   return (
     <div>
-      <Tabs tabs={answerTabs}  paramName="status"/>
+      <Tabs tabs={answerTabs} paramName="status" />
     </div>
   );
 };
