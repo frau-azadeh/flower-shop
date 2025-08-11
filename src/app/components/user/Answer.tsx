@@ -57,8 +57,6 @@ export default function Answer() {
     return t && KEYS.includes(t) ? t : "waiting";
   })();
 
-
-
   const makeHref = (t: Tab) => {
     const sp = new URLSearchParams(searchParams.toString());
     sp.set("activeTab", t);

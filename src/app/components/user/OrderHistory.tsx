@@ -2,8 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname,  useSearchParams } from "next/navigation";
-import { ReactNode,  useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ReactNode, useState } from "react";
 import {
   Search,
   FileText,
@@ -54,8 +54,6 @@ export default function OrderHistory() {
     const s = searchParams.get("status") as Status | null;
     return s && KEYS.includes(s) ? s : "current";
   })();
-
-
 
   const makeHref = (s: Status) => {
     const sp = new URLSearchParams(searchParams.toString());

@@ -44,9 +44,7 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
               replace
               scroll={false}
               className={`relative rounded-full px-3 py-1.5 ${
-                active
-                  ? "text-accent"
-                  : "text-slate-600 hover:text-slate-800"
+                active ? "text-accent" : "text-slate-600 hover:text-slate-800"
               }`}
             >
               {t.icon}
