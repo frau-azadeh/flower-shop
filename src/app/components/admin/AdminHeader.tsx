@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  Menu,
+  Newspaper,
+  Package,
+  Receipt,
+  User,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -24,19 +32,30 @@ export default function AdminHeader() {
           </Link>
         </div>
         <nav className="space-y-2 text-sm">
-          <a href="/admin/dashboard" className={item}>
+          <a
+            href="/admin/dashboard"
+            className={`${item} flex  items-center gap-2`}
+          >
+            <LayoutDashboard className="w-4 h-4" />
             داشبورد
           </a>
-          <a href="/admin/belog" className={item}>
+          <a href="/admin/belog" className={`${item} flex item-center gap-2`}>
+            <Newspaper className="w-4 h-4" />
             وبلاگ
           </a>
-          <a href="/admin/products" className={item}>
+          <a
+            href="/admin/products"
+            className={`${item} flex items-center gap-2`}
+          >
+            <Package className="w-4 h-4" />
             محصولات
           </a>
-          <a href="/admin/orders" className={item}>
+          <a href="/admin/orders" className={`${item} flex items-center gap-2`}>
+            <Receipt className="w-4 h-4" />
             سفارش‌ها
           </a>
-          <a href="/admin/users" className={item}>
+          <a href="/admin/users" className={`${item} flex items-center gap-2`}>
+            <User className="w-4 h-4" />
             کاربران
           </a>
         </nav>
@@ -88,37 +107,42 @@ export default function AdminHeader() {
         <nav className="space-y-2 text-sm">
           <a
             href="/admin/dashboard"
-            className={item}
+            className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
+            <LayoutDashboard className="w-4 h-4" />
             داشبورد
           </a>
           <a
             href="/admin/belog"
-            className={item}
+            className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
+            <Newspaper className="w-4 h-4" />
             وبلاگ
           </a>
           <a
             href="/admin/products"
-            className={item}
+            className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
+            <Package className="w-4 h-4" />
             محصولات
           </a>
           <a
             href="/admin/orders"
-            className={item}
+            className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
+            <Receipt className="w-4 h-4" />
             سفارش‌ها
           </a>
           <a
             href="/admin/users"
-            className={item}
+            className={`${item} flex items-center gap-2`}
             onClick={() => setOpen(false)}
           >
+            <User className="w-4 h-4" />
             کاربران
           </a>
         </nav>
