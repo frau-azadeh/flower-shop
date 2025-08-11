@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import Tabs, { TabItem } from "../ui/Tabs";
 import { Bell, Heart, Info, List, ToggleRight } from "lucide-react";
