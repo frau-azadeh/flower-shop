@@ -52,7 +52,7 @@ const wishListTabs: TabItem[] = [
 const WishLists: React.FC = () => {
   return (
     <div>
-      <Tabs tabs={wishListTabs} />
+      <Tabs tabs={wishListTabs} paramName="status"/>
     </div>
   );
 };

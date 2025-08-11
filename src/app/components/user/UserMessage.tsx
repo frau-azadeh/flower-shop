@@ -37,7 +37,7 @@ const messageTabs: TabItem[] = [
 const UserMessage: React.FC = () => {
   return (
     <div>
-      <Tabs tabs={messageTabs} />
+      <Tabs tabs={messageTabs} paramName="status"/>
     </div>
   );
 };
