@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Tabs, { TabItem } from "@/app/components/ui/Tabs";
 import { Search, Clock, PackageCheck, Undo2, XCircle } from "lucide-react";
+import Input from "../ui/Input";
 
 export default function OrderHistory() {
   const [q, setQ] = useState("");
@@ -49,11 +50,10 @@ export default function OrderHistory() {
 
           {/* Search */}
           <label className="relative w-full md:w-72">
-            <input
+            <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="جستجو"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-4 pl-10 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent"
             />
             <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-slate-500" />
           </label>
