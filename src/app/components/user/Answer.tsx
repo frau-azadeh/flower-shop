@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import Tabs, { TabItem } from "../ui/Tabs";
 import {
@@ -13,7 +13,7 @@ const answerTabs: TabItem[] = [
     label: "در انتظار دیدگاه",
     icon: <MessageCircleWarning className="size-4" />,
     emptyIcon: <MessageCircleWarning className="size-24 text-slate-300" />,
-    emptyText: "در انتظار دیدگاه ثبت شده"
+    emptyText: "در انتظار دیدگاه ثبت شده",
   },
   {
     key: "opinion",
