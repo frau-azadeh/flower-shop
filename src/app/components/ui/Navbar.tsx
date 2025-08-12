@@ -19,11 +19,6 @@ import clsx from "clsx";
 
 import Button from "./Button"; // مسیر دکمه خودت
 import { createSupabaseClient } from "@/lib/supabase";
-import type {
-  Session,
-  AuthChangeEvent,
-  Subscription,
-} from "@supabase/supabase-js";
 
 type NavItem = { label: string; href: string };
 
@@ -191,22 +186,21 @@ export default function Navbar() {
 
   // وضعیت سشن را بگیر و گوش بده
   useEffect(() => {
-    let unsub: Subscription | undefined;
-
-    supabase.auth.getSession().then(({ data }) => {
-      setIsLoggedIn(!!data.session);
+    // وضعیت اولیه
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
     });
 
-    const { data: sub } = supabase.auth.onAuthStateChange(
-      (_e: AuthChangeEvent, session: Session | null) => {
-        setIsLoggedIn(!!session);
-      },
-    );
+    // گوش‌دادن به تغییرات احراز هویت
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
 
-    unsub = sub?.subscription;
-
+    // cleanup
     return () => {
-      unsub?.unsubscribe();
+      subscription.unsubscribe();
     };
   }, [supabase]);
 
