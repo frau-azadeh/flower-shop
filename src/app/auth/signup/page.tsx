@@ -6,7 +6,7 @@ import { signupSchema, type SignupSchema } from "@/schemas/auth.schema";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
 import { createSupabaseClient } from "@/lib/supabase";
-import {  UserRound, Phone, Mail } from "lucide-react";
+import { UserRound, Phone, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { showSuccess, showError } from "@/lib/toast";
@@ -98,7 +98,8 @@ export default function SignupPage() {
         <Input
           label="رمز عبور"
           type="password"
-           togglePassword          {...register("password")}
+          togglePassword
+          {...register("password")}
           error={errors.password?.message}
         />
 

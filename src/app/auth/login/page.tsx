@@ -6,7 +6,7 @@ import { loginSchema, type LoginSchema } from "@/schemas/auth.schema";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
 import { createSupabaseClient } from "@/lib/supabase";
-import {  Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { showSuccess, showError } from "@/lib/toast";

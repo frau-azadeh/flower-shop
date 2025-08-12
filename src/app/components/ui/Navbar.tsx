@@ -19,7 +19,11 @@ import clsx from "clsx";
 
 import Button from "./Button"; // مسیر دکمه خودت
 import { createSupabaseClient } from "@/lib/supabase";
-import type { Session, AuthChangeEvent, Subscription } from "@supabase/supabase-js";
+import type {
+  Session,
+  AuthChangeEvent,
+  Subscription,
+} from "@supabase/supabase-js";
 
 type NavItem = { label: string; href: string };
 
@@ -87,7 +91,7 @@ function MobileMenu({
           onClick={onClose}
           className={clsx(
             "block px-3 py-2 rounded-lg text-sm font-semibold",
-            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted"
+            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted",
           )}
         >
           صفحه اصلی
@@ -118,7 +122,7 @@ function MobileMenu({
             onClick={onClose}
             className={clsx(
               "block px-3 py-2 rounded-lg text-sm font-semibold",
-              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted"
+              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted",
             )}
           >
             {i.label}
@@ -173,7 +177,7 @@ function MobileMenu({
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 
@@ -196,7 +200,7 @@ export default function Navbar() {
     const { data: sub } = supabase.auth.onAuthStateChange(
       (_e: AuthChangeEvent, session: Session | null) => {
         setIsLoggedIn(!!session);
-      }
+      },
     );
 
     unsub = sub?.subscription;
@@ -223,7 +227,9 @@ export default function Navbar() {
             {/* Logo (right) */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-              <span className="text-xl font-extrabold text-primary">گل‌فروش</span>
+              <span className="text-xl font-extrabold text-primary">
+                گل‌فروش
+              </span>
             </Link>
 
             {/* Desktop nav */}
@@ -232,7 +238,7 @@ export default function Navbar() {
                 href="/"
                 className={clsx(
                   "text-sm font-semibold hover:text-primary transition-colors",
-                  isActive("/") ? "text-primary" : "text-text"
+                  isActive("/") ? "text-primary" : "text-text",
                 )}
               >
                 صفحه اصلی
@@ -277,7 +283,7 @@ export default function Navbar() {
                   href={item.href}
                   className={clsx(
                     "text-sm font-semibold hover:text-primary transition-colors",
-                    isActive(item.href) ? "text-primary" : "text-text"
+                    isActive(item.href) ? "text-primary" : "text-text",
                   )}
                 >
                   {item.label}
@@ -321,7 +327,10 @@ export default function Navbar() {
                 </Link>
               ) : (
                 <div className="relative group">
-                  <button className="p-2 rounded-full hover:bg-muted" aria-label="حساب">
+                  <button
+                    className="p-2 rounded-full hover:bg-muted"
+                    aria-label="حساب"
+                  >
                     <User className="w-5 h-5" />
                   </button>
                   <div

@@ -7,7 +7,11 @@ import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createSupabaseClient();

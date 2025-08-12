@@ -17,10 +17,10 @@ import Link from "next/link";
 import Button from "../ui/Button";
 
 const UserNavbar = () => {
- const supabase = createSupabaseClient();
+  const supabase = createSupabaseClient();
   const router = useRouter();
 
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/auth/login");
   };
@@ -71,15 +71,14 @@ const UserNavbar = () => {
             <User className="w-4 h-4" />
             اطلاعات حساب
           </a>
-         
-          <Button
-          variant="ghost"
-      onClick={handleLogout}
-      icon={<LogOut className="w-4 h-4 "/>}
 
-    >
-     خروج از حساب  
-    </Button>
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            icon={<LogOut className="w-4 h-4 " />}
+          >
+            خروج از حساب
+          </Button>
         </nav>
       </aside>
 
@@ -177,15 +176,14 @@ const UserNavbar = () => {
             <User className="w-4 h-4" />
             اطلاعات حساب
           </a>
-         
-  <Button
 
-          variant="ghost"
-      onClick={handleLogout}
-      icon={<LogOut className="w-4 h-4 flex items-center gap-2"/>}
-    >
-     خروج از حساب  
-    </Button>
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            icon={<LogOut className="w-4 h-4 flex items-center gap-2" />}
+          >
+            خروج از حساب
+          </Button>
         </nav>
       </aside>
     </>
