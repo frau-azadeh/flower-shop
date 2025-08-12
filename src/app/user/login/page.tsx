@@ -5,13 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "@/schemas/auth.schema";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseClient } from '@/lib/supabase'
 import { Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { showSuccess, showError } from "@/lib/toast";
 
 export default function LoginPage() {
+    const supabase = createSupabaseClient()
   const {
     register,
     handleSubmit,

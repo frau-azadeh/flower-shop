@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, type SignupSchema } from "@/schemas/auth.schema";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseClient } from '@/lib/supabase'
 import { Lock, UserRound, Phone, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import { showSuccess, showError } from "@/lib/toast";
 import PasswordStrengthMeter from "@/app/components/ui/PasswordStrengthMeter";
 
 export default function SignupPage() {
+  const supabase = createSupabaseClient()
   const {
     register,
     handleSubmit,
