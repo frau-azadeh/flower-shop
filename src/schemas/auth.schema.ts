@@ -1,11 +1,10 @@
 import { z } from "zod";
 
 const persianRegex = /^[\u0600-\u06FF\s]+$/;
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
 
 export const loginSchema = z.object({
-email: z.string().email({ message: "ایمیل معتبر نیست" }),
+  email: z.string().email({ message: "ایمیل معتبر نیست" }),
   password: z
     .string()
     .min(6, { message: "رمز عبور باید حداقل ۶ کاراکتر باشد" })

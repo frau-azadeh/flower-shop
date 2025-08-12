@@ -34,7 +34,7 @@ export default function LoginPage() {
     } else {
       showSuccess("ورود موفقیت‌آمیز بود!");
       router.push("/user/dashboard");
-    }    
+    }
   };
 
   return (
