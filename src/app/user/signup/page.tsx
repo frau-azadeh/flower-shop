@@ -13,10 +13,8 @@ import { showSuccess, showError } from "@/lib/toast";
 import PasswordStrengthMeter from "@/app/components/ui/PasswordStrengthMeter";
 import React from "react";
 
-
-
 export default function SignupPage() {
-  const supabase = React.useMemo(() => createSupabaseClient(), [])
+  const supabase = React.useMemo(() => createSupabaseClient(), []);
 
   const {
     register,
