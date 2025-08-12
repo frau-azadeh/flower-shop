@@ -18,7 +18,7 @@ const MobileNavBar: React.FC = () => {
         <ShoppingBag size={24} />
       </a>
 
-      <a href="" className="flex flex-col items-center text-white">
+      <a href="/user/dashboard" className="flex flex-col items-center text-white">
         <User2Icon size={24} />
       </a>
     </div>

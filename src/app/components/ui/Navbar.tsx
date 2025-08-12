@@ -1,13 +1,25 @@
 "use client";
 
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { Menu, X, Search, Heart, ShoppingBag, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Menu,
+  X,
+  Search,
+  Heart,
+  ShoppingBag,
+  ChevronDown,
+  User,
+  LogOut,
+} from "lucide-react";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
-import Button from "./Button";
+
+import Button from "./Button"; // مسیر دکمه خودت
+import { createSupabaseClient } from "@/lib/supabase";
+import type { Session, AuthChangeEvent, Subscription } from "@supabase/supabase-js";
 
 type NavItem = { label: string; href: string };
 
@@ -31,13 +43,16 @@ function MobileMenu({
   open,
   onClose,
   isActive,
+  isLoggedIn,
+  onSignOut,
 }: {
   open: boolean;
   onClose: () => void;
   isActive: (href: string) => boolean;
+  isLoggedIn: boolean;
+  onSignOut: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => setMounted(true), []);
 
   // قفل اسکرول بدنه هنگام باز بودن منو
@@ -72,7 +87,7 @@ function MobileMenu({
           onClick={onClose}
           className={clsx(
             "block px-3 py-2 rounded-lg text-sm font-semibold",
-            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted",
+            isActive("/") ? "text-primary bg-muted" : "hover:bg-muted"
           )}
         >
           صفحه اصلی
@@ -103,14 +118,14 @@ function MobileMenu({
             onClick={onClose}
             className={clsx(
               "block px-3 py-2 rounded-lg text-sm font-semibold",
-              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted",
+              isActive(i.href) ? "text-primary bg-muted" : "hover:bg-muted"
             )}
           >
             {i.label}
           </Link>
         ))}
 
-        <div className="mt-4 border-t border-border pt-3">
+        <div className="mt-4 border-t border-border pt-3 space-y-2">
           <Link
             href="/cart"
             onClick={onClose}
@@ -122,17 +137,81 @@ function MobileMenu({
               <span className="h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
           </Link>
+
+          {/* حساب کاربری در موبایل */}
+          {!isLoggedIn ? (
+            <Link
+              href="/auth/login"
+              onClick={onClose}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-muted"
+            >
+              <span className="font-semibold">ورود / ثبت‌نام</span>
+              <User className="w-4 h-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/user/dashboard"
+                onClick={onClose}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-muted"
+              >
+                <span className="font-semibold">پنل من</span>
+                <User className="w-4 h-4" />
+              </Link>
+              <button
+                onClick={() => {
+                  onSignOut();
+                  onClose();
+                }}
+                className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-muted"
+              >
+                <span className="font-semibold">خروج</span>
+                <LogOut className="w-4 h-4" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>,
-    document.body,
+    document.body
   );
 }
 
 /* ---------- Navbar ---------- */
 export default function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  const supabase = useMemo(() => createSupabaseClient(), []);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // وضعیت سشن را بگیر و گوش بده
+  useEffect(() => {
+    let unsub: Subscription | undefined;
+
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange(
+      (_e: AuthChangeEvent, session: Session | null) => {
+        setIsLoggedIn(!!session);
+      }
+    );
+
+    unsub = sub?.subscription;
+
+    return () => {
+      unsub?.unsubscribe();
+    };
+  }, [supabase]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
+
+  const [open, setOpen] = useState<boolean>(false);
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
@@ -144,9 +223,7 @@ export default function Navbar() {
             {/* Logo (right) */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-              <span className="text-xl font-extrabold text-primary">
-                گل‌فروش
-              </span>
+              <span className="text-xl font-extrabold text-primary">گل‌فروش</span>
             </Link>
 
             {/* Desktop nav */}
@@ -155,14 +232,13 @@ export default function Navbar() {
                 href="/"
                 className={clsx(
                   "text-sm font-semibold hover:text-primary transition-colors",
-                  isActive("/") ? "text-primary" : "text-text",
+                  isActive("/") ? "text-primary" : "text-text"
                 )}
               >
                 صفحه اصلی
               </Link>
 
-              {/* Products + dropdown w/o jump */}
-              {/* Products + dropdown (only on hover) */}
+              {/* Products dropdown */}
               <div className="relative group/menu">
                 <Button
                   variant="ghost"
@@ -173,14 +249,13 @@ export default function Navbar() {
                   <ChevronDown className="w-4 h-4" />
                 </Button>
 
-                {/* wrapper: hidden by default; opens only on group-hover */}
                 <div
                   className="
-      absolute right-0 top-full z-50 pt-2
-      opacity-0 invisible pointer-events-none translate-y-2
-      transition duration-150
-      group-hover/menu:opacity-100 group-hover/menu:visible group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0
-    "
+                    absolute right-0 top-full z-50 pt-2
+                    opacity-0 invisible pointer-events-none translate-y-2
+                    transition duration-150
+                    group-hover/menu:opacity-100 group-hover/menu:visible group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0
+                  "
                 >
                   <div className="w-56 rounded-xl border border-border bg-surface shadow-lg p-2">
                     {CATEGORIES.map((c) => (
@@ -202,7 +277,7 @@ export default function Navbar() {
                   href={item.href}
                   className={clsx(
                     "text-sm font-semibold hover:text-primary transition-colors",
-                    isActive(item.href) ? "text-primary" : "text-text",
+                    isActive(item.href) ? "text-primary" : "text-text"
                   )}
                 >
                   {item.label}
@@ -211,13 +286,13 @@ export default function Navbar() {
             </nav>
 
             {/* Actions (left) */}
-            <div className="ms-auto  items-center gap-3 hidden lg:flex">
+            <div className="ms-auto items-center gap-3 hidden lg:flex">
               <Button
                 variant="ghost"
-                className=" p-2 rounded-full hover:bg-muted"
+                className="p-2 rounded-full hover:bg-muted"
                 aria-label="جستجو"
               >
-                <Search className="w-5 h-5 " />
+                <Search className="w-5 h-5" />
               </Button>
               <Link
                 href="/wishlist"
@@ -234,11 +309,50 @@ export default function Navbar() {
                 <ShoppingBag className="w-5 h-5" />
                 <span className="absolute -top-0.5 -left-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface" />
               </Link>
+
+              {/* ورود / حساب + خروج */}
+              {!isLoggedIn ? (
+                <Link
+                  href="/auth/login"
+                  className="p-2 rounded-full hover:bg-muted"
+                  aria-label="ورود"
+                >
+                  <User className="w-5 h-5" />
+                </Link>
+              ) : (
+                <div className="relative group">
+                  <button className="p-2 rounded-full hover:bg-muted" aria-label="حساب">
+                    <User className="w-5 h-5" />
+                  </button>
+                  <div
+                    className="
+                      absolute left-0 top-full mt-2 w-40 rounded-xl border border-border bg-surface shadow-lg p-2
+                      invisible opacity-0 translate-y-1 transition
+                      group-hover:visible group-hover:opacity-100 group-hover:translate-y-0
+                    "
+                  >
+                    <Link
+                      href="/user/dashboard"
+                      className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
+                    >
+                      پنل من
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-right rounded-lg px-3 py-2 text-sm hover:bg-muted flex items-center justify-between"
+                    >
+                      خروج
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-            {/* Hamburger */}
-            <div className="ms-auto  items-center gap-3">
+
+            {/* Hamburger (mobile) */}
+            <div className="ms-auto items-center gap-3 lg:hidden">
               <Button
-                className="lg:hidden p-2 rounded-full hover:bg-muted "
+                className="p-2 rounded-full hover:bg-muted"
                 onClick={() => setOpen(true)}
                 aria-label="باز کردن منو"
               >
@@ -249,11 +363,13 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu (portal; covers full screen; locks scroll) */}
+      {/* Mobile Menu */}
       <MobileMenu
         open={open}
         onClose={() => setOpen(false)}
         isActive={isActive}
+        isLoggedIn={isLoggedIn}
+        onSignOut={handleSignOut}
       />
     </>
   );
