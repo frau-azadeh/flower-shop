@@ -1,5 +1,6 @@
 "use client";
-
+import { createSupabaseClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Bell,
@@ -13,8 +14,16 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import Button from "../ui/Button";
 
 const UserNavbar = () => {
+  const supabase = createSupabaseClient();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
   const [open, setOpen] = useState(false);
 
   const item =
@@ -62,10 +71,14 @@ const UserNavbar = () => {
             <User className="w-4 h-4" />
             اطلاعات حساب
           </a>
-          <a href="/user/logout" className={`${item} flex items-center gap-2`}>
-            <LogOut className="w-4 h-4" />
+
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            icon={<LogOut className="w-4 h-4 " />}
+          >
             خروج از حساب
-          </a>
+          </Button>
         </nav>
       </aside>
 
@@ -163,14 +176,14 @@ const UserNavbar = () => {
             <User className="w-4 h-4" />
             اطلاعات حساب
           </a>
-          <a
-            href="/user/logout"
-            className={`${item} flex items-center gap-2`}
-            onClick={() => setOpen(false)}
+
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            icon={<LogOut className="w-4 h-4 flex items-center gap-2" />}
           >
-            <LogOut className="w-4 h-4" />
             خروج از حساب
-          </a>
+          </Button>
         </nav>
       </aside>
     </>

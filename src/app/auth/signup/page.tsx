@@ -5,14 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, type SignupSchema } from "@/schemas/auth.schema";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
-import { supabase } from "@/lib/supabase";
-import { Lock, UserRound, Phone, Mail } from "lucide-react";
+import { createSupabaseClient } from "@/lib/supabase";
+import { UserRound, Phone, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { showSuccess, showError } from "@/lib/toast";
 import PasswordStrengthMeter from "@/app/components/ui/PasswordStrengthMeter";
+import React from "react";
 
 export default function SignupPage() {
+  const supabase = React.useMemo(() => createSupabaseClient(), []);
+
   const {
     register,
     handleSubmit,
@@ -50,7 +53,7 @@ export default function SignupPage() {
         if (profileError) throw new Error(profileError.message);
 
         showSuccess("ثبت‌نام موفقیت‌آمیز بود! لطفاً وارد شوید.");
-        router.push("/login");
+        router.push("/auth/login");
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -62,7 +65,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm space-y-4"
@@ -95,7 +98,6 @@ export default function SignupPage() {
         <Input
           label="رمز عبور"
           type="password"
-          icon={<Lock size={18} />}
           togglePassword
           {...register("password")}
           error={errors.password?.message}
@@ -107,19 +109,18 @@ export default function SignupPage() {
           label="تکرار رمز عبور"
           type="password"
           togglePassword
-          icon={<Lock size={18} />}
           {...register("confirmPassword")}
           error={errors.confirmPassword?.message}
         />
 
-        <Button type="submit" loading={isSubmitting}>
+        <Button type="submit" loading={isSubmitting} className="w-full">
           ثبت‌نام
         </Button>
 
         <p className="text-sm text-center text-gray-600">
           قبلاً ثبت‌نام کرده‌اید؟{" "}
           <Link
-            href="/user/login"
+            href="/auth/login"
             className="text-blue-600 hover:underline font-medium"
           >
             وارد شوید

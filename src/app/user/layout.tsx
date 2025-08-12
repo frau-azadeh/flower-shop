@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createSupabaseClient } from "@/lib/supabase";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
@@ -7,6 +12,22 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [loading, setLoading] = useState(true);
+  const supabase = createSupabaseClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push("/auth/login");
+      } else {
+        setLoading(false);
+      }
+    });
+  }, [router, supabase.auth]);
+
+  if (loading) return null; // یا یک لودر بگذار
+
   return (
     <div className="bg-background">
       <div className="min-h-screen grid grid-cols-1 md:grid-cols-[240px_1fr]">
