@@ -15,9 +15,11 @@ export default function SiteChrome({
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const isUser = pathname.startsWith("/user");
+  const isAuth = pathname.startsWith("/auth")
 
   // ادمین: کاملاً بدون هدر/فوتر
   if (isAdmin) return <>{children}</>;
+  if(isAuth) return<>{children}</>
 
   // سایر مسیرها (از جمله /user): Navbar عمومی نمایش داده شود
   return (
