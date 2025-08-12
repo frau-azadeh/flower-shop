@@ -1,7 +1,8 @@
 "use client";
-import Link from "next/link";
+
 import { usePathname, useSearchParams } from "next/navigation";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
+import Link from "next/link";
 
 export type TabItem = {
   key: string;
@@ -10,23 +11,23 @@ export type TabItem = {
   header?: ReactNode;
   emptyIcon?: ReactNode;
   emptyText?: string;
-  badgeCount?: number; // 👈 شمارش کنار تب
+  badgeCount?: number;
 };
 
 interface TabsProps {
   tabs: TabItem[];
-  paramName?: string; // پیش‌فرض activeTab
+  paramsName?: string;
 }
 
-export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
+const Tabs: React.FC<TabsProps> = ({ tabs, paramsName = "status" }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const current = searchParams.get(paramName) || tabs[0].key;
+  const current = searchParams.get(paramsName) || tabs[0].key;
 
   const makeHref = (key: string) => {
     const sp = new URLSearchParams(searchParams.toString());
-    sp.set(paramName, key);
+    sp.set(paramsName, key);
     return `${pathname}?${sp.toString()}`;
   };
 
@@ -81,4 +82,6 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
       </div>
     </section>
   );
-}
+};
+
+export default Tabs;
