@@ -1,7 +1,8 @@
-"use client";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ReactNode } from "react";
+"use client"
+
+import { usePathname, useSearchParams } from 'next/navigation';
+import React, { ReactNode } from 'react'
+import Link from 'next/link';
 
 export type TabItem = {
   key: string;
@@ -10,30 +11,33 @@ export type TabItem = {
   header?: ReactNode;
   emptyIcon?: ReactNode;
   emptyText?: string;
-  badgeCount?: number; // 👈 شمارش کنار تب
-};
-
-interface TabsProps {
-  tabs: TabItem[];
-  paramName?: string; // پیش‌فرض activeTab
+  badgeCount?: number;
 }
 
-export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
+interface TabsProps{
+  tabs: TabItem[];
+  paramsName?: string;
+}
+
+const Tabs:React.FC<TabsProps> = ({
+  tabs,
+  paramsName="status"
+}) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const current = searchParams.get(paramName) || tabs[0].key;
+  const current = searchParams.get(paramsName) || tabs[0].key;
 
-  const makeHref = (key: string) => {
+  const makeHref = (key: string) =>{
     const sp = new URLSearchParams(searchParams.toString());
-    sp.set(paramName, key);
-    return `${pathname}?${sp.toString()}`;
-  };
+    sp.set(paramsName, key);
+    return `${pathname}?${sp.toString()}`
+  }
 
-  const activeTab = tabs.find((t) => t.key === current) || tabs[0];
+  const activeTab = tabs.find((t)=>t.key === current)|| tabs[0];
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
       {/* ناوبری تب‌ها */}
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
         {tabs.map((t) => {
@@ -80,5 +84,7 @@ export default function Tabs({ tabs, paramName = "activeTab" }: TabsProps) {
         </p>
       </div>
     </section>
-  );
+  )
 }
+
+export default Tabs
