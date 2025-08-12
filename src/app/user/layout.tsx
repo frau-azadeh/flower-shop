@@ -13,8 +13,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const supabase = createSupabaseClient();
+  const router = useRouter();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,7 +24,7 @@ export default function AdminLayout({
         setLoading(false);
       }
     });
-  }, []);
+  }, [router, supabase.auth]);
 
   if (loading) return null; // یا یک لودر بگذار
 
