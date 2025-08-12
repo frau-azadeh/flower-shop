@@ -84,7 +84,7 @@ const OrdersCard: React.FC = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-500" />
           </label>
         </div>
-        <Tabs tabs={orderTabs} paramName="status" />
+        <Tabs tabs={orderTabs} paramsName="status" />
       </div>
     </section>
   );
