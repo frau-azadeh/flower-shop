@@ -1,16 +1,21 @@
+"use client";
+
 import "./globals.css";
 import "../styles/fonts.css";
 import SiteChrome from "./SiteChrome";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import { Provider } from "react-redux";
+import { store } from "@/store/store";
+import AuthBootstrap from "./AuthBootstrap";
+
+export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html dir="rtl" lang="fa">
       <body>
-        <SiteChrome>{children}</SiteChrome>
+        <Provider store={store}>
+          <AuthBootstrap />
+          <SiteChrome>{children}</SiteChrome>
+        </Provider>
       </body>
     </html>
   );
