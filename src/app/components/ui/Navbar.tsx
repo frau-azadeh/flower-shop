@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,8 +17,9 @@ import {
 import { createPortal } from "react-dom";
 import clsx from "clsx";
 
-import Button from "./Button"; // مسیر دکمه خودت
+import Button from "./Button";
 import { createSupabaseClient } from "@/lib/supabase";
+import { useAppSelector } from "@/store/hooks";
 
 type NavItem = { label: string; href: string };
 
@@ -43,18 +44,19 @@ function MobileMenu({
   onClose,
   isActive,
   isLoggedIn,
+  fullName,
   onSignOut,
 }: {
   open: boolean;
   onClose: () => void;
   isActive: (href: string) => boolean;
   isLoggedIn: boolean;
+  fullName: string | null;
   onSignOut: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // قفل اسکرول بدنه هنگام باز بودن منو
   useEffect(() => {
     if (!mounted) return;
     document.body.style.overflow = open ? "hidden" : "";
@@ -149,13 +151,16 @@ function MobileMenu({
             </Link>
           ) : (
             <>
+              <div className="flex items-center justify-between rounded-lg px-3 py-2 text-sm">
+                <span className="font-semibold">{fullName ?? "کاربر"}</span>
+                <User className="w-4 h-4" />
+              </div>
               <Link
                 href="/user/dashboard"
                 onClick={onClose}
                 className="flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-muted"
               >
                 <span className="font-semibold">پنل من</span>
-                <User className="w-4 h-4" />
               </Link>
               <button
                 onClick={() => {
@@ -181,28 +186,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const supabase = useMemo(() => createSupabaseClient(), []);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  // نام و وضعیت ورود را مستقیم از Redux بگیر
+  const fullName = useAppSelector((s) => s.user.profile?.fullName ?? null);
+  const isLoggedIn = useAppSelector((s) => Boolean(s.user.profile));
 
-  // وضعیت سشن را بگیر و گوش بده
-  useEffect(() => {
-    // وضعیت اولیه
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsLoggedIn(!!session);
-    });
-
-    // گوش‌دادن به تغییرات احراز هویت
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session);
-    });
-
-    // cleanup
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
+  const supabase = createSupabaseClient();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -324,16 +312,20 @@ export default function Navbar() {
                   <button
                     className="p-2 rounded-full hover:bg-muted"
                     aria-label="حساب"
+                    title={fullName ?? "کاربر"}
                   >
                     <User className="w-5 h-5" />
                   </button>
                   <div
                     className="
-                      absolute left-0 top-full mt-2 w-40 rounded-xl border border-border bg-surface shadow-lg p-2
+                      absolute left-0 top-full mt-2 w-48 rounded-xl border border-border bg-surface shadow-lg p-2
                       invisible opacity-0 translate-y-1 transition
                       group-hover:visible group-hover:opacity-100 group-hover:translate-y-0
                     "
                   >
+                    <div className="px-3 py-2 text-xs text-muted-foreground">
+                      {fullName ?? "کاربر"}
+                    </div>
                     <Link
                       href="/user/dashboard"
                       className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
@@ -372,6 +364,7 @@ export default function Navbar() {
         onClose={() => setOpen(false)}
         isActive={isActive}
         isLoggedIn={isLoggedIn}
+        fullName={fullName}
         onSignOut={handleSignOut}
       />
     </>
