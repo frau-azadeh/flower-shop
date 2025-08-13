@@ -32,7 +32,7 @@ const UserNavbar = () => {
   return (
     <>
       {/* سایدبار دسکتاپ */}
-      <aside className="hidden md:block border-l border-border bg-surface p-4 sticky top-0 h-screen w-[240px] ">
+      <aside className="hidden lg:block border-l border-border bg-surface p-4 sticky top-0 h-screen w-[300px] ">
         <div className="text-lg font-extrabold text-primary mb-3">
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <span className="text-xl font-extrabold text-primary">
@@ -83,7 +83,7 @@ const UserNavbar = () => {
       </aside>
 
       {/* هدر موبایل/تبلت */}
-      <header className="md:hidden sticky top-0 z-40 h-12 bg-surface border-b border-border px-3 flex items-center justify-between">
+      <header className="lg:hidden sticky top-0 z-40 h-12 bg-surface border-b border-border px-3 flex items-center justify-between">
         <button
           onClick={() => setOpen(true)}
           className="p-2 rounded-lg hover:bg-muted"
@@ -110,7 +110,7 @@ const UserNavbar = () => {
 
       {/* منوی کشویی موبایل/تبلت (از راست در RTL) */}
       <aside
-        className={`fixed md:hidden z-50 inset-y-0 right-0 w-72 max-w-[85vw]
+        className={`fixed lg:hidden z-50 inset-y-0 right-0 w-72 max-w-[85vw]
         bg-surface border-l border-border p-4 transition-transform
         ${open ? "translate-x-0" : "translate-x-full"}`}
         aria-hidden={!open}

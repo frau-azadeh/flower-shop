@@ -30,7 +30,7 @@ export default function AdminLayout({
 
   return (
     <div className="bg-background">
-      <div className="min-h-screen grid grid-cols-1 md:grid-cols-[240px_1fr]">
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
         <UserNavbar />
         <main className="p-4 md:p-6">{children}</main>
       </div>
