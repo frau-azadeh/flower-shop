@@ -1,9 +1,11 @@
+import RequireAuth from "@/app/components/admin/RequireAuth";
 import UserAccessCard from "@/app/components/admin/UsersAccessCard";
-
-export default function AddUsers() {
+export default function Page() {
   return (
-    <div>
-      <UserAccessCard />
-    </div>
+    <RequireAuth allow={["FULL"]}>
+      
+     <UserAccessCard />
+    
+    </RequireAuth>
   );
 }
