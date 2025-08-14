@@ -188,7 +188,9 @@ export default function UserAccessCard() {
                           onClick={async () => {
                             if (confirm("حذف این کاربر؟")) {
                               await deleteUser(u.id);
-                              setItems((prev) => prev.filter((x) => x.id !== u.id));
+                              setItems((prev) =>
+                                prev.filter((x) => x.id !== u.id),
+                              );
                             }
                           }}
                           title="حذف"
@@ -233,7 +235,9 @@ export default function UserAccessCard() {
                         onClick={async () => {
                           if (confirm("حذف این کاربر؟")) {
                             await deleteUser(u.id);
-                            setItems((prev) => prev.filter((x) => x.id !== u.id));
+                            setItems((prev) =>
+                              prev.filter((x) => x.id !== u.id),
+                            );
                           }
                         }}
                       >
@@ -390,7 +394,9 @@ function NewUserModal({
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-slate-700">
             <ShieldCheck className="size-5 text-accent" />
-            <h3 className="font-semibold">{isEdit ? "ویرایش کاربر" : "افزودن کاربر"}</h3>
+            <h3 className="font-semibold">
+              {isEdit ? "ویرایش کاربر" : "افزودن کاربر"}
+            </h3>
           </div>
           <button
             onClick={onClose}

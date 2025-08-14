@@ -29,7 +29,7 @@ const adminSlice = createSlice({
         firstName: string;
         lastName: string;
         role: AdminRole;
-      }>
+      }>,
     ) {
       const { id, firstName, lastName, role } = action.payload;
       return { id, firstName, lastName, role, isAuthenticated: true };

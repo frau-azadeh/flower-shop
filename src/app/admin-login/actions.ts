@@ -1,11 +1,22 @@
 "use server";
 
-import {createSupabaseClient}from "@/lib/supabase";
+import { createSupabaseClient } from "@/lib/supabase";
 import bcrypt from "bcryptjs";
-import { adminLoginSchema, type AdminLoginSchema } from "@/schemas/admin-auth.schema";
+import {
+  adminLoginSchema,
+  type AdminLoginSchema,
+} from "@/schemas/admin-auth.schema";
 
 export type LoginResult =
-  | { ok: true; user: { id: string; firstName: string; lastName: string; role: "BLOG" | "PRODUCTS" | "FULL" } }
+  | {
+      ok: true;
+      user: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        role: "BLOG" | "PRODUCTS" | "FULL";
+      };
+    }
   | { ok: false; message: string };
 
 export async function loginAdmin(data: AdminLoginSchema): Promise<LoginResult> {

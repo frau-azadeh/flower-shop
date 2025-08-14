@@ -7,8 +7,8 @@ import type { RootState } from "@/store/store";
 
 export default function DashboardPage() {
   return (
-    <RequireAuth allow={["FULL","BLOG","PRODUCTS"]}>
-        <DashboardContent />
+    <RequireAuth allow={["FULL", "BLOG", "PRODUCTS"]}>
+      <DashboardContent />
     </RequireAuth>
   );
 }
@@ -19,7 +19,9 @@ function DashboardContent() {
     return (
       <div className="space-y-3">
         <h1 className="text-xl font-bold">داشبورد وبلاگ</h1>
-        <p className="text-sm text-slate-600">می‌توانید پست‌هایتان را مدیریت کنید.</p>
+        <p className="text-sm text-slate-600">
+          می‌توانید پست‌هایتان را مدیریت کنید.
+        </p>
       </div>
     );
   }
@@ -27,7 +29,9 @@ function DashboardContent() {
     return (
       <div className="space-y-3">
         <h1 className="text-xl font-bold">داشبورد محصولات</h1>
-        <p className="text-sm text-slate-600">مدیریت محصولات و سفارش‌ها از اینجا.</p>
+        <p className="text-sm text-slate-600">
+          مدیریت محصولات و سفارش‌ها از اینجا.
+        </p>
       </div>
     );
   }

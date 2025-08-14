@@ -3,9 +3,7 @@ import UserAccessCard from "@/app/components/admin/UsersAccessCard";
 export default function Page() {
   return (
     <RequireAuth allow={["FULL"]}>
-      
-     <UserAccessCard />
-    
+      <UserAccessCard />
     </RequireAuth>
   );
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import {createSupabaseClient  } from "@/lib/supabase";
+import { createSupabaseClient } from "@/lib/supabase";
 import type { AdminUser, AdminRole } from "@/types/admin";
 
 function rowToUser(r: Record<string, unknown>): AdminUser {
@@ -16,7 +16,7 @@ function rowToUser(r: Record<string, unknown>): AdminUser {
 }
 
 export async function listUsers(q: string): Promise<AdminUser[]> {
-  const sb = createSupabaseClient ();
+  const sb = createSupabaseClient();
 
   let query = sb
     .from("admin_users")
@@ -37,7 +37,7 @@ export async function createUser(input: {
   role: AdminRole;
   isActive: boolean;
 }): Promise<AdminUser> {
-  const sb = createSupabaseClient ();
+  const sb = createSupabaseClient();
   const passwordHash = await bcrypt.hash(input.password, 10);
 
   const { data } = await sb
@@ -55,14 +55,17 @@ export async function createUser(input: {
   return rowToUser(data as Record<string, unknown>);
 }
 
-export async function updateUser(id: string, patch: {
-  firstName: string;
-  lastName: string;
-  role: AdminRole;
-  isActive: boolean;
-  password?: string; // اختیاری
-}): Promise<AdminUser> {
-  const sb = createSupabaseClient ();
+export async function updateUser(
+  id: string,
+  patch: {
+    firstName: string;
+    lastName: string;
+    role: AdminRole;
+    isActive: boolean;
+    password?: string; // اختیاری
+  },
+): Promise<AdminUser> {
+  const sb = createSupabaseClient();
 
   const updateObj: Record<string, unknown> = {
     firstName: patch.firstName,
@@ -85,6 +88,6 @@ export async function updateUser(id: string, patch: {
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  const sb = createSupabaseClient ();
+  const sb = createSupabaseClient();
   await sb.from("admin_users").delete().eq("id", id);
 }

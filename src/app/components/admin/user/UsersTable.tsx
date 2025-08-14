@@ -14,7 +14,8 @@ export default function UsersTable({
   onEdit: (u: AdminUser) => void;
   onDelete: (id: string) => void;
 }) {
-  if (loading) return <div className="py-10 text-center text-sm">در حال بارگذاری…</div>;
+  if (loading)
+    return <div className="py-10 text-center text-sm">در حال بارگذاری…</div>;
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center py-12 text-slate-600">
@@ -36,17 +37,33 @@ export default function UsersTable({
           </tr>
         </thead>
         <tbody className="divide-y">
-          {items.map(u => (
+          {items.map((u) => (
             <tr key={u.id}>
-              <td className="py-2">{u.firstName} {u.lastName}</td>
-              <td className="py-2">{u.role === "FULL" ? "کامل" : u.role === "BLOG" ? "وبلاگ" : "محصولات"}</td>
+              <td className="py-2">
+                {u.firstName} {u.lastName}
+              </td>
+              <td className="py-2">
+                {u.role === "FULL"
+                  ? "کامل"
+                  : u.role === "BLOG"
+                    ? "وبلاگ"
+                    : "محصولات"}
+              </td>
               <td className="py-2">{u.isActive ? "فعال" : "غیرفعال"}</td>
               <td className="py-2">
                 <div className="flex justify-center gap-2">
-                  <button className="rounded border px-2 py-1" onClick={() => onEdit(u)} title="ویرایش">
+                  <button
+                    className="rounded border px-2 py-1"
+                    onClick={() => onEdit(u)}
+                    title="ویرایش"
+                  >
                     <Pencil className="size-4" />
                   </button>
-                  <button className="rounded border px-2 py-1 text-red-600" onClick={() => onDelete(u.id)} title="حذف">
+                  <button
+                    className="rounded border px-2 py-1 text-red-600"
+                    onClick={() => onDelete(u.id)}
+                    title="حذف"
+                  >
                     <Trash2 className="size-4" />
                   </button>
                 </div>

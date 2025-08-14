@@ -2,14 +2,15 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminLoginSchema, type AdminLoginSchema } from "@/schemas/admin-auth.schema";
+import {
+  adminLoginSchema,
+  type AdminLoginSchema,
+} from "@/schemas/admin-auth.schema";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/store/admin/adminSlice";
 import { loginAdmin } from "./actions";
 import { homePathByRole } from "@/lib/adminRoutes";
-
-
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -36,9 +37,9 @@ export default function AdminLoginPage() {
         firstName: res.user.firstName,
         lastName: res.user.lastName,
         role: res.user.role,
-      })
+      }),
     );
-router.push(homePathByRole(res.user.role));
+    router.push(homePathByRole(res.user.role));
   };
 
   return (

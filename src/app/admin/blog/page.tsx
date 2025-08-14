@@ -8,7 +8,3 @@ export default function Page() {
     </RequireAuth>
   );
 }
-
-
-
-

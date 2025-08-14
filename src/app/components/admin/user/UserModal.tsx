@@ -29,10 +29,10 @@ export default function UserModal({
   onSubmit: (values: SubmitCreate | SubmitUpdate) => Promise<void>;
 }) {
   const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName]   = useState<string>("");
-  const [role, setRole]           = useState<AdminRole>("FULL");
-  const [isActive, setIsActive]   = useState<boolean>(true);
-  const [password, setPassword]   = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [role, setRole] = useState<AdminRole>("FULL");
+  const [isActive, setIsActive] = useState<boolean>(true);
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     if (initial) {
@@ -47,7 +47,13 @@ export default function UserModal({
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (initial) {
-      await onSubmit({ firstName, lastName, role, isActive, password: password || undefined });
+      await onSubmit({
+        firstName,
+        lastName,
+        role,
+        isActive,
+        password: password || undefined,
+      });
     } else {
       await onSubmit({ firstName, lastName, role, isActive, password });
     }
@@ -57,8 +63,12 @@ export default function UserModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3">
       <div className="w-full max-w-lg rounded-xl bg-white p-4">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-semibold">{initial ? "ویرایش کاربر" : "افزودن کاربر"}</h3>
-          <button onClick={onClose} className="rounded px-2 py-1 border">x</button>
+          <h3 className="font-semibold">
+            {initial ? "ویرایش کاربر" : "افزودن کاربر"}
+          </h3>
+          <button onClick={onClose} className="rounded px-2 py-1 border">
+            x
+          </button>
         </div>
 
         <form className="space-y-3" onSubmit={handleSubmit}>
@@ -100,14 +110,27 @@ export default function UserModal({
             </select>
 
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />
               <span className="text-sm">فعال</span>
             </label>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="rounded border px-3 py-2 text-sm">انصراف</button>
-            <button type="submit" className="rounded bg-blue-600 px-3 py-2 text-sm text-white">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded border px-3 py-2 text-sm"
+            >
+              انصراف
+            </button>
+            <button
+              type="submit"
+              className="rounded bg-blue-600 px-3 py-2 text-sm text-white"
+            >
               ذخیره
             </button>
           </div>

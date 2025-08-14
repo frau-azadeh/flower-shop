@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listUsers, createUser, updateUser, deleteUser } from "@/app/admin/users/actions";
+import {
+  listUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "@/app/admin/users/actions";
 import type { AdminUser, AdminRole } from "@/types/admin";
 import UsersTable from "./UsersTable";
 import UserModal from "./UserModal";
@@ -20,26 +25,42 @@ export default function UsersPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
-  useEffect(() => { const t = setTimeout(load, 300); return () => clearTimeout(t); }, [q]);
+  useEffect(() => {
+    load();
+  }, []);
+  useEffect(() => {
+    const t = setTimeout(load, 300);
+    return () => clearTimeout(t);
+  }, [q]);
 
   async function onCreate(data: {
-    firstName: string; lastName: string; password: string; role: AdminRole; isActive: boolean;
+    firstName: string;
+    lastName: string;
+    password: string;
+    role: AdminRole;
+    isActive: boolean;
   }) {
     const saved = await createUser(data);
-    setItems(prev => [saved, ...prev]);
+    setItems((prev) => [saved, ...prev]);
   }
 
-  async function onUpdate(id: string, data: {
-    firstName: string; lastName: string; role: AdminRole; isActive: boolean; password?: string;
-  }) {
+  async function onUpdate(
+    id: string,
+    data: {
+      firstName: string;
+      lastName: string;
+      role: AdminRole;
+      isActive: boolean;
+      password?: string;
+    },
+  ) {
     const saved = await updateUser(id, data);
-    setItems(prev => prev.map(x => x.id === id ? saved : x));
+    setItems((prev) => prev.map((x) => (x.id === id ? saved : x)));
   }
 
   async function onDelete(id: string) {
     await deleteUser(id);
-    setItems(prev => prev.filter(x => x.id !== id));
+    setItems((prev) => prev.filter((x) => x.id !== id));
   }
 
   return (
@@ -48,12 +69,16 @@ export default function UsersPage() {
         <h2 className="text-xl font-bold">کاربران و سطح دسترسی</h2>
         <div className="flex gap-2">
           <input
-            value={q} onChange={(e) => setQ(e.target.value)}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
             placeholder="جستجو (نام)"
             className="rounded border px-3 py-2 text-sm"
           />
           <button
-            onClick={() => { setEditing(null); setOpen(true); }}
+            onClick={() => {
+              setEditing(null);
+              setOpen(true);
+            }}
             className="rounded bg-blue-600 px-3 py-2 text-sm text-white"
           >
             افزودن کاربر
@@ -64,8 +89,13 @@ export default function UsersPage() {
       <UsersTable
         items={items}
         loading={loading}
-        onEdit={(u) => { setEditing(u); setOpen(true); }}
-        onDelete={(id) => { if (confirm("حذف شود؟")) onDelete(id); }}
+        onEdit={(u) => {
+          setEditing(u);
+          setOpen(true);
+        }}
+        onDelete={(id) => {
+          if (confirm("حذف شود؟")) onDelete(id);
+        }}
       />
 
       {open && (
@@ -74,9 +104,16 @@ export default function UsersPage() {
           onClose={() => setOpen(false)}
           onSubmit={async (values) => {
             if (editing) await onUpdate(editing.id, values);
-            else await onCreate(values as {
-              firstName: string; lastName: string; password: string; role: AdminRole; isActive: boolean;
-            });
+            else
+              await onCreate(
+                values as {
+                  firstName: string;
+                  lastName: string;
+                  password: string;
+                  role: AdminRole;
+                  isActive: boolean;
+                },
+              );
             setOpen(false);
           }}
         />
