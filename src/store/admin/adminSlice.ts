@@ -1,3 +1,4 @@
+// store/adminSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type AdminRole = "BLOG" | "PRODUCTS" | "FULL";
