@@ -1,7 +1,7 @@
 // app/components/admin/AdminHeader.tsx
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState, Fragment, useCallback } from "react";
 import {
   LayoutDashboard,
   Menu,
@@ -16,7 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store/store";
-// import { logoutAdmin } from "@/store/store";
+import { logoutAdmin } from "@/store/admin/adminSlice"; // مسیر را مطابق پروژه‌ی خود بگذارید
 import { useRouter } from "next/navigation";
 
 type Role = "FULL" | "BLOG" | "PRODUCTS";
@@ -63,7 +63,6 @@ function itemsForRole(role: Role): MenuItem[] {
     ];
   }
   if (role === "BLOG") {
-    // داشبورد = همان صفحه وبلاگ
     return [
       {
         id: "dash-blog",
@@ -82,16 +81,16 @@ function itemsForRole(role: Role): MenuItem[] {
   // PRODUCTS
   return [
     {
-      id: "prod",
-      label: "داشبورد",
-      href: "/admin/products",
-      icon: <LayoutDashboard className="w-4 h-4" />,
-    },
-    {
       id: "dash-prod",
       label: "داشبورد",
       href: "/admin/dashboard",
       icon: <LayoutDashboard className="w-4 h-4" />,
+    },
+    {
+      id: "prod",
+      label: "محصولات",
+      href: "/admin/products",
+      icon: <Package className="w-4 h-4" />,
     },
     {
       id: "orders",
@@ -114,16 +113,17 @@ export default function AdminHeader() {
     "block rounded-lg px-3 py-2 text-sm hover:bg-muted hover:text-primary";
   const menu = itemsForRole(role);
 
-  // const handleLogout = () => {
-  //   dispatch(logoutAdmin());
-  //   router.replace("/admin/login");
-  // };
+  // خروج از حساب: استیت ریداکس ریست می‌شود و به صفحه‌ی لاگین می‌رویم
+  const handleLogout = useCallback(() => {
+    dispatch(logoutAdmin());
+    router.replace("/admin/login");
+  }, [dispatch, router]);
 
   const NavLinks = ({ onItemClick }: { onItemClick?: () => void }) => (
     <Fragment>
       {menu.map((m) => (
         <Link
-          key={m.id} // کلید یکتا
+          key={m.id}
           href={m.href}
           className={`${item} flex items-center gap-2`}
           onClick={onItemClick}
@@ -134,7 +134,7 @@ export default function AdminHeader() {
       ))}
       <button
         onClick={() => {
-          // handleLogout();
+          handleLogout();
           onItemClick?.();
         }}
         className={`${item} flex items-center gap-2 text-red-600 hover:text-red-700`}
@@ -152,7 +152,7 @@ export default function AdminHeader() {
         <div className="text-lg font-extrabold text-primary mb-3">
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <Image src="/favicon.ico" alt="لوگو" width={32} height={32} />
-            <span className="text-xl font-extrabولد text-primary">
+            <span className="text-xl font-extrabold text-primary">
               پنل ادمین
             </span>
           </Link>
@@ -194,7 +194,9 @@ export default function AdminHeader() {
 
       {/* منو موبایل */}
       <aside
-        className={`fixed md:hidden z-50 inset-y-0 right-0 w-72 max-w-[85vw] bg-surface border-l border-border p-4 transition-transform ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed md:hidden z-50 inset-y-0 right-0 w-72 max-w-[85vw] bg-surface border-l border-border p-4 transition-transform ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
         aria-hidden={!open}
       >
         <div className="flex items-center justify-between mb-3">
