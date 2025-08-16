@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { setAdmin } from "@/store/admin/adminSlice";
 import { loginAdmin } from "./actions";
 import { homePathByRole } from "@/lib/adminRoutes";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -31,6 +33,14 @@ export default function AdminLoginPage() {
       alert(res.message);
       return;
     }
+    // بعد از dispatch و قبل/بعد از router.push، حتماً این را صدا بزن
+    await fetch("/api/admin/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // خیلی مهم: تا Set-Cookie اعمال شود
+      body: JSON.stringify({ adminId: res.user.id }),
+    });
+
     dispatch(
       setAdmin({
         id: res.user.id,
@@ -43,7 +53,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center  px-4 bg-background">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm space-y-4"
@@ -64,7 +74,7 @@ export default function AdminLoginPage() {
 
         <div className="space-y-1">
           <label className="text-sm">نام خانوادگی</label>
-          <input
+          <Input
             className="w-full border rounded-md px-3 py-2 outline-none focus:ring"
             {...register("lastName")}
             placeholder="مثلاً رضایی"
@@ -76,8 +86,9 @@ export default function AdminLoginPage() {
 
         <div className="space-y-1">
           <label className="text-sm">رمز عبور</label>
-          <input
+          <Input
             type="password"
+            togglePassword
             className="w-full border rounded-md px-3 py-2 outline-none focus:ring"
             {...register("password")}
             placeholder="******"
@@ -87,13 +98,13 @@ export default function AdminLoginPage() {
           )}
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-md bg-blue-600 text-white py-2 font-medium disabled:opacity-70"
+          className="w-full rounded-md bg-primary text-white py-2 font-medium disabled:opacity-70"
         >
           {isSubmitting ? "در حال ورود..." : "ورود"}
-        </button>
+        </Button>
       </form>
     </div>
   );
