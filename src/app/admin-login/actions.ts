@@ -1,53 +1,53 @@
 "use server";
 
-import { createSupabaseClient } from "@/lib/supabase";
 import bcrypt from "bcryptjs";
-import {
-  adminLoginSchema,
-  type AdminLoginSchema,
-} from "@/schemas/admin-auth.schema";
+import { supabaseServer } from "@/lib/supabaseServer";
+
+export type Role = "BLOG" | "PRODUCTS" | "FULL";
+
+export interface AdminLoginInput {
+  firstName: string;
+  lastName: string;
+  password: string;
+}
 
 export type LoginResult =
-  | {
-      ok: true;
-      user: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        role: "BLOG" | "PRODUCTS" | "FULL";
-      };
-    }
+  | { ok: true; user: { id: string; firstName: string; lastName: string; role: Role } }
   | { ok: false; message: string };
 
-export async function loginAdmin(data: AdminLoginSchema): Promise<LoginResult> {
-  const parsed = adminLoginSchema.safeParse(data);
-  if (!parsed.success) {
+export async function loginAdmin(input: AdminLoginInput): Promise<LoginResult> {
+  const first = input.firstName?.trim();
+  const last = input.lastName?.trim();
+  const pass = input.password ?? "";
+  if (!first || !last || pass.length < 4) {
     return { ok: false, message: "ورودی نامعتبر" };
   }
 
-  const { firstName, lastName, password } = parsed.data;
-  const sb = createSupabaseClient();
+  const sb = supabaseServer();
 
-  const { data: user, error } = await sb
+  const { data, error } = await sb
     .from("admin_users")
-    .select("id, firstName, lastName, role, passwordHash, isActive")
-    .eq("firstName", firstName)
-    .eq("lastName", lastName)
-    .maybeSingle();
+    .select("id, firstName, lastName, role, isActive, passwordHash")
+    .eq("firstName", first)
+    .eq("lastName", last)
+    .limit(1);
 
-  if (error || !user) return { ok: false, message: "کاربر یافت نشد" };
-  if (!user.isActive) return { ok: false, message: "کاربر غیرفعال است" };
+  if (error || !data?.[0]) return { ok: false, message: "کاربر یافت نشد" };
 
-  const ok = await bcrypt.compare(password, user.passwordHash as string);
-  if (!ok) return { ok: false, message: "رمز عبور نادرست است" };
+  const u = data[0];
+  const active = u.isActive === true || String(u.isActive).toLowerCase() === "true";
+  if (!active) return { ok: false, message: "کاربر غیرفعال است" };
+
+  const ok = await bcrypt.compare(pass, String(u.passwordHash ?? ""));
+  if (!ok) return { ok: false, message: "رمز عبور نادرست" };
 
   return {
     ok: true,
     user: {
-      id: user.id as string,
-      firstName: user.firstName as string,
-      lastName: user.lastName as string,
-      role: user.role as "BLOG" | "PRODUCTS" | "FULL",
+      id: String(u.id),
+      firstName: String(u.firstName),
+      lastName: String(u.lastName),
+      role: u.role as Role,
     },
   };
 }
