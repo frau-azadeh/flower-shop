@@ -1,41 +1,45 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react";
 
-type Status = "draft" | "published"
-type ApiResult = { id?: string; slug?: string; error?: string } | null
+type Status = "draft" | "published";
+type ApiResult = { id?: string; slug?: string; error?: string } | null;
 
 export default function PostEditor() {
-  const [title, setTitle] = useState("")
-  const [slug, setSlug] = useState("")
-  const [content, setContent] = useState("")
-  const [status, setStatus] = useState<Status>("draft")
-  const [tagsInput, setTagsInput] = useState("")
-  const [message, setMessage] = useState("")
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState<Status>("draft");
+  const [tagsInput, setTagsInput] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!title) return setSlug("")
-    setSlug(slugify(title))
-  }, [title])
+    if (!title) return setSlug("");
+    setSlug(slugify(title));
+  }, [title]);
 
   const tagList = useMemo(
-    () => tagsInput.split(",").map((t) => t.trim()).filter(Boolean),
+    () =>
+      tagsInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
     [tagsInput],
-  )
+  );
 
   // helper خیلی ساده برای parse کردن پاسخ
   async function safeJson(res: Response): Promise<ApiResult> {
     try {
-      const text = await res.text()
-      if (!text) return null
-      return JSON.parse(text) as ApiResult
+      const text = await res.text();
+      if (!text) return null;
+      return JSON.parse(text) as ApiResult;
     } catch {
-      return null
+      return null;
     }
   }
 
   async function saveDraft() {
-    setMessage("")
+    setMessage("");
     const res = await fetch("/api/admin/posts/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -46,31 +50,31 @@ export default function PostEditor() {
         status,
         // tags: tagList, // اگر الان در API استفاده نمی‌کنی، لازم نیست بفرستی
       }),
-    })
+    });
 
-    const data = await safeJson(res)
+    const data = await safeJson(res);
     if (!res.ok) {
-      return setMessage(data?.error || `خطا در ذخیره (${res.status})`)
+      return setMessage(data?.error || `خطا در ذخیره (${res.status})`);
     }
-    setMessage("ذخیره شد ✅")
+    setMessage("ذخیره شد ✅");
   }
 
   async function publishNow() {
-    setMessage("")
-    await saveDraft()
+    setMessage("");
+    await saveDraft();
 
     const res = await fetch("/api/admin/posts/publish", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ slug: slug.toLowerCase() }),
-    })
+    });
 
-    const data = await safeJson(res)
+    const data = await safeJson(res);
     if (!res.ok) {
-      return setMessage(data?.error || `خطا در انتشار (${res.status})`)
+      return setMessage(data?.error || `خطا در انتشار (${res.status})`);
     }
-    setStatus("published")
-    setMessage("منتشر شد 🎉")
+    setStatus("published");
+    setMessage("منتشر شد 🎉");
   }
 
   return (
@@ -125,16 +129,23 @@ export default function PostEditor() {
         <button onClick={saveDraft} className="rounded-md border px-3 py-2">
           ذخیره
         </button>
-        <button onClick={publishNow} className="rounded-md bg-black px-3 py-2 text-white">
+        <button
+          onClick={publishNow}
+          className="rounded-md bg-black px-3 py-2 text-white"
+        >
           انتشار
         </button>
       </div>
 
       {message && <p className="text-emerald-600 text-sm">{message}</p>}
     </section>
-  )
+  );
 }
 
 function slugify(s: string) {
-  return s.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]+/g, "")
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
 }

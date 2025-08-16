@@ -12,7 +12,10 @@ export interface AdminLoginInput {
 }
 
 export type LoginResult =
-  | { ok: true; user: { id: string; firstName: string; lastName: string; role: Role } }
+  | {
+      ok: true;
+      user: { id: string; firstName: string; lastName: string; role: Role };
+    }
   | { ok: false; message: string };
 
 export async function loginAdmin(input: AdminLoginInput): Promise<LoginResult> {
@@ -35,7 +38,8 @@ export async function loginAdmin(input: AdminLoginInput): Promise<LoginResult> {
   if (error || !data?.[0]) return { ok: false, message: "کاربر یافت نشد" };
 
   const u = data[0];
-  const active = u.isActive === true || String(u.isActive).toLowerCase() === "true";
+  const active =
+    u.isActive === true || String(u.isActive).toLowerCase() === "true";
   if (!active) return { ok: false, message: "کاربر غیرفعال است" };
 
   const ok = await bcrypt.compare(pass, String(u.passwordHash ?? ""));

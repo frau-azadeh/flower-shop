@@ -34,12 +34,12 @@ export default function AdminLoginPage() {
       return;
     }
     // بعد از dispatch و قبل/بعد از router.push، حتماً این را صدا بزن
-await fetch("/api/admin/session", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  credentials: "include",           // خیلی مهم: تا Set-Cookie اعمال شود
-  body: JSON.stringify({ adminId: res.user.id }),
-})
+    await fetch("/api/admin/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // خیلی مهم: تا Set-Cookie اعمال شود
+      body: JSON.stringify({ adminId: res.user.id }),
+    });
 
     dispatch(
       setAdmin({
