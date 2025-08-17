@@ -1,28 +1,25 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 
 type Status = "draft" | "published";
 interface SaveBody {
+  id?: string;
   title: string;
   slug: string;
-  content?: string;
-  status?: Status;
-  coverUrl?: string;
+  content: string;
+  status: Status;
+  coverUrl?: string | null;
+  tags?: string[]; // اگر در DB text[] نیست، حذفش کن یا نگه دار
 }
 
 export async function POST(req: Request) {
   try {
-    // اگر راه ۱ را رفتی، همین کوکی aid کافی است (admin_users.id)
-    // اگر راه ۲ را رفتی، این را به auid تغییر بده
-    const c = await cookies();
-    const authorId = c.get("aid")?.value ?? null;
+    const b = (await req.json()) as SaveBody;
 
-    const body: SaveBody = await req.json();
-    const title = body.title?.trim();
-    const slug = body.slug?.trim().toLowerCase();
+    const title = b.title?.trim();
+    const slug = b.slug?.trim().toLowerCase();
     if (!title || !slug) {
       return NextResponse.json(
         { error: "title/slug required" },
@@ -32,33 +29,45 @@ export async function POST(req: Request) {
 
     const sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!, // فقط روی سرور
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    const { data, error } = await sb
-      .from("posts")
-      .insert({
-        authorId, // با FK جدید می‌نشیند
-        title,
-        slug,
-        content: body.content ?? "",
-        status: (body.status ?? "draft") as Status,
-        coverUrl: (body.coverUrl ?? "").trim(), // چون برای coverUrl پیش‌فرض گذاشتی
-      })
-      .select("id, slug")
-      .limit(1);
+    const payload = {
+      title,
+      slug,
+      content: b.content ?? "",
+      status: (b.status ?? "draft") as Status,
+      coverUrl: b.coverUrl ?? null,
+      updatedAt: new Date().toISOString(),
+    };
 
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    const row = data?.[0];
-    if (!row)
-      return NextResponse.json({ error: "INSERT_FAILED" }, { status: 400 });
+    if (b.id) {
+      const { data, error } = await sb
+        .from("posts")
+        .update(payload)
+        .eq("id", b.id)
+        .select("id, slug")
+        .limit(1);
 
-    return NextResponse.json({ id: String(row.id), slug: String(row.slug) });
+      if (error)
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      const row = data?.[0];
+      return NextResponse.json({ id: String(row.id), slug: String(row.slug) });
+    } else {
+      const { data, error } = await sb
+        .from("posts")
+        .insert(payload)
+        .select("id, slug")
+        .limit(1);
+
+      if (error)
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      const row = data?.[0];
+      return NextResponse.json({ id: String(row.id), slug: String(row.slug) });
+    }
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "UNKNOWN";
     return NextResponse.json(
-      { error: `SERVER_ERROR: ${msg}` },
+      { error: `SAVE_FAILED: ${(e as Error).message}` },
       { status: 500 },
     );
   }

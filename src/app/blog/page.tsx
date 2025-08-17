@@ -1,38 +1,32 @@
+// app/blog/page.tsx
+import BlogIndexClient from "./BlogIndexClient";
 import { createSupabaseClient } from "@/lib/supabase";
 
 type Row = {
   title: string;
   slug: string;
+  content: string;
   publishedAt: string | null;
+  coverUrl: string | null;
 };
 
-export default async function BlogIndex() {
+// در Next 15: searchParams یک Promise است
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams; // ← حتماً await
+  const page = Number(sp?.page) || 1;
+
   const supabase = await createSupabaseClient();
   const { data } = await supabase
     .from("posts")
-    .select("title, slug, publishedAt")
+    .select("title, slug, content, publishedAt, coverUrl")
     .eq("status", "published")
     .order("publishedAt", { ascending: false });
 
   const posts: Row[] = (data ?? []) as Row[];
 
-  return (
-    <main dir="rtl" className="mx-auto max-w-3xl p-4 bg-background">
-      <h1 className="text-2xl folnt-bold mb-4">بلاگ</h1>
-      <ul className="space-y-3">
-        {posts.map((p) => (
-          <li key={p.slug} className="rounded-md border p-3">
-            <a href={`/blog/${p.slug}`} className="font-bold text-primary">
-              {p.title}
-            </a>
-            <div className="text-xs text-slate-300">
-              {p.publishedAt
-                ? new Date(p.publishedAt).toLocaleDateString()
-                : ""}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </main>
-  );
+  return <BlogIndexClient posts={posts} page={page} />;
 }

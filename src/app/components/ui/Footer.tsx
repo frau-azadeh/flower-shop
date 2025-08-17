@@ -1,19 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { Truck, AlarmClock, Headset, ShieldCheck, Phone } from "lucide-react";
 import Input from "./Input";
 import Button from "./Button";
 
+/* ===== Types (بدون any) ===== */
+type Status = "draft" | "published";
+interface PostRow {
+  id: string;
+  title: string;
+  slug: string;
+  status: Status;
+}
+
+/* ===== Footer ===== */
 export default function Footer() {
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState<string>("");
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     // TODO: ارسال شماره به API
     setPhone("");
   };
+
+  const [articles, setArticles] = useState<PostRow[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [err, setErr] = useState<string>("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchArticles() {
+      setLoading(true);
+      setErr("");
+      try {
+        const res = await fetch("/api/admin/posts/list", {
+          credentials: "include",
+        });
+        const json: { ok?: true; rows?: PostRow[]; error?: string } =
+          await res.json();
+
+        if (!res.ok || !json.ok || !json.rows) {
+          throw new Error(json.error || `HTTP ${res.status}`);
+        }
+
+        // فقط منتشر شده‌ها + حداکثر 4 مورد
+        const latest = json.rows
+          .filter((r) => r.status === "published")
+          .slice(0, 4);
+
+        if (isMounted) setArticles(latest);
+      } catch (e) {
+        if (isMounted)
+          setErr(e instanceof Error ? e.message : "خطا در دریافت مقالات");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    fetchArticles();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <footer className="border-t border-border bg-background text-text bg-white">
@@ -63,7 +114,7 @@ export default function Footer() {
       <div className="bg-surface border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* فرم خبرنامه با Input شما */}
+            {/* خبرنامه */}
             <div>
               <div className="rounded-2xl bg-muted p-5 shadow-sm">
                 <h3 className="text-base font-bold mb-3">
@@ -88,7 +139,7 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* ستون‌های لینک */}
+            {/* ستون‌های لینک + مجله */}
             <div className="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-6">
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
@@ -97,41 +148,29 @@ export default function Footer() {
                 <ul className="space-y-2 text-sm">
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/help/how-to-order"
                     >
                       نحوه ثبت سفارش
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/help/payments"
-                    >
+                    <Link className="hover:text-primary" href="/help/payments">
                       شیوه‌های پرداخت
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/help/shipping"
-                    >
+                    <Link className="hover:text-primary" href="/help/shipping">
                       رویه ارسال سفارش
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/help/packaging"
-                    >
+                    <Link className="hover:text-primary" href="/help/packaging">
                       نحوه بسته‌بندی گیاه
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/help/samples"
-                    >
+                    <Link className="hover:text-primary" href="/help/samples">
                       نمونه سفارشات ارسال شده
                     </Link>
                   </li>
@@ -145,39 +184,36 @@ export default function Footer() {
                 <ul className="space-y-2 text-sm">
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/products/indoor"
                     >
-                      خرید اینترنتی گل و گیاه آپارتمانی ارزان
+                      گل و گیاه آپارتمانی
                     </Link>
                   </li>
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/products/cut-flowers"
                     >
-                      خرید اینترنتی گل از محلات
+                      گل شاخه‌بریده
                     </Link>
                   </li>
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/products/houseplants"
                     >
                       خرید گل آپارتمانی
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/products/sale"
-                    >
+                    <Link className="hover:text-primary" href="/products/sale">
                       حراج گل و گیاه
                     </Link>
                   </li>
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/products/promo-pots"
                     >
                       گلدان تبلیغاتی
@@ -185,7 +221,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary"
                       href="/products/fertilizers"
                     >
                       خرید کود
@@ -196,49 +232,35 @@ export default function Footer() {
 
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
-                  مجله گل فروش
+                  مجله گل‌فروش
                 </h4>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/mag/humic-acid"
-                    >
-                      کود اسید هیومیک چیست؟ + فواید اسید هیومیک
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/mag/fast-growing"
-                    >
-                      گیاهان آپارتمانی با رشد سریع
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/mag/broadleaf"
-                    >
-                      گیاهان آپارتمانی برگ پهن
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/mag/care-basics"
-                    >
-                      روش نگهداری از انواع بیز گل
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary transition-colors"
-                      href="/mag/sowing"
-                    >
-                      نحوه و زمان کاشت انواع بذر گل
-                    </Link>
-                  </li>
+
+                <ul className="space-y-2">
+                  {loading && (
+                    <li className="text-sm text-text-muted">
+                      در حال بارگذاری…
+                    </li>
+                  )}
+                  {err && !loading && (
+                    <li className="text-sm text-red-600">خطا: {err}</li>
+                  )}
+                  {!loading &&
+                    !err &&
+                    articles.map((a) => (
+                      <li key={a.id} className="text-sm">
+                        <Link
+                          className="hover:text-blue-500"
+                          href={`/blog/${a.slug}`}
+                        >
+                          {a.title}
+                        </Link>
+                      </li>
+                    ))}
+                  {!loading && !err && articles.length === 0 && (
+                    <li className="text-sm text-text-muted">
+                      مقاله‌ای یافت نشد.
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -246,14 +268,14 @@ export default function Footer() {
 
           <div className="mt-10 border-t border-border pt-6 text-center text-xs text-text-muted mb-5 md:mb-0">
             <span>
-              تمامی حقوق این وب سایت متعلق به{" "}
+              تمامی حقوق این وب‌سایت متعلق به{" "}
               <a
                 href="https://sunflower-dev.com"
                 className="text-primary font-bold"
               >
-                آزاده شریفی سلطانی{" "}
-              </a>
-              می باشد{" "}
+                آزاده شریفی سلطانی
+              </a>{" "}
+              است.
             </span>
           </div>
         </div>

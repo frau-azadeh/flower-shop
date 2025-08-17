@@ -29,9 +29,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ id: String(row.id), slug: String(row.slug) });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "UNKNOWN";
     return NextResponse.json(
-      { error: `SERVER_ERROR: ${msg}` },
+      { error: `PUBLISH_FAILED: ${(e as Error).message}` },
       { status: 500 },
     );
   }
