@@ -16,7 +16,8 @@ export async function POST(req: Request) {
     if (!(file instanceof Blob)) {
       return NextResponse.json({ error: "file required" }, { status: 400 });
     }
-    const slug = typeof slugRaw === "string" ? slugRaw.trim().toLowerCase() : "";
+    const slug =
+      typeof slugRaw === "string" ? slugRaw.trim().toLowerCase() : "";
     if (!slug) {
       return NextResponse.json({ error: "slug required" }, { status: 400 });
     }
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
     // کلاینت سرور با Service Role => بدون RLS
     const sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
     // اسم فایل
@@ -36,20 +37,27 @@ export async function POST(req: Request) {
     const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, {
       upsert: true,
       cacheControl: "3600",
-      contentType: (file as File).type || `image/${ext}`
+      contentType: (file as File).type || `image/${ext}`,
     });
-    if (upErr) return NextResponse.json({ error: upErr.message }, { status: 400 });
+    if (upErr)
+      return NextResponse.json({ error: upErr.message }, { status: 400 });
 
     // URL عمومی
     const { data: pub } = sb.storage.from(BUCKET).getPublicUrl(path);
     if (!pub?.publicUrl) {
-      return NextResponse.json({ error: "could not create public url" }, { status: 500 });
+      return NextResponse.json(
+        { error: "could not create public url" },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({ url: pub.publicUrl });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "UNKNOWN";
     // تا اگر باز HTML رندر شد، پیام JSON ببینی
-    return NextResponse.json({ error: `UPLOAD_FAILED: ${msg}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `UPLOAD_FAILED: ${msg}` },
+      { status: 500 },
+    );
   }
 }

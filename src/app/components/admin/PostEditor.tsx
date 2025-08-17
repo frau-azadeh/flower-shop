@@ -35,7 +35,11 @@ type ApiErr = { error: string };
 type ApiResult = ApiOk | ApiErr | null;
 
 function slugify(s: string) {
-  return s.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
 }
 async function safeJson(res: Response): Promise<ApiResult> {
   const text = await res.text();
@@ -47,7 +51,10 @@ async function safeJson(res: Response): Promise<ApiResult> {
   }
 }
 function isPostRowArray(x: unknown): x is PostRow[] {
-  return Array.isArray(x) && x.every((r) => r && typeof r.id === "string" && typeof r.slug === "string");
+  return (
+    Array.isArray(x) &&
+    x.every((r) => r && typeof r.id === "string" && typeof r.slug === "string")
+  );
 }
 
 export default function AdminBlogPage() {
@@ -83,7 +90,7 @@ export default function AdminBlogPage() {
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
-    [tagsInput]
+    [tagsInput],
   );
 
   // لود لیست
@@ -91,11 +98,17 @@ export default function AdminBlogPage() {
     setLoadingList(true);
     setListError("");
     try {
-      const res = await fetch("/api/admin/posts/list", { credentials: "include" });
+      const res = await fetch("/api/admin/posts/list", {
+        credentials: "include",
+      });
       const data = await safeJson(res);
       if (!res.ok || !data || "error" in (data ?? {})) {
         setRows([]);
-        setListError("error" in (data ?? {}) ? (data as ApiErr).error : "خطا در دریافت لیست");
+        setListError(
+          "error" in (data ?? {})
+            ? (data as ApiErr).error
+            : "خطا در دریافت لیست",
+        );
         return;
       }
       if ("rows" in data && isPostRowArray(data.rows)) {
@@ -110,7 +123,9 @@ export default function AdminBlogPage() {
       setLoadingList(false);
     }
   }
-  useEffect(() => { void loadList(); }, []);
+  useEffect(() => {
+    void loadList();
+  }, []);
 
   // ریست فرم
   function resetForm() {
@@ -136,7 +151,8 @@ export default function AdminBlogPage() {
     setContent(row.content); // ← محتوای فعلی
     setTagsInput("");
     setMsg("");
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined")
+      window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   // ذخیره
@@ -163,7 +179,10 @@ export default function AdminBlogPage() {
     });
     const data = await safeJson(res);
     if (!res.ok || !data || "error" in data) {
-      setMsg((data && "error" in data && (data as ApiErr).error) || `خطا در ذخیره (${res.status})`);
+      setMsg(
+        (data && "error" in data && (data as ApiErr).error) ||
+          `خطا در ذخیره (${res.status})`,
+      );
       return;
     }
     setMsg("ذخیره شد ✅");
@@ -182,7 +201,10 @@ export default function AdminBlogPage() {
     });
     const data = await safeJson(res);
     if (!res.ok || !data || "error" in data) {
-      setMsg((data && "error" in data && (data as ApiErr).error) || `خطا در انتشار (${res.status})`);
+      setMsg(
+        (data && "error" in data && (data as ApiErr).error) ||
+          `خطا در انتشار (${res.status})`,
+      );
       return;
     }
     setStatus("published");
@@ -201,7 +223,10 @@ export default function AdminBlogPage() {
     });
     const data = await safeJson(res);
     if (!res.ok || !data || "error" in data) {
-      alert((data && "error" in data && (data as ApiErr).error) || `خطا در حذف (${res.status})`);
+      alert(
+        (data && "error" in data && (data as ApiErr).error) ||
+          `خطا در حذف (${res.status})`,
+      );
       return;
     }
     if (row.id === id) resetForm();
@@ -209,53 +234,55 @@ export default function AdminBlogPage() {
   }
 
   // آپلود کاور (از Route سرور)
-async function onPickCover(f: File) {
-  if (!f || !slug.trim()) {
-    setMsg("برای آپلود کاور، اول عنوان/اسلاگ را وارد کن.");
-    return;
-  }
-  if (!f.type.startsWith("image/")) {
-    setMsg("فقط فایل تصویر مجاز است.");
-    return;
-  }
-
-  // پیش‌نمایش لوکال
-  setPreview(URL.createObjectURL(f));
-  setUploading(true);
-  setMsg("");
-
-  try {
-    const fd = new FormData();
-    fd.append("file", f);
-    fd.append("slug", slug.trim().toLowerCase());
-
-    // توجه: هیچ هِدری از نوع JSON ست نکن!
-    const res = await fetch("/api/admin/posts/upload", { method: "POST", body: fd });
-
-    // پاسخ JSON را امن بخوانیم
-    const text = await res.text();
-    const data: { url?: string; error?: string } = (() => {
-      try {
-        return JSON.parse(text);
-      } catch {
-        return { error: text }; // اگر باز HTML بود، همین متن را نشان بده
-      }
-    })();
-
-    if (!res.ok || data.error || !data.url) {
-      setMsg(`خطا در آپلود: ${data.error ?? res.statusText}`);
+  async function onPickCover(f: File) {
+    if (!f || !slug.trim()) {
+      setMsg("برای آپلود کاور، اول عنوان/اسلاگ را وارد کن.");
+      return;
+    }
+    if (!f.type.startsWith("image/")) {
+      setMsg("فقط فایل تصویر مجاز است.");
       return;
     }
 
-    setCoverUrl(data.url);
-    setMsg("کاور آپلود شد ✅ (ذخیره را بزن)");
-  } catch (e) {
-    setMsg(`خطای غیرمنتظره: ${(e as Error).message}`);
-  } finally {
-    setUploading(false);
-  }
-}
+    // پیش‌نمایش لوکال
+    setPreview(URL.createObjectURL(f));
+    setUploading(true);
+    setMsg("");
 
+    try {
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("slug", slug.trim().toLowerCase());
+
+      // توجه: هیچ هِدری از نوع JSON ست نکن!
+      const res = await fetch("/api/admin/posts/upload", {
+        method: "POST",
+        body: fd,
+      });
+
+      // پاسخ JSON را امن بخوانیم
+      const text = await res.text();
+      const data: { url?: string; error?: string } = (() => {
+        try {
+          return JSON.parse(text);
+        } catch {
+          return { error: text }; // اگر باز HTML بود، همین متن را نشان بده
+        }
+      })();
+
+      if (!res.ok || data.error || !data.url) {
+        setMsg(`خطا در آپلود: ${data.error ?? res.statusText}`);
+        return;
+      }
+
+      setCoverUrl(data.url);
+      setMsg("کاور آپلود شد ✅ (ذخیره را بزن)");
+    } catch (e) {
+      setMsg(`خطای غیرمنتظره: ${(e as Error).message}`);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -264,9 +291,14 @@ async function onPickCover(f: File) {
           {/* Editor */}
           <section className="md:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">{id ? "ویرایش پست" : "پست جدید"}</h1>
+              <h1 className="text-xl font-bold">
+                {id ? "ویرایش پست" : "پست جدید"}
+              </h1>
               {id && (
-                <button onClick={resetForm} className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50">
+                <button
+                  onClick={resetForm}
+                  className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50"
+                >
                   جدید
                 </button>
               )}
@@ -293,7 +325,9 @@ async function onPickCover(f: File) {
             <div className="rounded-xl border p-3">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-medium">کاور مقاله</div>
-                {uploading && <div className="text-xs text-emerald-600">در حال آپلود…</div>}
+                {uploading && (
+                  <div className="text-xs text-emerald-600">در حال آپلود…</div>
+                )}
               </div>
 
               <div className="mt-3 flex items-start gap-4">
@@ -311,12 +345,18 @@ async function onPickCover(f: File) {
                 </label>
 
                 {preview && (
-                  <img src={preview} alt="cover preview" className="h-24 w-24 rounded-lg object-cover border" />
+                  <img
+                    src={preview}
+                    alt="cover preview"
+                    className="h-24 w-24 rounded-lg object-cover border"
+                  />
                 )}
               </div>
 
               {coverUrl && (
-                <p className="mt-2 text-xs ltr:font-mono break-all text-gray-600">{coverUrl}</p>
+                <p className="mt-2 text-xs ltr:font-mono break-all text-gray-600">
+                  {coverUrl}
+                </p>
               )}
             </div>
 
@@ -350,8 +390,18 @@ async function onPickCover(f: File) {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <button onClick={saveDraft} className="rounded-lg border px-4 py-2 hover:bg-gray-50">ذخیره</button>
-              <button onClick={publishNow} className="rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700">انتشار</button>
+              <button
+                onClick={saveDraft}
+                className="rounded-lg border px-4 py-2 hover:bg-gray-50"
+              >
+                ذخیره
+              </button>
+              <button
+                onClick={publishNow}
+                className="rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+              >
+                انتشار
+              </button>
             </div>
 
             {msg && <p className="text-emerald-700 text-sm">{msg}</p>}
@@ -361,39 +411,72 @@ async function onPickCover(f: File) {
           <aside className="md:col-span-1">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold">پست‌ها</h2>
-              <button onClick={loadList} className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50" disabled={loadingList}>
+              <button
+                onClick={loadList}
+                className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50"
+                disabled={loadingList}
+              >
                 بروزرسانی
               </button>
             </div>
 
-            {listError && <p className="text-red-600 text-sm mb-2">خطا: {listError}</p>}
+            {listError && (
+              <p className="text-red-600 text-sm mb-2">خطا: {listError}</p>
+            )}
 
             <ul className="space-y-3">
               {rows.map((r) => (
-                <li key={r.id} className="rounded-xl bg-white border p-3 flex items-start justify-between gap-3 shadow-sm">
-                  <button onClick={() => pickForEdit(r)} className="flex-1 text-start" title="ویرایش">
+                <li
+                  key={r.id}
+                  className="rounded-xl bg-white border p-3 flex items-start justify-between gap-3 shadow-sm"
+                >
+                  <button
+                    onClick={() => pickForEdit(r)}
+                    className="flex-1 text-start"
+                    title="ویرایش"
+                  >
                     <div className="font-medium">{r.title}</div>
-                    <div className="text-xs opacity-70 ltr:font-mono">/blog/{r.slug}</div>
-                    <div className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs ${
-                      r.status === "published"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-amber-100 text-amber-800"
-                    }`}>
+                    <div className="text-xs opacity-70 ltr:font-mono">
+                      /blog/{r.slug}
+                    </div>
+                    <div
+                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs ${
+                        r.status === "published"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
                       {r.status === "published" ? "منتشر شده" : "پیش‌نویس"}
                     </div>
                   </button>
 
                   <div className="flex items-center gap-3">
-                    <button onClick={() => pickForEdit(r)} className="text-blue-600 text-xs underline" title="ویرایش">ویرایش</button>
-                    <button onClick={() => removePost(r)} className="text-red-600 text-xs underline" title="حذف">حذف</button>
+                    <button
+                      onClick={() => pickForEdit(r)}
+                      className="text-blue-600 text-xs underline"
+                      title="ویرایش"
+                    >
+                      ویرایش
+                    </button>
+                    <button
+                      onClick={() => removePost(r)}
+                      className="text-red-600 text-xs underline"
+                      title="حذف"
+                    >
+                      حذف
+                    </button>
                   </div>
                 </li>
               ))}
               {rows.length === 0 && !loadingList && (
-                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">هنوز پستی ندارید.</li>
+                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">
+                  هنوز پستی ندارید.
+                </li>
               )}
               {loadingList && (
-                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">در حال بارگذاری…</li>
+                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">
+                  در حال بارگذاری…
+                </li>
               )}
             </ul>
           </aside>
