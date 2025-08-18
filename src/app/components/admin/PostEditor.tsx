@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import RichText from "@/app/admin/blog/RichText";
+
+import type { ComponentType } from "react";
+import type { RichTextProps } from "@/app/admin/blog/RichText";
+import Input from "../ui/Input";
 
 type Status = "draft" | "published";
 
+interface PostEditorProps {
+  // ✅ تایپ صحیح prop
+  RichText: ComponentType<RichTextProps>;
+}
 interface PostRow {
   id: string;
   title: string;
@@ -304,7 +313,7 @@ export default function AdminBlogPage() {
               )}
             </div>
 
-            <input
+            <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="عنوان…"
@@ -313,7 +322,7 @@ export default function AdminBlogPage() {
 
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-600">اسلاگ:</span>
-              <input
+              <Input
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="my-post-slug"
@@ -322,7 +331,7 @@ export default function AdminBlogPage() {
             </div>
 
             {/* Cover */}
-            <div className="rounded-xl border p-3">
+            <div className="rounded-xl border border-gray-300 p-3">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-medium">کاور مقاله</div>
                 {uploading && (
@@ -331,9 +340,9 @@ export default function AdminBlogPage() {
               </div>
 
               <div className="mt-3 flex items-start gap-4">
-                <label className="inline-flex items-center rounded-md border px-3 py-2 text-sm cursor-pointer hover:bg-gray-50">
+                <label className="inline-flex items-center rounded-md  px-3 py-2 text-sm cursor-pointer hover:bg-gray-50">
                   انتخاب تصویر
-                  <input
+                  <Input
                     type="file"
                     accept="image/*"
                     className="hidden"
@@ -360,17 +369,39 @@ export default function AdminBlogPage() {
               )}
             </div>
 
-            <textarea
+            <RichText
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="متن…"
-              rows={10}
-              className="w-full rounded-xl border p-3 leading-7 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              onChange={setContent}
+              onPickImage={async () => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/*";
+
+                return new Promise<string | null>((resolve) => {
+                  input.onchange = async () => {
+                    const f = input.files?.[0];
+                    if (!f) return resolve(null);
+                    const fd = new FormData();
+                    fd.append("file", f);
+                    fd.append("slug", slug.trim().toLowerCase());
+                    const res = await fetch("/api/admin/posts/upload", {
+                      method: "POST",
+                      body: fd,
+                    });
+                    const data: { url?: string; error?: string } =
+                      await res.json();
+                    resolve(data.url ?? null);
+                  };
+                  input.click();
+                });
+              }}
             />
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">وضعیت:</label>
+                <label className="text-sm text-gray-600 w-full rounded-lg border  px-3 py-2 focus:outline-none focus:ring-2 transition-colors">
+                  وضعیت:
+                </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value as Status)}
@@ -381,11 +412,11 @@ export default function AdminBlogPage() {
                 </select>
               </div>
 
-              <input
+              <Input
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 placeholder="تگ‌ها با ویرگول: nextjs, supabase"
-                className="w-full sm:flex-1 rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full sm:flex-1 rounded-md  p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
@@ -428,7 +459,7 @@ export default function AdminBlogPage() {
               {rows.map((r) => (
                 <li
                   key={r.id}
-                  className="rounded-xl bg-white border p-3 flex items-start justify-between gap-3 shadow-sm"
+                  className="rounded-xl bg-white  p-3 flex items-start justify-between gap-3 shadow-md"
                 >
                   <button
                     onClick={() => pickForEdit(r)}
