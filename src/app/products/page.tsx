@@ -1,17 +1,20 @@
+// app/products/page.tsx
 import { supabasePublic } from "@/lib/supabasePublic";
 import ProductCard from "./ProductCard";
 import type { PublicProduct } from "@/types/product";
 
 export const revalidate = 60; // ISR یک دقیقه
 
-type Props = {
-  searchParams?: { q?: string; page?: string; category?: string };
+type PageProps = {
+  searchParams: Promise<{ q?: string; page?: string; category?: string }>;
 };
 
-export default async function ProductsPage({ searchParams }: Props) {
-  const q = (searchParams?.q ?? "").trim();
-  const category = (searchParams?.category ?? "").trim();
-  const page = Math.max(1, Number(searchParams?.page ?? "1"));
+export default async function ProductsPage({ searchParams }: PageProps) {
+  const sp = await searchParams; // ⬅️ Next 15
+  const q = (sp?.q ?? "").trim();
+  const category = (sp?.category ?? "").trim();
+  const page = Math.max(1, Number(sp?.page ?? "1"));
+
   const pageSize = 12;
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
@@ -36,7 +39,6 @@ export default async function ProductsPage({ searchParams }: Props) {
   const { data, error, count } = await query;
 
   if (error) {
-    // خطای ساده‌ی نمایشی
     return (
       <main dir="rtl" className="mx-auto max-w-6xl p-4">
         <h1 className="mb-4 text-lg font-bold">محصولات</h1>
@@ -48,6 +50,14 @@ export default async function ProductsPage({ searchParams }: Props) {
   const items = (data ?? []) as PublicProduct[];
   const total = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const qs = (nextPage: number) => {
+    const u = new URLSearchParams();
+    if (q) u.set("q", q);
+    if (category) u.set("category", category);
+    u.set("page", String(nextPage));
+    return u.toString();
+  };
 
   return (
     <main dir="rtl" className="mx-auto max-w-6xl p-4">
@@ -84,13 +94,13 @@ export default async function ProductsPage({ searchParams }: Props) {
         </span>
         <div className="flex items-center gap-2">
           <a
-            href={`/products?${new URLSearchParams({ q, page: String(Math.max(1, page - 1)) }).toString()}`}
+            href={`/products?${qs(Math.max(1, page - 1))}`}
             className={`rounded-lg border px-3 py-1.5 ${page <= 1 ? "pointer-events-none opacity-50" : ""}`}
           >
             قبلی
           </a>
           <a
-            href={`/products?${new URLSearchParams({ q, page: String(Math.min(totalPages, page + 1)) }).toString()}`}
+            href={`/products?${qs(Math.min(totalPages, page + 1))}`}
             className={`rounded-lg border px-3 py-1.5 ${page >= totalPages ? "pointer-events-none opacity-50" : ""}`}
           >
             بعدی
