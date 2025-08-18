@@ -30,7 +30,10 @@ export default async function ProductsPage({ searchParams }: PageProps) {
     .order("createdAt", { ascending: false })
     .range(from, to);
 
-  if (q) query = query.or(`name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`);
+  if (q)
+    query = query.or(
+      `name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`,
+    );
   if (category) query = query.eq("category", category);
 
   const { data, error, count } = await query;
