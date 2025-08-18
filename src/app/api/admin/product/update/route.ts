@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
     const coverFile = form.get("cover") as File | null;
 
     if (!input.id && !input.slug) {
-      return NextResponse.json({ ok: false, message: "id یا slug الزامی است" }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, message: "id یا slug الزامی است" },
+        { status: 400 },
+      );
     }
 
     const sb = supabaseServer();
@@ -28,7 +31,10 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (findErr || !found) {
-      return NextResponse.json({ ok: false, message: "محصول یافت نشد" }, { status: 404 });
+      return NextResponse.json(
+        { ok: false, message: "محصول یافت نشد" },
+        { status: 404 },
+      );
     }
 
     // اگر newSlug آمد، یکتا بودنش را چک کن
@@ -39,7 +45,10 @@ export async function POST(req: NextRequest) {
         .eq("slug", input.newSlug)
         .limit(1);
       if (ex && ex.length > 0) {
-        return NextResponse.json({ ok: false, message: "اسلاگ جدید تکراری است" }, { status: 400 });
+        return NextResponse.json(
+          { ok: false, message: "اسلاگ جدید تکراری است" },
+          { status: 400 },
+        );
       }
     }
 
@@ -51,7 +60,10 @@ export async function POST(req: NextRequest) {
         coverUrl = await uploadProductCover(sb, coverFile, finalSlug);
       } catch (e) {
         console.error("upload error:", e);
-        return NextResponse.json({ ok: false, message: "آپلود تصویر ناموفق بود" }, { status: 500 });
+        return NextResponse.json(
+          { ok: false, message: "آپلود تصویر ناموفق بود" },
+          { status: 500 },
+        );
       }
     }
 
@@ -64,23 +76,31 @@ export async function POST(req: NextRequest) {
     if (input.category !== undefined) updateObj.category = input.category;
     if (input.stock !== undefined) updateObj.stock = input.stock;
     if (input.active !== undefined) updateObj.active = input.active;
-    if (input.description !== undefined) updateObj.description = input.description;
+    if (input.description !== undefined)
+      updateObj.description = input.description;
     if (coverUrl !== undefined) updateObj.coverUrl = coverUrl;
 
     if (Object.keys(updateObj).length === 0) {
       return NextResponse.json({ ok: true }); // چیزی برای آپدیت نبود
     }
 
-    const { error: upErr } = await sb.from("products").update(updateObj).eq("id", found.id);
+    const { error: upErr } = await sb
+      .from("products")
+      .update(updateObj)
+      .eq("id", found.id);
     if (upErr) {
       console.error("update error:", upErr);
-      return NextResponse.json({ ok: false, message: "به‌روزرسانی ناموفق بود" }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: "به‌روزرسانی ناموفق بود" },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({ ok: true });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "BAD_REQUEST";
-    const status = msg === "UNAUTHORIZED" ? 401 : msg === "FORBIDDEN" ? 403 : 400;
+    const status =
+      msg === "UNAUTHORIZED" ? 401 : msg === "FORBIDDEN" ? 403 : 400;
     return NextResponse.json({ ok: false, message: msg }, { status });
   }
 }

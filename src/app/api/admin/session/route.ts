@@ -5,7 +5,10 @@ import { cookies } from "next/headers";
 export async function POST(req: Request) {
   const { adminId } = (await req.json()) as { adminId?: string };
   if (!adminId) {
-    return NextResponse.json({ ok: false, message: "adminId لازم است" }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: "adminId لازم است" },
+      { status: 400 },
+    );
   }
 
   const c = await cookies();

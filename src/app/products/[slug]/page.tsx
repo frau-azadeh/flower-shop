@@ -11,7 +11,9 @@ export default async function ProductDetailPage({ params }: Props) {
   const sb = supabasePublic();
   const { data, error } = await sb
     .from("products")
-    .select("id, name, slug, price, salePrice, category, coverUrl, description, createdAt")
+    .select(
+      "id, name, slug, price, salePrice, category, coverUrl, description, createdAt",
+    )
     .eq("active", true)
     .eq("slug", params.slug)
     .single();
@@ -38,7 +40,9 @@ export default async function ProductDetailPage({ params }: Props) {
             {p.salePrice ? (
               <div className="flex items-center gap-3">
                 <span className="text-lg font-bold">{toman(p.salePrice)}</span>
-                <span className="text-sm text-slate-400 line-through">{toman(p.price)}</span>
+                <span className="text-sm text-slate-400 line-through">
+                  {toman(p.price)}
+                </span>
               </div>
             ) : (
               <span className="text-lg font-bold">{toman(p.price)}</span>

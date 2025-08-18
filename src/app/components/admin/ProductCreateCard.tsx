@@ -109,7 +109,7 @@ export default function ProductCreateCard() {
       const query = opts?.q ?? q;
       const res = await fetch(
         `/api/admin/product/list?page=${p}&limit=${pageSize}&includeInactive=true${query ? `&q=${encodeURIComponent(query)}` : ""}`,
-        { credentials: "include" }
+        { credentials: "include" },
       );
       const json: ListResponse = await res.json();
       if (!json.ok) {
@@ -169,7 +169,8 @@ export default function ProductCreateCard() {
     const s = salePrice ? Number(salePrice) : undefined;
     const st = Number(stock || 0);
     if (!Number.isFinite(p) || p < 0) return alert("قیمت نامعتبر");
-    if (s !== undefined && (!Number.isFinite(s) || s < 0)) return alert("قیمت فروش نامعتبر");
+    if (s !== undefined && (!Number.isFinite(s) || s < 0))
+      return alert("قیمت فروش نامعتبر");
     if (!Number.isFinite(st) || st < 0) return alert("موجودی نامعتبر");
 
     const fd = new FormData();
@@ -186,12 +187,20 @@ export default function ProductCreateCard() {
 
     try {
       setSubmitting(true);
-      const url = editingId ? "/api/admin/product/update" : "/api/admin/product/add";
-      const res = await fetch(url, { method: "POST", body: fd, credentials: "include" });
+      const url = editingId
+        ? "/api/admin/product/update"
+        : "/api/admin/product/add";
+      const res = await fetch(url, {
+        method: "POST",
+        body: fd,
+        credentials: "include",
+      });
 
       const json: { ok: boolean; message?: string } = await res.json();
       if (!json.ok) {
-        alert(json.message ?? (editingId ? "خطا در ویرایش" : "خطا در ثبت محصول"));
+        alert(
+          json.message ?? (editingId ? "خطا در ویرایش" : "خطا در ثبت محصول"),
+        );
         return;
       }
 
@@ -246,7 +255,9 @@ export default function ProductCreateCard() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-slate-600">
           <Package className="size-5" />
-          <span className="text-sm">{editingId ? "ویرایش محصول" : "افزودن محصول جدید"}</span>
+          <span className="text-sm">
+            {editingId ? "ویرایش محصول" : "افزودن محصول جدید"}
+          </span>
         </div>
 
         {/* دکمه‌های نمونه (UI) */}
@@ -279,7 +290,10 @@ export default function ProductCreateCard() {
       </div>
 
       {/* Card: Form */}
-      <form onSubmit={onSubmit} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_300px]">
+      <form
+        onSubmit={onSubmit}
+        className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_300px]"
+      >
         {/* Main */}
         <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
           {/* name */}
@@ -318,7 +332,9 @@ export default function ProductCreateCard() {
                 placeholder="مثلاً 450000"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
-              <span className="mt-1 block text-[11px] text-slate-500">{priceLabel}</span>
+              <span className="mt-1 block text-[11px] text-slate-500">
+                {priceLabel}
+              </span>
             </label>
 
             <label className="block">
@@ -333,7 +349,9 @@ export default function ProductCreateCard() {
                 placeholder="مثلاً 399000"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
-              <span className="mt-1 block text-[11px] text-slate-500">{saleLabel}</span>
+              <span className="mt-1 block text-[11px] text-slate-500">
+                {saleLabel}
+              </span>
             </label>
 
             <label className="block">
@@ -381,7 +399,9 @@ export default function ProductCreateCard() {
         <aside className="space-y-4">
           {/* Cover */}
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <h4 className="mb-3 text-sm font-semibold text-slate-700">تصویر کاور</h4>
+            <h4 className="mb-3 text-sm font-semibold text-slate-700">
+              تصویر کاور
+            </h4>
             <div className="flex items-start gap-3">
               <button
                 type="button"
@@ -459,7 +479,11 @@ export default function ProductCreateCard() {
                 title={editingId ? "ثبت ویرایش" : "انتشار (UI)"}
               >
                 <Upload className="size-4" />
-                {submitting ? "در حال ارسال..." : editingId ? "ثبت ویرایش" : "انتشار محصول"}
+                {submitting
+                  ? "در حال ارسال..."
+                  : editingId
+                    ? "ثبت ویرایش"
+                    : "انتشار محصول"}
               </button>
             </div>
           </div>
@@ -518,13 +542,19 @@ export default function ProductCreateCard() {
             <tbody>
               {loadingList ? (
                 <tr>
-                  <td colSpan={9} className="px-3 py-6 text-center text-slate-500">
+                  <td
+                    colSpan={9}
+                    className="px-3 py-6 text-center text-slate-500"
+                  >
                     در حال بارگذاری…
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-3 py-6 text-center text-slate-500">
+                  <td
+                    colSpan={9}
+                    className="px-3 py-6 text-center text-slate-500"
+                  >
                     محصولی یافت نشد
                   </td>
                 </tr>
@@ -546,7 +576,9 @@ export default function ProductCreateCard() {
                     <td className="px-3 py-2">{p.name}</td>
                     <td className="px-3 py-2 text-slate-500">{p.slug}</td>
                     <td className="px-3 py-2">{p.price.toLocaleString()}</td>
-                    <td className="px-3 py-2">{p.salePrice ? p.salePrice.toLocaleString() : "—"}</td>
+                    <td className="px-3 py-2">
+                      {p.salePrice ? p.salePrice.toLocaleString() : "—"}
+                    </td>
                     <td className="px-3 py-2">{p.category}</td>
                     <td className="px-3 py-2">{p.stock}</td>
                     <td className="px-3 py-2">
@@ -577,7 +609,11 @@ export default function ProductCreateCard() {
                           className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs hover:bg-slate-50"
                           title={p.active ? "غیرفعال کردن" : "فعال کردن"}
                         >
-                          {p.active ? <ToggleLeft className="size-4" /> : <ToggleRight className="size-4" />}
+                          {p.active ? (
+                            <ToggleLeft className="size-4" />
+                          ) : (
+                            <ToggleRight className="size-4" />
+                          )}
                           {p.active ? "غیرفعال" : "فعال"}
                         </button>
                         <button
@@ -628,5 +664,9 @@ export default function ProductCreateCard() {
 }
 
 function slugify(s: string) {
-  return s.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
 }

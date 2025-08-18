@@ -15,7 +15,7 @@ type AdminUser = {
 };
 
 export async function getAdminOrThrow(allowed: Role[]): Promise<AdminUser> {
-  const c = await cookies();                 // Next 15: await
+  const c = await cookies(); // Next 15: await
   const adminId = c.get(ADMIN_COOKIE_NAME)?.value;
   if (!adminId) throw new Error("UNAUTHORIZED");
 
@@ -29,7 +29,8 @@ export async function getAdminOrThrow(allowed: Role[]): Promise<AdminUser> {
   if (error || !data?.[0]) throw new Error("UNAUTHORIZED");
 
   const u = data[0];
-  const active = u.isActive === true || String(u.isActive).toLowerCase() === "true";
+  const active =
+    u.isActive === true || String(u.isActive).toLowerCase() === "true";
   if (!active) throw new Error("FORBIDDEN");
   if (!allowed.includes(u.role as Role)) throw new Error("FORBIDDEN");
 

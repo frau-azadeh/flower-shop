@@ -3,9 +3,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function uploadProductCover(
   sb: SupabaseClient,
-  file: File,            // ⬅️ دیگه nullable نیست
-  slug: string
-): Promise<string> {     // ⬅️ همیشه string برمی‌گرده
+  file: File, // ⬅️ دیگه nullable نیست
+  slug: string,
+): Promise<string> {
+  // ⬅️ همیشه string برمی‌گرده
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
   const path = `${slug}-${Date.now()}.${ext}`;
 
@@ -19,6 +20,8 @@ export async function uploadProductCover(
 
   if (error) throw new Error(`UPLOAD_FAILED:${error.message}`);
 
-  const { data: pub } = sb.storage.from("product-covers").getPublicUrl(data.path);
+  const { data: pub } = sb.storage
+    .from("product-covers")
+    .getPublicUrl(data.path);
   return pub.publicUrl;
 }

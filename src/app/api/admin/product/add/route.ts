@@ -35,13 +35,13 @@ export async function POST(req: NextRequest) {
       if (exErr) {
         return NextResponse.json(
           { ok: false, message: "خطا در بررسی اسلاگ" },
-          { status: 500 }
+          { status: 500 },
         );
       }
       if (ex && ex.length > 0) {
         return NextResponse.json(
           { ok: false, message: "اسلاگ تکراری است" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       } catch {
         return NextResponse.json(
           { ok: false, message: "آپلود تصویر ناموفق بود" },
-          { status: 500 }
+          { status: 500 },
         );
       }
     }
@@ -79,13 +79,13 @@ export async function POST(req: NextRequest) {
     if (error) {
       return NextResponse.json(
         { ok: false, message: "ثبت محصول ناموفق بود" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
       { ok: true, id: data.id, slug: data.slug },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "BAD_REQUEST";

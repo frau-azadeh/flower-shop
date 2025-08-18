@@ -20,15 +20,17 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   let query = sb
     .from("products")
-    .select(
-      "id, name, slug, price, salePrice, category, coverUrl, createdAt",
-      { count: "exact" }
-    )
+    .select("id, name, slug, price, salePrice, category, coverUrl, createdAt", {
+      count: "exact",
+    })
     .eq("active", true)
     .order("createdAt", { ascending: false })
     .range(from, to);
 
-  if (q) query = query.or(`name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`);
+  if (q)
+    query = query.or(
+      `name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`,
+    );
   if (category) query = query.eq("category", category);
 
   const { data, error, count } = await query;
@@ -59,7 +61,9 @@ export default async function ProductsPage({ searchParams }: Props) {
           placeholder="جستجو: نام / اسلاگ / دسته‌بندی"
           className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
         />
-        <button className="rounded-xl bg-accent px-3 py-2 text-sm text-white">جستجو</button>
+        <button className="rounded-xl bg-accent px-3 py-2 text-sm text-white">
+          جستجو
+        </button>
       </form>
 
       {/* گرید محصولات */}

@@ -11,7 +11,9 @@ export const createProductSchema = z.object({
     .transform((v) => (v === "" ? null : (v as number | null))),
   category: z.string().min(1),
   stock: z.coerce.number().int().nonnegative(),
-  active: z.union([z.literal("true"), z.literal("false")]).transform((v) => v === "true"),
+  active: z
+    .union([z.literal("true"), z.literal("false")])
+    .transform((v) => v === "true"),
   description: z.string().optional().default(""),
 });
 export type CreateProductInput = z.infer<typeof createProductSchema>;
@@ -31,12 +33,17 @@ export function parseCreateProduct(form: FormData): CreateProductInput {
 /** update */
 export const updateProductSchema = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().min(1).optional(),      // برای پیدا کردن
+  slug: z.string().min(1).optional(), // برای پیدا کردن
   name: z.string().optional(),
-  newSlug: z.string().min(1).optional(),   // اگر بخواهیم اسلاگ را عوض کنیم
+  newSlug: z.string().min(1).optional(), // اگر بخواهیم اسلاگ را عوض کنیم
   price: z.union([z.coerce.number().int().nonnegative(), z.undefined()]),
   salePrice: z
-    .union([z.coerce.number().int().nonnegative(), z.literal(""), z.null(), z.undefined()])
+    .union([
+      z.coerce.number().int().nonnegative(),
+      z.literal(""),
+      z.null(),
+      z.undefined(),
+    ])
     .transform((v) => (v === "" ? null : (v as number | null | undefined))),
   category: z.string().optional(),
   stock: z.union([z.coerce.number().int().nonnegative(), z.undefined()]),

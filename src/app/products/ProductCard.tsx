@@ -29,13 +29,17 @@ export default function ProductCard({ product }: Props) {
         <div className="mt-2 text-sm">
           {product.salePrice ? (
             <div className="flex items-center gap-2">
-              <span className="font-semibold">{price.toLocaleString("fa-IR")} تومان</span>
+              <span className="font-semibold">
+                {price.toLocaleString("fa-IR")} تومان
+              </span>
               <span className="text-xs text-slate-400 line-through">
                 {product.price.toLocaleString("fa-IR")} تومان
               </span>
             </div>
           ) : (
-            <span className="font-semibold">{product.price.toLocaleString("fa-IR")} تومان</span>
+            <span className="font-semibold">
+              {product.price.toLocaleString("fa-IR")} تومان
+            </span>
           )}
         </div>
       </div>
