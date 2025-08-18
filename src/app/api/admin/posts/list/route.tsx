@@ -24,7 +24,9 @@ export async function GET() {
 
     const { data, error } = await sb
       .from("posts")
-      .select("id, title, slug, status, coverUrl, updatedAt, publishedAt")
+      .select(
+        "id, title, slug, status, coverUrl, updatedAt, publishedAt,content",
+      )
       .order("updatedAt", { ascending: false });
 
     if (error)

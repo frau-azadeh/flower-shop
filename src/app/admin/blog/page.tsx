@@ -1,10 +1,6 @@
-import PostEditor from "@/app/components/admin/PostEditor";
-import RequireAuth from "@/app/components/admin/RequireAuth";
+import AdminBlogClient from "./AdminBlogClient";
 
 export default function Page() {
-  return (
-    <RequireAuth allow={["BLOG", "FULL"]}>
-      <PostEditor />
-    </RequireAuth>
-  );
+  // این فایل هیچ dynamic با ssr:false ندارد
+  return <AdminBlogClient />;
 }

@@ -1,4 +1,5 @@
 // app/blog/page.tsx
+
 import BlogIndexClient from "./BlogIndexClient";
 import { createSupabaseClient } from "@/lib/supabase";
 
