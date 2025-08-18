@@ -6,6 +6,7 @@ import Footer from "./components/ui/Footer";
 import ContactFab from "./components/ui/ContactFab";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import MobileNavBar from "./components/ui/MobileNavbar";
+import BackButton from "./components/ui/BackButton";
 
 export default function SiteChrome({
   children,
@@ -30,6 +31,7 @@ export default function SiteChrome({
       {/* اینها اختیاری‌اند؛ اگه برای /user نمی‌خوایشون، شرط بذار */}
       <ContactFab />
       <ScrollToTop />
+      <BackButton />
       <MobileNavBar />
 
       {/* Footer عمومی فقط وقتی که مسیر user نیست */}
