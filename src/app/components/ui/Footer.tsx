@@ -14,20 +14,30 @@ interface PostRow {
   slug: string;
   status: Status;
 }
+interface ProductRow {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 /* ===== Footer ===== */
 export default function Footer() {
   const [phone, setPhone] = useState<string>("");
-
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     // TODO: ارسال شماره به API
     setPhone("");
   };
 
+  // مقالات
   const [articles, setArticles] = useState<PostRow[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string>("");
+
+  // آخرین محصولات
+  const [latestProducts, setLatestProducts] = useState<ProductRow[]>([]);
+  const [pLoading, setPLoading] = useState<boolean>(false);
+  const [pErr, setPErr] = useState<string>("");
 
   useEffect(() => {
     let isMounted = true;
@@ -41,16 +51,12 @@ export default function Footer() {
         });
         const json: { ok?: true; rows?: PostRow[]; error?: string } =
           await res.json();
-
         if (!res.ok || !json.ok || !json.rows) {
           throw new Error(json.error || `HTTP ${res.status}`);
         }
-
-        // فقط منتشر شده‌ها + حداکثر 4 مورد
         const latest = json.rows
           .filter((r) => r.status === "published")
           .slice(0, 4);
-
         if (isMounted) setArticles(latest);
       } catch (e) {
         if (isMounted)
@@ -60,7 +66,30 @@ export default function Footer() {
       }
     }
 
+    async function fetchLatestProducts() {
+      setPLoading(true);
+      setPErr("");
+      try {
+        const res = await fetch("/api/admin/product/latest", {
+          cache: "no-store",
+        });
+        const json: { ok?: true; rows?: ProductRow[]; error?: string } =
+          await res.json();
+        if (!res.ok || !json.ok || !json.rows) {
+          throw new Error(json.error || `HTTP ${res.status}`);
+        }
+        if (isMounted) setLatestProducts(json.rows);
+      } catch (e) {
+        if (isMounted)
+          setPErr(e instanceof Error ? e.message : "خطا در دریافت محصولات");
+      } finally {
+        if (isMounted) setPLoading(false);
+      }
+    }
+
     fetchArticles();
+    fetchLatestProducts();
+
     return () => {
       isMounted = false;
     };
@@ -71,6 +100,7 @@ export default function Footer() {
       {/* ویژگی‌ها */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
+          {/* ... همان 4 باکس ویژگی ... */}
           <div className="flex flex-col items-center gap-2">
             <div className="rounded-full p-3 ring-1 ring-border bg-white text-accent">
               <Truck className="w-6 h-6" />
@@ -116,6 +146,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* خبرنامه */}
             <div>
+              {/* ... همانی که داشتی ... */}
               <div className="rounded-2xl bg-muted p-5 shadow-sm">
                 <h3 className="text-base font-bold mb-3">
                   همیشه اولین نفر باش!
@@ -141,6 +172,37 @@ export default function Footer() {
 
             {/* ستون‌های لینک + مجله */}
             <div className="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {/* محصولات جدید (به‌جای دسته‌بندی ثابت) */}
+              <div>
+                <h4 className="mb-3 text-base font-extrabold text-primary">
+                  محصولات جدید
+                </h4>
+                <ul className="space-y-2 text-sm">
+                  {pLoading && (
+                    <li className="text-text-muted">در حال بارگذاری…</li>
+                  )}
+                  {pErr && !pLoading && (
+                    <li className="text-red-600">خطا: {pErr}</li>
+                  )}
+                  {!pLoading &&
+                    !pErr &&
+                    latestProducts.map((p) => (
+                      <li key={p.id}>
+                        <Link
+                          className="hover:text-primary"
+                          href={`/products/${p.slug}`}
+                        >
+                          {p.name}
+                        </Link>
+                      </li>
+                    ))}
+                  {!pLoading && !pErr && latestProducts.length === 0 && (
+                    <li className="text-text-muted">محصولی یافت نشد.</li>
+                  )}
+                </ul>
+              </div>
+
+              {/* لینک‌های خدمات مشتریان (بدون تغییر) */}
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   خدمات مشتریان
@@ -177,64 +239,11 @@ export default function Footer() {
                 </ul>
               </div>
 
-              <div>
-                <h4 className="mb-3 text-base font-extrabold text-primary">
-                  دسته‌بندی محصولات
-                </h4>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      className="hover:text-primary"
-                      href="/products/indoor"
-                    >
-                      گل و گیاه آپارتمانی
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary"
-                      href="/products/cut-flowers"
-                    >
-                      گل شاخه‌بریده
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary"
-                      href="/products/houseplants"
-                    >
-                      خرید گل آپارتمانی
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="hover:text-primary" href="/products/sale">
-                      حراج گل و گیاه
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary"
-                      href="/products/promo-pots"
-                    >
-                      گلدان تبلیغاتی
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="hover:text-primary"
-                      href="/products/fertilizers"
-                    >
-                      خرید کود
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
+              {/* مجله گل‌فروش (همانی که داشتی) */}
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   مجله گل‌فروش
                 </h4>
-
                 <ul className="space-y-2">
                   {loading && (
                     <li className="text-sm text-text-muted">
