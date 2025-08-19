@@ -34,10 +34,16 @@ type InitialState = {
   max?: number;
 };
 
-export default function ProductsBrowser({ initial }: { initial?: InitialState }) {
+export default function ProductsBrowser({
+  initial,
+}: {
+  initial?: InitialState;
+}) {
   // ---------- filters state ----------
   const [q, setQ] = useState(initial?.q ?? "");
-  const [selectedCats, setSelectedCats] = useState<string[]>(initial?.categories ?? []);
+  const [selectedCats, setSelectedCats] = useState<string[]>(
+    initial?.categories ?? [],
+  );
   const [min, setMin] = useState<number | undefined>(initial?.min);
   const [max, setMax] = useState<number | undefined>(initial?.max);
 
@@ -47,7 +53,10 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [total, setTotal] = useState(0);
-  const [range, setRange] = useState<{ min: number | null; max: number | null }>({ min: null, max: null });
+  const [range, setRange] = useState<{
+    min: number | null;
+    max: number | null;
+  }>({ min: null, max: null });
   const [loading, setLoading] = useState(false);
 
   // mobile filter drawer
@@ -84,7 +93,9 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
       u.set("page", String(nextPage));
       u.set("limit", String(pageSize));
 
-      const res = await fetch(`/api/admin/product/browse?${u.toString()}`, { cache: "no-store" });
+      const res = await fetch(`/api/admin/product/browse?${u.toString()}`, {
+        cache: "no-store",
+      });
       const json: BrowseRes = await res.json();
 
       if (!json.ok) {
@@ -120,7 +131,7 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
   // ---------- UI helpers ----------
   function toggleCat(c: string) {
     setSelectedCats((prev) =>
-      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
     );
   }
 
@@ -161,7 +172,10 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
         {loading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="animate-pulse rounded-2xl border border-slate-200 bg-white">
+              <div
+                key={i}
+                className="animate-pulse rounded-2xl border border-slate-200 bg-white"
+              >
                 <div className="aspect-[4/3] w-full rounded-t-2xl bg-slate-100" />
                 <div className="p-3 space-y-2">
                   <div className="h-3 w-24 rounded bg-slate-100" />
@@ -206,26 +220,29 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
       </div>
 
       {/* sidebar (دسکتاپ) */}
-     <aside className="hidden md:block">
-        <div className="sticky top-24"> 
-        <FiltersPanel
-          categories={categories}
-          selectedCats={selectedCats}
-          toggleCat={toggleCat}
-          clearFilters={clearFilters}
-          min={min}
-          max={max}
-          setMin={setMin}
-          setMax={setMax}
-          range={range}
-        />
+      <aside className="hidden md:block">
+        <div className="sticky top-24">
+          <FiltersPanel
+            categories={categories}
+            selectedCats={selectedCats}
+            toggleCat={toggleCat}
+            clearFilters={clearFilters}
+            min={min}
+            max={max}
+            setMin={setMin}
+            setMax={setMax}
+            range={range}
+          />
         </div>
       </aside>
 
       {/* mobile drawer */}
       {drawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setDrawerOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={() => setDrawerOpen(false)}
+          />
           <div className="absolute bottom-0 left-0 right-0 max-h-[80vh] rounded-t-2xl bg-white p-4 shadow-xl">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-sm font-semibold">فیلترها</h4>
@@ -284,13 +301,26 @@ function FiltersPanel(props: {
   setMax: (n: number | undefined) => void;
   range: { min: number | null; max: number | null };
 }) {
-  const { categories, selectedCats, toggleCat, min, max, setMin, setMax, range } = props;
+  const {
+    categories,
+    selectedCats,
+    toggleCat,
+    min,
+    max,
+    setMin,
+    setMax,
+    range,
+  } = props;
   return (
-    <div className="  rounded-2xl border border-slate-200 bg-white p-4
-        max-h-[calc(100vh-8rem)] overflow-auto">
+    <div
+      className="  rounded-2xl border border-slate-200 bg-white p-4
+        max-h-[calc(100vh-8rem)] overflow-auto"
+    >
       {/* دسته‌ها */}
       <div>
-        <div className="mb-2 text-sm font-semibold text-slate-700">دسته‌بندی</div>
+        <div className="mb-2 text-sm font-semibold text-slate-700">
+          دسته‌بندی
+        </div>
         <div className="max-h-60 overflow-auto pr-1">
           {categories.length === 0 ? (
             <div className="text-xs text-slate-500">دسته‌ای موجود نیست</div>
@@ -316,21 +346,27 @@ function FiltersPanel(props: {
 
       {/* قیمت */}
       <div className="mt-4">
-        <div className="mb-2 text-sm font-semibold text-slate-700">بازه قیمت (تومان)</div>
+        <div className="mb-2 text-sm font-semibold text-slate-700">
+          بازه قیمت (تومان)
+        </div>
         <div className="max-h-40 overflow-auto pr-1">
           <div className="grid grid-cols-2 gap-2">
             <input
               inputMode="numeric"
               placeholder={range.min != null ? String(range.min) : "حداقل"}
               value={min ?? ""}
-              onChange={(e) => setMin(e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                setMin(e.target.value ? Number(e.target.value) : undefined)
+              }
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
             />
             <input
               inputMode="numeric"
               placeholder={range.max != null ? String(range.max) : "حداکثر"}
               value={max ?? ""}
-              onChange={(e) => setMax(e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                setMax(e.target.value ? Number(e.target.value) : undefined)
+              }
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
             />
           </div>
@@ -343,10 +379,15 @@ function FiltersPanel(props: {
       </div>
 
       <div className="mt-4 flex items-center justify-between">
-        <button className="rounded-lg border px-3 py-2 text-sm" onClick={props.clearFilters}>
+        <button
+          className="rounded-lg border px-3 py-2 text-sm"
+          onClick={props.clearFilters}
+        >
           پاک‌کردن
         </button>
-        <span className="text-xs text-slate-400">تغییرات به‌صورت خودکار اعمال می‌شود</span>
+        <span className="text-xs text-slate-400">
+          تغییرات به‌صورت خودکار اعمال می‌شود
+        </span>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 type Row = {
   title: string;
   slug: string;
-  content: string;        // HTML
+  content: string; // HTML
   publishedAt: string | null;
   coverUrl: string | null;
 };
@@ -19,7 +19,10 @@ const POSTS_PER_PAGE = 9;
 
 /* ===== Utils ===== */
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 function readingTime(text: string): number {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -126,7 +129,8 @@ export default function BlogIndexClient({
             مجلهٔ گل‌فروش
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های جدید.
+            نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های
+            جدید.
           </p>
 
           {/* فرم فیلتر — کاملاً ریسپانسیو */}
@@ -246,7 +250,9 @@ export default function BlogIndexClient({
                     <p className="mt-2 line-clamp-3 text-justify text-sm leading-7 text-slate-600">
                       {(() => {
                         const plain = stripHtml(featured.content);
-                        return plain.length > 240 ? plain.slice(0, 240) + "…" : plain;
+                        return plain.length > 240
+                          ? plain.slice(0, 240) + "…"
+                          : plain;
                       })()}
                     </p>
                     <span className="mt-4 inline-block text-[13px] font-medium text-primary">
@@ -261,7 +267,8 @@ export default function BlogIndexClient({
             <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row-dense gap-6 sm:gap-7">
               {(featured ? rest : pageItems).map((p) => {
                 const plain = stripHtml(p.content);
-                const excerpt = plain.length > 200 ? plain.slice(0, 200) + "…" : plain;
+                const excerpt =
+                  plain.length > 200 ? plain.slice(0, 200) + "…" : plain;
                 return (
                   <li
                     key={p.slug}
@@ -310,7 +317,9 @@ export default function BlogIndexClient({
                           مطالعه
                           <span aria-hidden>↗</span>
                         </Link>
-                        <span className="text-[10px] text-slate-400">● ● ●</span>
+                        <span className="text-[10px] text-slate-400">
+                          ● ● ●
+                        </span>
                       </div>
                     </div>
                   </li>
@@ -347,7 +356,9 @@ export default function BlogIndexClient({
                     setCurrentPage(p);
                   }}
                   className={`rounded-lg border px-3 py-1.5 ${
-                    currentPage >= totalPages ? "pointer-events-none opacity-50" : ""
+                    currentPage >= totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
                   }`}
                 >
                   بعدی

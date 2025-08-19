@@ -19,7 +19,12 @@ type Props = {
   slug?: string;
 };
 
-export default function ShareBox({ title, url, path = "blog", slug = "" }: Props) {
+export default function ShareBox({
+  title,
+  url,
+  path = "blog",
+  slug = "",
+}: Props) {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const finalUrl = url ?? `${base}/${path}/${slug}`;
 

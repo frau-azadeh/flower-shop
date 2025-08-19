@@ -70,7 +70,9 @@ export default function Footer() {
       setPLoading(true);
       setPErr("");
       try {
-        const res = await fetch("/api/admin/product/latest", { cache: "no-store" });
+        const res = await fetch("/api/admin/product/latest", {
+          cache: "no-store",
+        });
         const json: { ok?: true; rows?: ProductRow[]; error?: string } =
           await res.json();
         if (!res.ok || !json.ok || !json.rows) {
@@ -146,7 +148,9 @@ export default function Footer() {
             <div>
               {/* ... همانی که داشتی ... */}
               <div className="rounded-2xl bg-muted p-5 shadow-sm">
-                <h3 className="text-base font-bold mb-3">همیشه اولین نفر باش!</h3>
+                <h3 className="text-base font-bold mb-3">
+                  همیشه اولین نفر باش!
+                </h3>
                 <p className="text-sm text-text-muted mb-4">
                   برای اطلاع از آخرین تخفیف‌ها شماره تماست رو وارد کن.
                 </p>
@@ -205,7 +209,10 @@ export default function Footer() {
                 </h4>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link className="hover:text-primary" href="/help/how-to-order">
+                    <Link
+                      className="hover:text-primary"
+                      href="/help/how-to-order"
+                    >
                       نحوه ثبت سفارش
                     </Link>
                   </li>
@@ -239,7 +246,9 @@ export default function Footer() {
                 </h4>
                 <ul className="space-y-2">
                   {loading && (
-                    <li className="text-sm text-text-muted">در حال بارگذاری…</li>
+                    <li className="text-sm text-text-muted">
+                      در حال بارگذاری…
+                    </li>
                   )}
                   {err && !loading && (
                     <li className="text-sm text-red-600">خطا: {err}</li>
@@ -248,13 +257,18 @@ export default function Footer() {
                     !err &&
                     articles.map((a) => (
                       <li key={a.id} className="text-sm">
-                        <Link className="hover:text-blue-500" href={`/blog/${a.slug}`}>
+                        <Link
+                          className="hover:text-blue-500"
+                          href={`/blog/${a.slug}`}
+                        >
                           {a.title}
                         </Link>
                       </li>
                     ))}
                   {!loading && !err && articles.length === 0 && (
-                    <li className="text-sm text-text-muted">مقاله‌ای یافت نشد.</li>
+                    <li className="text-sm text-text-muted">
+                      مقاله‌ای یافت نشد.
+                    </li>
                   )}
                 </ul>
               </div>
@@ -264,7 +278,10 @@ export default function Footer() {
           <div className="mt-10 border-t border-border pt-6 text-center text-xs text-text-muted mb-5 md:mb-0">
             <span>
               تمامی حقوق این وب‌سایت متعلق به{" "}
-              <a href="https://sunflower-dev.com" className="text-primary font-bold">
+              <a
+                href="https://sunflower-dev.com"
+                className="text-primary font-bold"
+              >
                 آزاده شریفی سلطانی
               </a>{" "}
               است.

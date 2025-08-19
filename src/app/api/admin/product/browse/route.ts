@@ -33,28 +33,42 @@ export async function GET(req: NextRequest) {
 
     const q = (url.searchParams.get("q") || "").trim();
     const page = Math.max(1, Number(url.searchParams.get("page") || 1));
-    const limit = Math.min(48, Math.max(1, Number(url.searchParams.get("limit") || 12)));
+    const limit = Math.min(
+      48,
+      Math.max(1, Number(url.searchParams.get("limit") || 12)),
+    );
     const catsFromRepeat = url.searchParams.getAll("category").filter(Boolean);
     const catsFromCsv = (url.searchParams.get("categories") || "")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
-    const categoriesFilter = Array.from(new Set([...catsFromRepeat, ...catsFromCsv]));
-    const min = url.searchParams.get("min") ? Number(url.searchParams.get("min")) : undefined;
-    const max = url.searchParams.get("max") ? Number(url.searchParams.get("max")) : undefined;
+    const categoriesFilter = Array.from(
+      new Set([...catsFromRepeat, ...catsFromCsv]),
+    );
+    const min = url.searchParams.get("min")
+      ? Number(url.searchParams.get("min"))
+      : undefined;
+    const max = url.searchParams.get("max")
+      ? Number(url.searchParams.get("max"))
+      : undefined;
 
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
     let query = sb
       .from("products")
-      .select("id, name, slug, price, salePrice, category, coverUrl, createdAt", { count: "exact" })
+      .select(
+        "id, name, slug, price, salePrice, category, coverUrl, createdAt",
+        { count: "exact" },
+      )
       .eq("active", true)
       .order("createdAt", { ascending: false })
       .range(from, to);
 
     if (q) {
-      query = query.or(`name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`);
+      query = query.or(
+        `name.ilike.%${q}%,slug.ilike.%${q}%,category.ilike.%${q}%`,
+      );
     }
     if (categoriesFilter.length > 0) {
       query = query.in("category", categoriesFilter);
@@ -64,7 +78,7 @@ export async function GET(req: NextRequest) {
       const hi = max ?? 9_000_000_000;
       // اگر تخفیف دارد، salePrice ملاک است؛ در غیر اینصورت price
       query = query.or(
-        `and(salePrice.gte.${lo},salePrice.lte.${hi}),and(salePrice.is.null,price.gte.${lo},price.lte.${hi})`
+        `and(salePrice.gte.${lo},salePrice.lte.${hi}),and(salePrice.is.null,price.gte.${lo},price.lte.${hi})`,
       );
     }
 
@@ -78,7 +92,7 @@ export async function GET(req: NextRequest) {
       .eq("active", true);
     if (catsErr) throw catsErr;
     const categories = Array.from(
-      new Set((catsRaw ?? []).map((r) => String(r.category)).filter(Boolean))
+      new Set((catsRaw ?? []).map((r) => String(r.category)).filter(Boolean)),
     ).sort((a, b) => a.localeCompare(b, "fa"));
 
     // محاسبه حداقل/حداکثر قیمت: هم روی salePrice هم price
@@ -119,12 +133,14 @@ export async function GET(req: NextRequest) {
         .maybeSingle(),
     ]);
 
-    const mins = [Number(minSale?.salePrice ?? NaN), Number(minPrice?.price ?? NaN)].filter(
-      (n) => Number.isFinite(n) && n >= 0
-    );
-    const maxs = [Number(maxSale?.salePrice ?? NaN), Number(maxPrice?.price ?? NaN)].filter(
-      (n) => Number.isFinite(n) && n >= 0
-    );
+    const mins = [
+      Number(minSale?.salePrice ?? NaN),
+      Number(minPrice?.price ?? NaN),
+    ].filter((n) => Number.isFinite(n) && n >= 0);
+    const maxs = [
+      Number(maxSale?.salePrice ?? NaN),
+      Number(maxPrice?.price ?? NaN),
+    ].filter((n) => Number.isFinite(n) && n >= 0);
 
     const body: Ok = {
       ok: true,

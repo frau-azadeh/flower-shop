@@ -1,7 +1,12 @@
 import ProductsBrowser from "./ProductsBrowser";
 
 type PageProps = {
-  searchParams: Promise<{ q?: string; category?: string; min?: string; max?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+    min?: string;
+    max?: string;
+  }>;
 };
 
 export default async function ProductsPage({ searchParams }: PageProps) {

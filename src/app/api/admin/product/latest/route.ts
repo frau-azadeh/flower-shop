@@ -15,10 +15,7 @@ export async function GET() {
     .limit(4);
 
   if (error) {
-    return NextResponse.json(
-      { ok: false, error: "DB_ERROR" },
-      { status: 500 },
-    );
+    return NextResponse.json({ ok: false, error: "DB_ERROR" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, rows: (data ?? []) as Row[] });
