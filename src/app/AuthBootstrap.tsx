@@ -1,8 +1,10 @@
 "use client";
+
 import { useEffect } from "react";
 import { createSupabaseClient } from "@/lib/supabase";
 import { useAppDispatch } from "@/store/hooks";
 import { setProfile, clearProfile, setStatus } from "@/store/user/userSlice";
+import { setOwner } from "@/store/orders/cartSlice";
 
 type ProfileRow = {
   id: string;
@@ -16,34 +18,43 @@ export default function AuthBootstrap(): null {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const load = async () => {
       dispatch(setStatus("loading"));
-
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const userId = session?.user?.id;
+      const uid = session?.user?.id ?? null;
 
-      if (userId) {
-        const { data: profile }: { data: ProfileRow | null } = await supabase
+      // سبد را به همین کاربر/میهمان گره بزن
+      dispatch(setOwner(uid));
+
+      if (uid) {
+        const { data: profile } = await supabase
           .from("profiles")
           .select("id, fullName, email, phone")
-          .eq("id", userId)
+          .eq("id", uid)
           .maybeSingle();
 
-        if (profile) {
-          dispatch(setProfile(profile));
-        } else {
-          dispatch(clearProfile());
-        }
+        profile
+          ? dispatch(setProfile(profile as ProfileRow))
+          : dispatch(clearProfile());
       } else {
         dispatch(clearProfile());
       }
-
       dispatch(setStatus("idle"));
     };
 
-    loadProfile();
+    load();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
+      const uid = session?.user?.id ?? null;
+      dispatch(setOwner(uid)); // تغییر کاربر ⇒ سبد همان کاربر
+      load(); // پروفایل را تازه کن
+    });
+
+    return () => {
+      sub.subscription?.unsubscribe();
+    };
   }, [dispatch, supabase]);
 
   return null;

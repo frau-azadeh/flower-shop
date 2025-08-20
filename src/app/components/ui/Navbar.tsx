@@ -21,6 +21,8 @@ import Button from "./Button";
 import { createSupabaseClient } from "@/lib/supabase";
 import { useAppSelector } from "@/store/hooks";
 
+import HeaderCartIcon from "@/app/components/ui/HeaderCartIcon";
+
 type NavItem = { label: string; href: string };
 
 const NAV: NavItem[] = [
@@ -127,17 +129,7 @@ function MobileMenu({
         ))}
 
         <div className="mt-4 border-t border-border pt-3 space-y-2">
-          <Link
-            href="/cart"
-            onClick={onClose}
-            className="flex items-center justify-between rounded-lg bg-muted px-3 py-2 text-sm"
-          >
-            <span className="font-semibold">سبد خرید</span>
-            <span className="inline-flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4" />
-              <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-            </span>
-          </Link>
+          <HeaderCartIcon />
 
           {/* حساب کاربری در موبایل */}
           {!isLoggedIn ? (
@@ -289,14 +281,7 @@ export default function Navbar() {
               >
                 <Heart className="w-5 h-5" />
               </Link>
-              <Link
-                href="/cart"
-                className="relative p-2 rounded-full hover:bg-muted"
-                aria-label="سبد خرید"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                <span className="absolute -top-0.5 -left-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface" />
-              </Link>
+              <HeaderCartIcon />
 
               {/* ورود / حساب + خروج */}
               {!isLoggedIn ? (

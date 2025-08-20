@@ -1,31 +1,61 @@
 "use client";
 
-import React from "react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
 import { Search, Heart, ShoppingBag, User2Icon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
-const MobileNavBar: React.FC = () => {
+export default function MobileNavBar() {
+  const pathname = usePathname();
+
+  // جمع کل تعداد آیتم‌های سبد از Redux
+  const totalQty = useSelector((s: RootState) =>
+    Object.values(s.cart.items).reduce((sum, it) => sum + it.qty, 0),
+  );
+
+  const itemCls = "flex flex-col items-center text-white relative";
+  const isActive = (p: string) => pathname?.startsWith(p);
+
   return (
     <div className="fixed bottom-0 w-full bg-primary shadow-lg flex justify-around items-center py-2 z-50 md:hidden rounded-t-md">
-      <a href="#" className="flex flex-col items-center text-white">
+      <Link
+        href="/search"
+        className={clsx(itemCls, isActive("/search") && "opacity-90")}
+        aria-label="جستجو"
+      >
         <Search size={24} />
-      </a>
+      </Link>
 
-      <a href="#" className="flex flex-col items-center text-white">
+      <Link
+        href="/favorites"
+        className={clsx(itemCls, isActive("/favorites") && "opacity-90")}
+        aria-label="علاقه‌مندی‌ها"
+      >
         <Heart size={24} />
-      </a>
+      </Link>
 
-      <a href="#" className="flex flex-col items-center text-white">
+      <Link
+        href="/cart"
+        className={clsx(itemCls, isActive("/cart") && "opacity-90")}
+        aria-label="سبد خرید"
+      >
         <ShoppingBag size={24} />
-      </a>
+        {totalQty > 0 && (
+          <span className="absolute -top-1 -right-2 rounded-full bg-black text-white text-xs px-1.5 py-0.5">
+            {totalQty}
+          </span>
+        )}
+      </Link>
 
-      <a
+      <Link
         href="/user/dashboard"
-        className="flex flex-col items-center text-white"
+        className={clsx(itemCls, isActive("/user") && "opacity-90")}
+        aria-label="پنل کاربر"
       >
         <User2Icon size={24} />
-      </a>
+      </Link>
     </div>
   );
-};
-
-export default MobileNavBar;
+}
