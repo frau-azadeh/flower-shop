@@ -4,6 +4,9 @@ import type { PublicProduct } from "@/types/product";
 import { toman } from "@/lib/format";
 import ShareBox from "@/app/products/[slug]/ShareBox";
 import ProductCard from "../ProductCard";
+import AddToCartBar from "@/app/components/user/AddToCartBar";
+
+
 
 export const revalidate = 60;
 
@@ -97,6 +100,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   <span className="text-lg font-bold">{toman(p.price)}</span>
                 )}
               </div>
+
+<AddToCartBar
+  productId={p.id}
+  productName={p.name}
+  price={p.salePrice ?? p.price}
+  coverUrl={p.coverUrl ?? undefined}
+  slug={p.slug}
+// maxQty={p.stock}  // اگر stock داری
+/>
 
               <p className="whitespace-pre-line leading-7 text-slate-700">
                 {p.description || "—"}
