@@ -23,7 +23,6 @@ import { useAppSelector } from "@/store/hooks";
 
 import HeaderCartIcon from "@/app/components/ui/HeaderCartIcon";
 
-
 type NavItem = { label: string; href: string };
 
 const NAV: NavItem[] = [
@@ -131,7 +130,6 @@ function MobileMenu({
 
         <div className="mt-4 border-t border-border pt-3 space-y-2">
           <HeaderCartIcon />
-
 
           {/* حساب کاربری در موبایل */}
           {!isLoggedIn ? (
@@ -284,7 +282,6 @@ export default function Navbar() {
                 <Heart className="w-5 h-5" />
               </Link>
               <HeaderCartIcon />
-
 
               {/* ورود / حساب + خروج */}
               {!isLoggedIn ? (

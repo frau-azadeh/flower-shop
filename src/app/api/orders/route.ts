@@ -14,16 +14,24 @@ export async function GET() {
     const { data: uRes } = await sb.auth.getUser();
     const userId = uRes.user?.id;
     if (!userId) {
-      return NextResponse.json({ ok: false, message: "UNAUTHORIZED" }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, message: "UNAUTHORIZED" },
+        { status: 401 },
+      );
     }
 
     const { data, error } = await sb
       .from("orders")
-      .select("id, status, fullName, phone, address, note, subTotal, shippingFee, grandTotal, createdAt")
+      .select(
+        "id, status, fullName, phone, address, note, subTotal, shippingFee, grandTotal, createdAt",
+      )
       .order("createdAt", { ascending: false });
 
     if (error) {
-      return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: error.message },
+        { status: 500 },
+      );
     }
 
     const orders: OrderRow[] = (data ?? []) as OrderRow[];
@@ -42,7 +50,10 @@ export async function POST(req: NextRequest) {
     const { data: uRes } = await sb.auth.getUser();
     const userId = uRes.user?.id;
     if (!userId) {
-      return NextResponse.json({ ok: false, message: "UNAUTHORIZED" }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, message: "UNAUTHORIZED" },
+        { status: 401 },
+      );
     }
 
     // 2) ورودی
@@ -51,20 +62,28 @@ export async function POST(req: NextRequest) {
 
     // 3) محصولات (بدون RLS)
     const admin = supabaseAdmin();
-    const productIds = [...new Set(input.items.map(i => i.productId))];
+    const productIds = [...new Set(input.items.map((i) => i.productId))];
 
     const { data: prodData, error: prodErr } = await admin
       .from("products")
-      .select("id, name, slug, price, salePrice, stock, coverUrl, category, active")
+      .select(
+        "id, name, slug, price, salePrice, stock, coverUrl, category, active",
+      )
       .in("id", productIds);
 
     if (prodErr) {
-      return NextResponse.json({ ok: false, message: prodErr.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: prodErr.message },
+        { status: 500 },
+      );
     }
 
     const products: ProductRow[] = (prodData ?? []) as ProductRow[];
     if (products.length !== productIds.length) {
-      return NextResponse.json({ ok: false, message: "بعضی محصولات یافت نشد." }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, message: "بعضی محصولات یافت نشد." },
+        { status: 400 },
+      );
     }
 
     // 4) محاسبه و کنترل موجودی
@@ -76,16 +95,18 @@ export async function POST(req: NextRequest) {
       unitPrice: number;
       lineTotal: number;
     }[] = input.items.map((it) => {
-      const p = products.find(pp => pp.id === it.productId)!;
+      const p = products.find((pp) => pp.id === it.productId)!;
 
       if (!p.active) {
         throw new Error(`محصول «${p.name}» غیرفعال است.`);
       }
       if (p.stock < it.qty) {
-        throw new Error(`موجودی «${p.name}» کافی نیست (درخواست ${it.qty}، موجود ${p.stock}).`);
+        throw new Error(
+          `موجودی «${p.name}» کافی نیست (درخواست ${it.qty}، موجود ${p.stock}).`,
+        );
       }
 
-      const unitPrice = (p.salePrice ?? p.price);
+      const unitPrice = p.salePrice ?? p.price;
       const lineTotal = unitPrice * it.qty;
       subTotal += lineTotal;
 
@@ -97,40 +118,52 @@ export async function POST(req: NextRequest) {
     // 5) درج order
     const { data: orderRow, error: orderErr } = await admin
       .from("orders")
-      .insert([{
-        userId,
-        status: "pending",
-        fullName: input.fullName,
-        phone: input.phone,
-        address: input.address,
-        note: input.note ?? null,
-        subTotal,
-        shippingFee: SHIPPING_FEE,
-        grandTotal,
-      }])
+      .insert([
+        {
+          userId,
+          status: "pending",
+          fullName: input.fullName,
+          phone: input.phone,
+          address: input.address,
+          note: input.note ?? null,
+          subTotal,
+          shippingFee: SHIPPING_FEE,
+          grandTotal,
+        },
+      ])
       .select("id")
       .single();
 
     if (orderErr || !orderRow) {
-      return NextResponse.json({ ok: false, message: orderErr?.message ?? "ثبت سفارش ناموفق بود" }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: orderErr?.message ?? "ثبت سفارش ناموفق بود" },
+        { status: 500 },
+      );
     }
     const orderId: string = orderRow.id;
 
     // 6) درج اقلام
-    const itemsRows: Omit<OrderItemRow, "id" | "createdAt">[] = lineItems.map((li) => ({
-      orderId,
-      productId: li.product.id,
-      qty: li.qty,
-      unitPrice: li.unitPrice,
-      lineTotal: li.lineTotal,
-      productName: li.product.name,
-      productSlug: li.product.slug,
-      productCategory: li.product.category,
-    }));
+    const itemsRows: Omit<OrderItemRow, "id" | "createdAt">[] = lineItems.map(
+      (li) => ({
+        orderId,
+        productId: li.product.id,
+        qty: li.qty,
+        unitPrice: li.unitPrice,
+        lineTotal: li.lineTotal,
+        productName: li.product.name,
+        productSlug: li.product.slug,
+        productCategory: li.product.category,
+      }),
+    );
 
-    const { error: itemsErr } = await admin.from("orderItems").insert(itemsRows);
+    const { error: itemsErr } = await admin
+      .from("orderItems")
+      .insert(itemsRows);
     if (itemsErr) {
-      return NextResponse.json({ ok: false, message: itemsErr.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: itemsErr.message },
+        { status: 500 },
+      );
     }
 
     // 7) کم کردن موجودی (ساده؛ برای تولید واقعی بهتر است RPC/transaction)
@@ -143,8 +176,11 @@ export async function POST(req: NextRequest) {
 
       if (upErr) {
         return NextResponse.json(
-          { ok: false, message: `خطا در بروزرسانی موجودی «${li.product.name}»` },
-          { status: 500 }
+          {
+            ok: false,
+            message: `خطا در بروزرسانی موجودی «${li.product.name}»`,
+          },
+          { status: 500 },
         );
       }
     }

@@ -23,7 +23,8 @@ export function useOrders() {
       try {
         const res = await fetch("/api/orders", { cache: "no-store" });
         const data = await res.json();
-        if (res.ok && Array.isArray(data.orders)) setOrders(data.orders as OrderRow[]);
+        if (res.ok && Array.isArray(data.orders))
+          setOrders(data.orders as OrderRow[]);
       } finally {
         setLoading(false);
       }
@@ -32,7 +33,9 @@ export function useOrders() {
 
   const groups = useMemo(() => {
     // نگاشت وضعیت‌ها به تب‌ها
-    const current = orders.filter((o) => o.status === "pending" || o.status === "paid");
+    const current = orders.filter(
+      (o) => o.status === "pending" || o.status === "paid",
+    );
     const delivered = orders.filter((o) => o.status === "sent"); // اگر وضعیت delivered جدا داری، اینجا عوض کن
     const canceled = orders.filter((o) => o.status === "canceled");
     const returned: OrderRow[] = []; // در اسکیمای فعلی وضعیت مرجوع نداریم
@@ -47,7 +50,7 @@ export function useOrders() {
       returned: groups.returned.length,
       canceled: groups.canceled.length,
     }),
-    [groups]
+    [groups],
   );
 
   return { loading, orders, groups, counts };

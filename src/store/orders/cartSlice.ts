@@ -63,7 +63,7 @@ const cartSlice = createSlice({
         price?: number;
         coverUrl?: string;
         slug?: string;
-      }>
+      }>,
     ) {
       const { productId, name, qty, price, coverUrl, slug } = action.payload;
       const ex = state.items[productId];
@@ -99,5 +99,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setOwner, addItem, setQty, removeItem, clearCart } = cartSlice.actions;
+export const { setOwner, addItem, setQty, removeItem, clearCart } =
+  cartSlice.actions;
 export default cartSlice.reducer;

@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   description: "فروشگاه گل",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html dir="rtl" lang="fa">
       <body>

@@ -6,7 +6,11 @@ import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
 
-export default function UserLayout({ children }: { children: React.ReactNode }) {
+export default function UserLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [loading, setLoading] = useState(true);
   const supabase = createSupabaseClient();
   const router = useRouter();

@@ -6,8 +6,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CheckoutClient({
-  defaultFullName = "", defaultPhone = "", defaultAddress = "",
-}: { defaultFullName?: string; defaultPhone?: string; defaultAddress?: string }) {
+  defaultFullName = "",
+  defaultPhone = "",
+  defaultAddress = "",
+}: {
+  defaultFullName?: string;
+  defaultPhone?: string;
+  defaultAddress?: string;
+}) {
   const items = useSelector((s: RootState) => Object.values(s.cart.items));
   const dispatch = useDispatch();
   const router = useRouter();
@@ -29,8 +35,11 @@ export default function CheckoutClient({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          fullName, phone, address, note: note || undefined,
-          items: items.map(it => ({ productId: it.productId, qty: it.qty })),
+          fullName,
+          phone,
+          address,
+          note: note || undefined,
+          items: items.map((it) => ({ productId: it.productId, qty: it.qty })),
         }),
       });
       const data = await res.json();
@@ -44,7 +53,8 @@ export default function CheckoutClient({
     }
   };
 
-  if (items.length === 0) return <div className="container mx-auto px-4 py-6">سبد شما خالی است.</div>;
+  if (items.length === 0)
+    return <div className="container mx-auto px-4 py-6">سبد شما خالی است.</div>;
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -52,17 +62,38 @@ export default function CheckoutClient({
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="rounded-2xl border p-4 space-y-3">
-          <input className="border rounded-xl px-3 py-2" placeholder="نام و نام خانوادگی"
-            value={fullName} onChange={e => setFullName(e.target.value)} />
-          <input className="border rounded-xl px-3 py-2" placeholder="شماره تماس"
-            value={phone} onChange={e => setPhone(e.target.value)} />
-          <textarea className="border rounded-xl px-3 py-2" placeholder="آدرس کامل" rows={3}
-            value={address} onChange={e => setAddress(e.target.value)} />
-          <textarea className="border rounded-xl px-3 py-2" placeholder="توضیحات (اختیاری)" rows={2}
-            value={note} onChange={e => setNote(e.target.value)} />
+          <input
+            className="border rounded-xl px-3 py-2"
+            placeholder="نام و نام خانوادگی"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
+          <input
+            className="border rounded-xl px-3 py-2"
+            placeholder="شماره تماس"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <textarea
+            className="border rounded-xl px-3 py-2"
+            placeholder="آدرس کامل"
+            rows={3}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+          <textarea
+            className="border rounded-xl px-3 py-2"
+            placeholder="توضیحات (اختیاری)"
+            rows={2}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
           {msg && <p className="text-sm bg-gray-50 rounded-xl p-2">{msg}</p>}
-          <button onClick={submit} disabled={loading || !fullName || !phone || !address}
-            className="rounded-2xl bg-black text-white py-3 disabled:opacity-50">
+          <button
+            onClick={submit}
+            disabled={loading || !fullName || !phone || !address}
+            className="rounded-2xl bg-black text-white py-3 disabled:opacity-50"
+          >
             {loading ? "در حال ثبت..." : "ثبت سفارش"}
           </button>
         </div>
@@ -70,14 +101,21 @@ export default function CheckoutClient({
         <div className="rounded-2xl border p-4">
           <h2 className="font-semibold mb-3">خلاصه سبد</h2>
           <ul className="space-y-2">
-            {items.map(it => (
-              <li key={it.productId} className="flex items-center justify-between">
-                <span>{it.name} × {it.qty}</span>
+            {items.map((it) => (
+              <li
+                key={it.productId}
+                className="flex items-center justify-between"
+              >
+                <span>
+                  {it.name} × {it.qty}
+                </span>
                 <span>{((it.price ?? 0) * it.qty).toLocaleString()} تومان</span>
               </li>
             ))}
           </ul>
-          <div className="mt-4 font-bold">جمع: {total.toLocaleString()} تومان</div>
+          <div className="mt-4 font-bold">
+            جمع: {total.toLocaleString()} تومان
+          </div>
         </div>
       </div>
     </div>

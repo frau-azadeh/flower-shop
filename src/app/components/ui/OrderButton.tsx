@@ -95,7 +95,9 @@ export default function OrderButton({ productId, productName }: Props) {
                     type="number"
                     min={1}
                     value={qty}
-                    onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+                    onChange={(e) =>
+                      setQty(Math.max(1, Number(e.target.value)))
+                    }
                   />
                   <button
                     type="button"

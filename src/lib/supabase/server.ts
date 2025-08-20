@@ -22,6 +22,6 @@ export async function supabaseServer(): Promise<SupabaseClient> {
           cookieStore.set(name, "", { ...(options ?? {}), maxAge: 0 });
         },
       },
-    }
+    },
   );
 }

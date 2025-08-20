@@ -12,7 +12,7 @@ export default function MobileNavBar() {
 
   // جمع کل تعداد آیتم‌های سبد از Redux
   const totalQty = useSelector((s: RootState) =>
-    Object.values(s.cart.items).reduce((sum, it) => sum + it.qty, 0)
+    Object.values(s.cart.items).reduce((sum, it) => sum + it.qty, 0),
   );
 
   const itemCls = "flex flex-col items-center text-white relative";

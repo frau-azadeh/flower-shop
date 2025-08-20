@@ -50,7 +50,10 @@ export default function AutoCheckout() {
             fullName: profile.fullName,
             phone: profile.phone,
             address: profile.address,
-            items: items.map((it) => ({ productId: it.productId, qty: it.qty })),
+            items: items.map((it) => ({
+              productId: it.productId,
+              qty: it.qty,
+            })),
           }),
         });
         const data = await res.json();

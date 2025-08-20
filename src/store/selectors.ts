@@ -7,10 +7,10 @@ export const selectCartItemsMap = (s: RootState) => s.cart.items;
 
 export const selectCartItemsArray = createSelector(
   [selectCartItemsMap],
-  (map): CartItem[] => Object.values(map)
+  (map): CartItem[] => Object.values(map),
 );
 
 export const selectCartTotalQty = createSelector(
   [selectCartItemsArray],
-  (arr) => arr.reduce((sum, it) => sum + it.qty, 0)
+  (arr) => arr.reduce((sum, it) => sum + it.qty, 0),
 );

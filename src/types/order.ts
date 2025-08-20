@@ -1,10 +1,10 @@
 // مدل جدول‌ها – ساده و مطابق ستون‌هایی که در Supabase ساخته‌ای
 export type OrderStatus =
-  | "pending"       // ثبت شده، در انتظار بررسی
-  | "processing"    // در حال پردازش
-  | "shipped"       // ارسال شد
-  | "delivered"     // تحویل شد
-  | "cancelled";    // لغو شد
+  | "pending" // ثبت شده، در انتظار بررسی
+  | "processing" // در حال پردازش
+  | "shipped" // ارسال شد
+  | "delivered" // تحویل شد
+  | "cancelled"; // لغو شد
 
 export interface ProductRow {
   id: string;
@@ -13,7 +13,7 @@ export interface ProductRow {
   price: number;
   salePrice: number | null;
   stock: number;
-  coverUrl: string ;
+  coverUrl: string;
   category: string;
   active: boolean;
   createdAt: string; // timestamptz → string

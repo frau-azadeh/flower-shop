@@ -13,7 +13,12 @@ type Props = {
 };
 
 export default function AddToCartBar({
-  productId, productName, price, coverUrl, slug, maxQty,
+  productId,
+  productName,
+  price,
+  coverUrl,
+  slug,
+  maxQty,
 }: Props) {
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
@@ -26,7 +31,9 @@ export default function AddToCartBar({
   const onAdd = () => {
     setAdding(true);
     try {
-      dispatch(addItem({ productId, name: productName, qty, price, coverUrl, slug }));
+      dispatch(
+        addItem({ productId, name: productName, qty, price, coverUrl, slug }),
+      );
       setMsg("به سبد اضافه شد.");
     } finally {
       setAdding(false);
@@ -38,21 +45,45 @@ export default function AddToCartBar({
     <div className="mb-4">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setQty(q => clamp(q - 1))}
-            className="px-3 py-1 rounded-xl border hover:bg-gray-50" aria-label="کاهش">−</button>
-          <input className="w-16 text-center border rounded-xl py-1" type="number" min={1}
-            value={qty} onChange={e => setQty(clamp(Number(e.target.value) || 1))} />
-          <button type="button" onClick={() => setQty(q => clamp(q + 1))}
-            className="px-3 py-1 rounded-xl border hover:bg-gray-50" aria-label="افزایش">+</button>
+          <button
+            type="button"
+            onClick={() => setQty((q) => clamp(q - 1))}
+            className="px-3 py-1 rounded-xl border hover:bg-gray-50"
+            aria-label="کاهش"
+          >
+            −
+          </button>
+          <input
+            className="w-16 text-center border rounded-xl py-1"
+            type="number"
+            min={1}
+            value={qty}
+            onChange={(e) => setQty(clamp(Number(e.target.value) || 1))}
+          />
+          <button
+            type="button"
+            onClick={() => setQty((q) => clamp(q + 1))}
+            className="px-3 py-1 rounded-xl border hover:bg-gray-50"
+            aria-label="افزایش"
+          >
+            +
+          </button>
         </div>
 
-        <button onClick={onAdd} disabled={adding || qty < 1}
-          className="flex-1 rounded-2xl bg-black text-white py-3 disabled:opacity-50">
+        <button
+          onClick={onAdd}
+          disabled={adding || qty < 1}
+          className="flex-1 rounded-2xl bg-black text-white py-3 disabled:opacity-50"
+        >
           {adding ? "در حال افزودن..." : "افزودن به سبد"}
         </button>
       </div>
 
-      {msg && <p className="mt-2 text-center text-sm text-gray-700 bg-gray-50 rounded-xl p-2">{msg}</p>}
+      {msg && (
+        <p className="mt-2 text-center text-sm text-gray-700 bg-gray-50 rounded-xl p-2">
+          {msg}
+        </p>
+      )}
     </div>
   );
 }

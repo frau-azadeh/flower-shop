@@ -10,12 +10,14 @@ export const makeOrderSchema = z.object({
   phone: z.string().min(5), // اگر خواستی: z.string().regex(/^09\d{9}$/)
   address: z.string().min(5),
   note: z.string().max(500).nullable().optional(),
-  items: z.array(
-    z.object({
-      productId: z.string().uuid(),  // ⬅️ باید حتماً UUID واقعی باشد
-      qty: z.number().int().min(1).max(999),
-    })
-  ).min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().uuid(), // ⬅️ باید حتماً UUID واقعی باشد
+        qty: z.number().int().min(1).max(999),
+      }),
+    )
+    .min(1),
 });
 
 export type MakeOrderInput = z.infer<typeof makeOrderSchema>;

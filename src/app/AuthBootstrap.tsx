@@ -6,7 +6,12 @@ import { useAppDispatch } from "@/store/hooks";
 import { setProfile, clearProfile, setStatus } from "@/store/user/userSlice";
 import { setOwner } from "@/store/orders/cartSlice";
 
-type ProfileRow = { id: string; fullName: string; email: string; phone: string | null };
+type ProfileRow = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+};
 
 export default function AuthBootstrap(): null {
   const supabase = createSupabaseClient();
@@ -15,7 +20,9 @@ export default function AuthBootstrap(): null {
   useEffect(() => {
     const load = async () => {
       dispatch(setStatus("loading"));
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const uid = session?.user?.id ?? null;
 
       // سبد را به همین کاربر/میهمان گره بزن
@@ -28,7 +35,9 @@ export default function AuthBootstrap(): null {
           .eq("id", uid)
           .maybeSingle();
 
-        profile ? dispatch(setProfile(profile as ProfileRow)) : dispatch(clearProfile());
+        profile
+          ? dispatch(setProfile(profile as ProfileRow))
+          : dispatch(clearProfile());
       } else {
         dispatch(clearProfile());
       }
@@ -40,10 +49,12 @@ export default function AuthBootstrap(): null {
     const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
       const uid = session?.user?.id ?? null;
       dispatch(setOwner(uid)); // تغییر کاربر ⇒ سبد همان کاربر
-      load();                 // پروفایل را تازه کن
+      load(); // پروفایل را تازه کن
     });
 
-    return () => { sub.subscription?.unsubscribe(); };
+    return () => {
+      sub.subscription?.unsubscribe();
+    };
   }, [dispatch, supabase]);
 
   return null;

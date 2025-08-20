@@ -6,8 +6,6 @@ import ShareBox from "@/app/products/[slug]/ShareBox";
 import ProductCard from "../ProductCard";
 import AddToCartBar from "@/app/components/user/AddToCartBar";
 
-
-
 export const revalidate = 60;
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -101,14 +99,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-<AddToCartBar
-  productId={p.id}
-  productName={p.name}
-  price={p.salePrice ?? p.price}
-  coverUrl={p.coverUrl ?? undefined}
-  slug={p.slug}
-// maxQty={p.stock}  // اگر stock داری
-/>
+              <AddToCartBar
+                productId={p.id}
+                productName={p.name}
+                price={p.salePrice ?? p.price}
+                coverUrl={p.coverUrl ?? undefined}
+                slug={p.slug}
+                // maxQty={p.stock}  // اگر stock داری
+              />
 
               <p className="whitespace-pre-line leading-7 text-slate-700">
                 {p.description || "—"}
