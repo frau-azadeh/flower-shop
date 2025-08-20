@@ -1,21 +1,21 @@
-"use client";
-
+import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/fonts.css";
 import SiteChrome from "./SiteChrome";
+import ReduxProvider from "./ReduxProvider";
 
-import { Provider } from "react-redux";
-import { store } from "@/store/store";
-import AuthBootstrap from "./AuthBootstrap";
+export const metadata: Metadata = {
+  title: "گل‌فروش",
+  description: "فروشگاه گل",
+};
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html dir="rtl" lang="fa">
       <body>
-        <Provider store={store}>
-          <AuthBootstrap />
+        <ReduxProvider>
           <SiteChrome>{children}</SiteChrome>
-        </Provider>
+        </ReduxProvider>
       </body>
     </html>
   );
