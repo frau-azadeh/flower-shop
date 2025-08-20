@@ -15,7 +15,7 @@
     "@hookform/resolvers": "^5.2.1",
     "@reduxjs/toolkit": "^2.8.2",
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.54.0",
+    "@supabase/supabase-js": "^2.55.0",
     "@tiptap/extension-color": "^3.2.0",
     "@tiptap/extension-highlight": "^3.2.0",
     "@tiptap/extension-image": "^3.2.0",
