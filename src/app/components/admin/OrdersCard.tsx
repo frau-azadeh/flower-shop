@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import Tabs, { TabItem } from "../ui/Tabs";
+import React, { useEffect, useMemo, useState } from "react";
+import Tab, { TabItem } from "../ui/Tab";
 import {
   Clock,
   Flower2,
@@ -12,8 +12,31 @@ import {
   Search,
 } from "lucide-react";
 import Input from "../ui/Input";
+import { useSearchParams, useRouter } from "next/navigation";
 
-const orderTabs: TabItem[] = [
+type OrderItem = {
+  productName: string;
+  qty: number;
+  unitPrice: number;
+  lineTotal: number;
+};
+
+type OrderRow = {
+  id: string;
+  userId: string;
+  status: "pending" | "paid" | "sent" | "canceled" | "returned";
+  fullName: string;
+  phone: string;
+  address: string;
+  note?: string | null;
+  subTotal: number;
+  shippingFee: number;
+  grandTotal: number;
+  createdAt: string;
+  items: OrderItem[];
+};
+
+const baseTabs: TabItem[] = [
   {
     key: "all",
     label: "همه",
@@ -43,7 +66,7 @@ const orderTabs: TabItem[] = [
     label: "تحویل شده",
     icon: <PackageIcon className="size-4" />,
     emptyIcon: <PackageIcon className="size-24 text-slate-300" />,
-    emptyText: "سفارش تحویل شده ای یافت نشد",
+    emptyText: "سفارش تحویل‌شده‌ای یافت نشد",
     badgeCount: 0,
   },
   {
@@ -51,7 +74,7 @@ const orderTabs: TabItem[] = [
     label: "لغو شده",
     icon: <XCircle className="size-4" />,
     emptyIcon: <XCircle className="size-24 text-slate-300" />,
-    emptyText: "سفارشی لعو نشده است",
+    emptyText: "سفارشی لغو نشده است",
     badgeCount: 0,
   },
   {
@@ -64,8 +87,99 @@ const orderTabs: TabItem[] = [
   },
 ];
 
+const rial = (n: number) => `${n.toLocaleString("fa-IR")} تومان`;
+const norm = (s?: string) => (s ?? "").trim().toLowerCase();
+
 const OrdersCard: React.FC = () => {
-  const [question, setQuestion] = useState("");
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const [question, setQuestion] = useState<string>("");
+  const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [counts, setCounts] = useState<Record<string, number>>({
+    all: 0,
+    pending: 0,
+    processing: 0,
+    delivered: 0,
+    canceled: 0,
+    returned: 0,
+  });
+
+  const activeKey = (params.get("status") ?? "all").toLowerCase();
+
+  // تب‌ها با شمارنده‌ها
+  const tabs: TabItem[] = useMemo(
+    () => baseTabs.map((t) => ({ ...t, badgeCount: counts[t.key] ?? 0 })),
+    [counts],
+  );
+
+  // فچ دیتای تب فعال
+  useEffect(() => {
+    setLoading(true);
+    let alive = true;
+
+    const query = new URLSearchParams();
+    query.set("status", activeKey);
+    if (question.trim()) query.set("q", question.trim());
+
+    (async () => {
+      try {
+        const r = await fetch(`/api/admin/orders?${query.toString()}`, {
+          cache: "no-store",
+          credentials: "include",
+        });
+
+        const json = (await r.json()) as {
+          ok: boolean;
+          orders?: OrderRow[];
+          counts?: Record<string, number>;
+        };
+
+        if (!alive) return;
+
+        if (!r.ok || !json?.ok) {
+          setOrders([]);
+          setCounts({
+            all: 0,
+            pending: 0,
+            processing: 0,
+            delivered: 0,
+            canceled: 0,
+            returned: 0,
+          });
+          return;
+        }
+
+        setOrders(json.orders ?? []);
+        setCounts(
+          json.counts ?? {
+            all: 0,
+            pending: 0,
+            processing: 0,
+            delivered: 0,
+            canceled: 0,
+            returned: 0,
+          },
+        );
+      } catch (e: unknown) {
+        if (e instanceof DOMException && e.name === "AbortError") return;
+        // می‌توانی لاگ بگیری
+        // console.error(e);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [activeKey, question]);
+
+  // اگر Tabs شما onChange را ساپورت می‌کند، می‌توانی از آن استفاده کنی؛
+  // در این نسخه از لینک‌های داخلی Tabs استفاده می‌شود.
+  const selectedTab = tabs.find((t) => t.key === activeKey) ?? tabs[0];
+
   return (
     <section dir="rtl" className="mx-auto max-w-6xl p-4 md:p-6">
       <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right">
@@ -84,7 +198,81 @@ const OrdersCard: React.FC = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-500" />
           </label>
         </div>
-        <Tabs tabs={orderTabs} paramsName="status" />
+
+        {/* Tabs: پیام خالی فقط وقتی نمایش داده می‌شود که واقعاً سفارشی نباشد */}
+        <Tab
+          tabs={tabs}
+          paramsName="status"
+          showEmpty={!loading && orders.length === 0}
+        />
+
+        {/* لیست */}
+        <div className="mt-4">
+          {loading ? (
+            <div className="flex items-center justify-center py-16 text-slate-500">
+              در حال بارگذاری…
+            </div>
+          ) : orders.length ===
+            0 ? // پیام خالی را Tabs نشان داده؛ اینجا چیزی لازم نیست
+          null : (
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 text-slate-600">
+                  <tr>
+                    <th className="px-3 py-2 text-right font-medium">
+                      کد سفارش
+                    </th>
+                    <th className="px-3 py-2 text-right font-medium">مشتری</th>
+                    <th className="px-3 py-2 text-right font-medium">تلفن</th>
+                    <th className="px-3 py-2 text-right font-medium">وضعیت</th>
+                    <th className="px-3 py-2 text-right font-medium">
+                      تعداد اقلام
+                    </th>
+                    <th className="px-3 py-2 text-right font-medium">
+                      مبلغ کل
+                    </th>
+                    <th className="px-3 py-2 text-right font-medium">تاریخ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((o) => (
+                    <tr key={o.id} className="border-t">
+                      <td className="px-3 py-2 font-mono text-xs">{o.id}</td>
+                      <td className="px-3 py-2">{o.fullName}</td>
+                      <td className="px-3 py-2">{o.phone}</td>
+                      <td className="px-3 py-2 capitalize">
+                        <span
+                          className={`text-xs rounded-full px-2 py-0.5 border ${
+                            norm(o.status) === "pending"
+                              ? "border-yellow-300 text-yellow-700 bg-yellow-50"
+                              : norm(o.status) === "paid"
+                                ? "border-emerald-300 text-emerald-700 bg-emerald-50"
+                                : norm(o.status) === "sent"
+                                  ? "border-blue-300 text-blue-700 bg-blue-50"
+                                  : norm(o.status) === "canceled"
+                                    ? "border-rose-300 text-rose-700 bg-rose-50"
+                                    : "border-slate-300 text-slate-600 bg-white"
+                          }`}
+                        >
+                          {o.status}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2">
+                        {o.items.reduce<number>((s, it) => s + it.qty, 0)}
+                      </td>
+                      <td className="px-3 py-2 font-medium">
+                        {rial(o.grandTotal)}
+                      </td>
+                      <td className="px-3 py-2">
+                        {new Date(o.createdAt).toLocaleString("fa-IR")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
