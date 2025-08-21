@@ -1,30 +1,34 @@
 // app/api/admin/session/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+// یک نام ثابت برای کوکی سشن ادمین
+const COOKIE = "admin_session";
+// عمر سشن (۷ روز)
+const MAX_AGE = 60 * 60 * 24 * 7;
+
+export async function POST(req: NextRequest) {
   const { adminId } = (await req.json()) as { adminId?: string };
   if (!adminId) {
     return NextResponse.json(
-      { ok: false, message: "adminId لازم است" },
+      { ok: false, message: "BAD_REQUEST" },
       { status: 400 },
     );
   }
 
-  const c = await cookies();
-  c.set("aid", adminId, {
+  const res = NextResponse.json({ ok: true });
+  // ساده: مقدار = adminId ؛ اگر خواستی می‌تونی JWT امضا کنی
+  res.cookies.set(COOKIE, adminId, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production", // ⬅️ توصیه
+    secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 روز
+    maxAge: MAX_AGE,
   });
-
-  return NextResponse.json({ ok: true });
+  return res;
 }
 
 export async function DELETE() {
-  const c = await cookies();
-  c.set("aid", "", { path: "/", maxAge: 0 });
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(COOKIE, "", { path: "/", maxAge: 0 });
+  return res;
 }

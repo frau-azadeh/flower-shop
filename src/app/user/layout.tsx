@@ -1,32 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { createSupabaseClient } from "@/lib/supabase";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
 
-export default function AdminLayout({
+export default function UserLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [loading, setLoading] = useState(true);
-  const supabase = createSupabaseClient();
   const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const supabase = createSupabaseClient();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let cancelled = false;
+
+    (async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
-        router.push("/auth/login");
+        const current = `${pathname}${params.toString() ? `?${params}` : ""}`;
+        if (!cancelled) {
+          router.replace(`/auth/login?redirect=${encodeURIComponent(current)}`);
+        }
+        return;
+      }
+      if (!cancelled) setLoading(false);
+    })();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
+      if (!session) {
+        const current = `${pathname}${params.toString() ? `?${params}` : ""}`;
+        router.replace(`/auth/login?redirect=${encodeURIComponent(current)}`);
       } else {
         setLoading(false);
       }
     });
-  }, [router, supabase.auth]);
 
-  if (loading) return null; // یا یک لودر بگذار
+    return () => {
+      cancelled = true;
+      sub.subscription?.unsubscribe();
+    };
+    // عمداً dependency روی supabase.auth نمی‌گذاریم
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, pathname, params, supabase]);
+
+  if (loading) return null;
 
   return (
     <div className="bg-background">

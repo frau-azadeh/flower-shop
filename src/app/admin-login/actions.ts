@@ -1,7 +1,8 @@
+// app/admin/login/actions.ts
 "use server";
 
 import bcrypt from "bcryptjs";
-import { supabaseServer } from "@/lib/supabaseServer";
+import { supabaseServer } from "@/lib/supabase/server"; // ← اگر فایل‌تان جای دیگر است، این را اصلاح کنید
 
 export type Role = "BLOG" | "PRODUCTS" | "FULL";
 
@@ -21,12 +22,13 @@ export type LoginResult =
 export async function loginAdmin(input: AdminLoginInput): Promise<LoginResult> {
   const first = input.firstName?.trim();
   const last = input.lastName?.trim();
-  const pass = input.password ?? "";
+  const pass = String(input.password ?? "");
+
   if (!first || !last || pass.length < 4) {
     return { ok: false, message: "ورودی نامعتبر" };
   }
 
-  const sb = supabaseServer();
+  const sb = await supabaseServer();
 
   const { data, error } = await sb
     .from("admin_users")

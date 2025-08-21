@@ -1,7 +1,6 @@
-// store/selectors.ts
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
-import type { CartItem } from "@/store/orders/cartSlice";
+import type { CartItem } from "./orders/cartSlice";
 
 export const selectCartItemsMap = (s: RootState) => s.cart.items;
 

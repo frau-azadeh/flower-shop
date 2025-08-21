@@ -1,15 +1,47 @@
-// app/components/user/Addresses.tsx
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { MapPin, Plus, X, Save } from "lucide-react";
+import { MapPin, Plus, X, Save, Pencil } from "lucide-react";
 
-const UserAddress = () => {
+/* ------------ Types ------------ */
+type ProfileDto = {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  address: string | null;
+  email: string | null;
+};
+
+type ApiGetProfileResponse =
+  | { ok: true; profile: ProfileDto | null }
+  | { ok: false; message: string };
+type ApiPostProfileResponse = { ok: true } | { ok: false; message: string };
+
+/* ------------ Component ------------ */
+export default function UserAddress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const isFormOpen = searchParams.get("address") === "new";
+
+  // پروفایل فعلی برای نمایش کارت
+  const [profile, setProfile] = useState<ProfileDto | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
+
+  // state فرم
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [addrLine, setAddrLine] = useState("");
+  const [postal, setPostal] = useState("");
+
+  const [saving, setSaving] = useState(false);
+  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const openForm = () => {
     const sp = new URLSearchParams(searchParams.toString());
@@ -24,43 +56,184 @@ const UserAddress = () => {
     router.replace(url, { scroll: false });
   };
 
+  // آدرس نهایی ترکیبی که در ستون address ذخیره می‌کنیم
+  const composedAddress = useMemo(() => {
+    const parts: string[] = [];
+    if (province.trim()) parts.push(`استان ${province.trim()}`);
+    if (city.trim()) parts.push(`شهر ${city.trim()}`);
+    if (addrLine.trim()) parts.push(addrLine.trim());
+    if (postal.trim()) parts.push(`(کدپستی: ${postal.trim()})`);
+    return parts.join("، ");
+  }, [province, city, addrLine, postal]);
+
+  /* ——— ۱) پروفایل برای نمایش کارت (همیشه فچ شو) ——— */
+  useEffect(() => {
+    (async () => {
+      setLoadingProfile(true);
+      const res = await fetch("/api/profile", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const json: ApiGetProfileResponse = await res.json();
+      setProfile(json.ok ? json.profile : null);
+      setLoadingProfile(false);
+    })();
+  }, []);
+
+  /* ——— ۲) پیش‌پر کردن فرم وقتی باز می‌شود ——— */
+  useEffect(() => {
+    if (!isFormOpen) return;
+    setPrefillLoading(true);
+    (async () => {
+      const res = await fetch("/api/profile", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const json: ApiGetProfileResponse = await res.json();
+      if (json.ok && json.profile) {
+        setFullName(json.profile.fullName ?? "");
+        setEmail(json.profile.email ?? "");
+        setPhone(json.profile.phone ?? "");
+        // اگر قبلا آدرسی ذخیره بوده، کلش را در addrLine بریز تا از دست نرود
+        setAddrLine(json.profile.address ?? "");
+      }
+      setPrefillLoading(false);
+    })();
+  }, [isFormOpen]);
+
+  /* ——— ۳) ثبت/ویرایش آدرس ——— */
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (fullName.trim().length < 2)
+      return setError("نام و نام خانوادگی معتبر نیست.");
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      return setError("ایمیل معتبر نیست.");
+    if (!/^\d{10,11}$/.test(phone.trim()))
+      return setError("شماره تماس معتبر نیست.");
+    if (composedAddress.trim().length < 10)
+      return setError("آدرس خیلی کوتاه است.");
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          email: email.trim() || undefined,
+          phone: phone.trim(),
+          address: composedAddress.trim(),
+        }),
+      });
+      const json: ApiPostProfileResponse = await res.json();
+      if (!res.ok || !json.ok) throw new Error("ثبت اطلاعات ناموفق بود");
+
+      // UI را به‌روز کن و فرم را ببند
+      setProfile({
+        id: profile?.id ?? "",
+        fullName: fullName.trim(),
+        email: email.trim() || null,
+        phone: phone.trim(),
+        address: composedAddress.trim(),
+      });
+      closeForm();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطا در ثبت اطلاعات");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <section
       dir="rtl"
       className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right"
     >
-      {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold text-slate-800">آدرس‌ها</h3>
+
         {!isFormOpen && (
           <button
             onClick={openForm}
             className="inline-flex items-center gap-2 text-accent hover:opacity-90"
           >
-            <Plus className="size-5" />
-            <span>افزودن آدرس جدید</span>
+            {profile?.address ? (
+              <Pencil className="size-5" />
+            ) : (
+              <Plus className="size-5" />
+            )}
+            <span>{profile?.address ? "ویرایش آدرس" : "افزودن آدرس جدید"}</span>
           </button>
         )}
       </div>
 
       <hr className="mb-6 border-slate-200" />
 
-      {/* Empty OR Form */}
-      {!isFormOpen ? (
-        // Empty state
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <MapPin className="size-24 text-slate-300" />
-          <p className="mt-6 text-sm md:text-base text-slate-700">
-            هنوز هیچ آدرسی ثبت نکرده‌اید.
-          </p>
-        </div>
-      ) : (
-        // Add Address Form (UI only)
+      {/* حالت نمایش */}
+      {!isFormOpen && (
+        <>
+          {loadingProfile ? (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+              در حال بارگذاری…
+            </div>
+          ) : profile?.address ? (
+            // کارت آدرس ثبت‌شده
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <MapPin className="size-5 text-accent" />
+                <h4 className="font-semibold">آدرس ثبت‌شده</h4>
+              </div>
+
+              <div className="grid gap-1 text-sm text-slate-700">
+                <div>
+                  <span className="text-slate-500">نام: </span>
+                  {profile.fullName ?? "—"}
+                </div>
+                <div>
+                  <span className="text-slate-500">ایمیل: </span>
+                  {profile.email ?? "—"}
+                </div>
+                <div>
+                  <span className="text-slate-500">تلفن: </span>
+                  {profile.phone ?? "—"}
+                </div>
+                <div>
+                  <span className="text-slate-500">نشانی: </span>
+                  {profile.address}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  onClick={openForm}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm hover:bg-slate-50"
+                >
+                  <Pencil className="size-4" />
+                  ویرایش آدرس
+                </button>
+              </div>
+            </div>
+          ) : (
+            // Empty فقط وقتی آدرسی نیست
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <MapPin className="size-24 text-slate-300" />
+              <p className="mt-6 text-sm md:text-base text-slate-700">
+                هنوز هیچ آدرسی ثبت نکرده‌اید.
+              </p>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* فرم افزودن/ویرایش */}
+      {isFormOpen && (
         <div className="mx-auto max-w-2xl">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MapPin className="size-5 text-accent" />
-              <h4 className="font-semibold">افزودن آدرس</h4>
+              <h4 className="font-semibold">افزودن / ویرایش آدرس</h4>
             </div>
             <button
               onClick={closeForm}
@@ -71,36 +244,67 @@ const UserAddress = () => {
             </button>
           </div>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              // فقط UI — اینجا بعداً می‌تونی submit واقعی وصل کنی
-            }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {prefillLoading && (
+            <div className="mb-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+              در حال بارگذاری اطلاعات…
+            </div>
+          )}
+
+          {error && (
+            <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={onSubmit}>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <label className="block">
                 <span className="mb-1 block text-xs text-slate-600">
                   نام و نام خانوادگی
                 </span>
-                <input className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs text-slate-600">ایمیل</span>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
               </label>
 
               <label className="block">
                 <span className="mb-1 block text-xs text-slate-600">
                   شماره تماس
                 </span>
-                <input className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
               </label>
 
               <label className="block">
                 <span className="mb-1 block text-xs text-slate-600">استان</span>
-                <input className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                <input
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
               </label>
 
               <label className="block">
                 <span className="mb-1 block text-xs text-slate-600">شهر</span>
-                <input className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                <input
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
               </label>
 
               <label className="block md:col-span-2">
@@ -109,6 +313,8 @@ const UserAddress = () => {
                 </span>
                 <textarea
                   rows={3}
+                  value={addrLine}
+                  onChange={(e) => setAddrLine(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                 />
               </label>
@@ -117,19 +323,22 @@ const UserAddress = () => {
                 <span className="mb-1 block text-xs text-slate-600">
                   کد پستی
                 </span>
-                <input className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                <input
+                  value={postal}
+                  onChange={(e) => setPostal(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
               </label>
             </div>
 
             <div className="flex items-center gap-3 pt-2">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-white hover:opacity-90"
-                disabled
-                title="صرفاً UI — بعداً ذخیره‌سازی را وصل کن"
+                disabled={saving}
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-white hover:opacity-90 disabled:opacity-60"
               >
                 <Save className="size-5" />
-                ذخیره آدرس
+                {saving ? "در حال ذخیره…" : "ذخیره آدرس"}
               </button>
               <button
                 type="button"
@@ -144,6 +353,4 @@ const UserAddress = () => {
       )}
     </section>
   );
-};
-
-export default UserAddress;
+}
