@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-type Params = { params: { id: string } };
-
 type OrderMini = {
   id: string;
   userId: string;
@@ -15,11 +13,14 @@ type OrderItemMini = {
   qty: number;
 };
 
-export async function POST(_: Request, { params }: Params) {
+export async function POST(
+  _: Request,
+  { params }: { params: { id: string } }, // <-- inline type required
+) {
   const sb = await supabaseServer();
   const admin = supabaseAdmin();
 
-  // 1) احراز هویت
+  // 1) auth
   const { data: uRes } = await sb.auth.getUser();
   const userId = uRes.user?.id;
   if (!userId) {
@@ -29,7 +30,7 @@ export async function POST(_: Request, { params }: Params) {
     );
   }
 
-  // 2) سفارش را پیدا کن (همین کاربر + هر وضعیتی)
+  // 2) find order
   const { data: ordRaw, error: ordErr } = await sb
     .from("orders")
     .select("id, userId, status")
@@ -56,7 +57,7 @@ export async function POST(_: Request, { params }: Params) {
     );
   }
 
-  // 3) اقلام سفارش
+  // 3) items
   const { data: itemsRaw, error: itemsErr } = await admin
     .from("orderItems")
     .select("productId, qty")
@@ -70,12 +71,11 @@ export async function POST(_: Request, { params }: Params) {
   }
   const items = (itemsRaw ?? []) as OrderItemMini[];
 
-  // 4) تغییر وضعیت سفارش به canceled
+  // 4) mark order canceled
   const { error: upErr } = await admin
     .from("orders")
     .update({ status: "canceled" })
     .eq("id", params.id);
-
   if (upErr) {
     return NextResponse.json(
       { ok: false, message: upErr.message },
@@ -83,35 +83,29 @@ export async function POST(_: Request, { params }: Params) {
     );
   }
 
-  // 5) برگرداندن موجودی (ساده و قابل فهم)
+  // 5) restock
   for (const it of items) {
-    // خواندن موجودی فعلی
     const { data: pRaw, error: pErr } = await admin
       .from("products")
       .select("stock")
       .eq("id", it.productId)
       .maybeSingle();
-
-    if (pErr) {
+    if (pErr)
       return NextResponse.json(
         { ok: false, message: pErr.message },
         { status: 500 },
       );
-    }
-    const currentStock = (pRaw?.stock ?? 0) as number;
 
-    // آپدیت موجودی
+    const currentStock = (pRaw?.stock ?? 0) as number;
     const { error: sErr } = await admin
       .from("products")
       .update({ stock: currentStock + it.qty })
       .eq("id", it.productId);
-
-    if (sErr) {
+    if (sErr)
       return NextResponse.json(
         { ok: false, message: sErr.message },
         { status: 500 },
       );
-    }
   }
 
   return NextResponse.json({ ok: true });
