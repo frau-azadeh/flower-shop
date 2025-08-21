@@ -24,7 +24,10 @@ export async function POST(
   const { data: uRes } = await sb.auth.getUser();
   const userId = uRes.user?.id;
   if (!userId) {
-    return NextResponse.json({ ok: false, message: "UNAUTHORIZED" }, { status: 401 });
+    return NextResponse.json(
+      { ok: false, message: "UNAUTHORIZED" },
+      { status: 401 },
+    );
   }
 
   // 2) find order
@@ -35,14 +38,23 @@ export async function POST(
     .maybeSingle();
 
   if (ordErr) {
-    return NextResponse.json({ ok: false, message: ordErr.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, message: ordErr.message },
+      { status: 500 },
+    );
   }
   const order = (ordRaw ?? null) as OrderMini | null;
   if (!order || order.userId !== userId) {
-    return NextResponse.json({ ok: false, message: "ORDER_NOT_FOUND" }, { status: 404 });
+    return NextResponse.json(
+      { ok: false, message: "ORDER_NOT_FOUND" },
+      { status: 404 },
+    );
   }
   if (order.status !== "pending") {
-    return NextResponse.json({ ok: false, message: "ONLY_PENDING_CAN_CANCEL" }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: "ONLY_PENDING_CAN_CANCEL" },
+      { status: 400 },
+    );
   }
 
   // 3) items
@@ -52,7 +64,10 @@ export async function POST(
     .eq("orderId", params.id);
 
   if (itemsErr) {
-    return NextResponse.json({ ok: false, message: itemsErr.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, message: itemsErr.message },
+      { status: 500 },
+    );
   }
   const items = (itemsRaw ?? []) as OrderItemMini[];
 
@@ -62,7 +77,10 @@ export async function POST(
     .update({ status: "canceled" })
     .eq("id", params.id);
   if (upErr) {
-    return NextResponse.json({ ok: false, message: upErr.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, message: upErr.message },
+      { status: 500 },
+    );
   }
 
   // 5) restock
@@ -72,14 +90,22 @@ export async function POST(
       .select("stock")
       .eq("id", it.productId)
       .maybeSingle();
-    if (pErr) return NextResponse.json({ ok: false, message: pErr.message }, { status: 500 });
+    if (pErr)
+      return NextResponse.json(
+        { ok: false, message: pErr.message },
+        { status: 500 },
+      );
 
     const currentStock = (pRaw?.stock ?? 0) as number;
     const { error: sErr } = await admin
       .from("products")
       .update({ stock: currentStock + it.qty })
       .eq("id", it.productId);
-    if (sErr) return NextResponse.json({ ok: false, message: sErr.message }, { status: 500 });
+    if (sErr)
+      return NextResponse.json(
+        { ok: false, message: sErr.message },
+        { status: 500 },
+      );
   }
 
   return NextResponse.json({ ok: true });

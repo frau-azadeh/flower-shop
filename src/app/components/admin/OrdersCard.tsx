@@ -212,9 +212,7 @@ const OrdersCard: React.FC = () => {
             <div className="flex items-center justify-center py-16 text-slate-500">
               در حال بارگذاری…
             </div>
-          ) : orders.length ===
-            0 ? // پیام خالی را Tabs نشان داده؛ اینجا چیزی لازم نیست
-          null : (
+          ) : orders.length === 0 ? null : ( // پیام خالی را Tabs نشان داده؛ اینجا چیزی لازم نیست
             <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 text-slate-600">
