@@ -2,10 +2,19 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
-type Params = { params: { id: string } };
+/** Extracts the order id from a path like /api/orders/:id/pay */
+function extractOrderIdFromUrl(urlStr: string): string {
+  const url = new URL(urlStr);
+  const parts = url.pathname.split("/").filter(Boolean); // ["api","orders",":id","pay"]
+  const idx = parts.findIndex((p) => p === "orders");
+  const id = idx >= 0 ? parts[idx + 1] : "";
+  if (!id) throw new Error("Invalid or missing order id");
+  return id;
+}
 
-export async function POST(_req: Request, { params }: Params) {
+export async function POST(req: Request) {
   try {
+    const orderId = extractOrderIdFromUrl(req.url);
     const sb = await supabaseServer();
 
     // احراز هویت
@@ -22,7 +31,7 @@ export async function POST(_req: Request, { params }: Params) {
     const { data: order, error: selErr } = await sb
       .from("orders")
       .select("id, userId, status")
-      .eq("id", params.id)
+      .eq("id", orderId)
       .maybeSingle();
 
     if (selErr) {
@@ -47,7 +56,7 @@ export async function POST(_req: Request, { params }: Params) {
     const { error: upErr } = await sb
       .from("orders")
       .update({ status: "paid" })
-      .eq("id", params.id);
+      .eq("id", orderId);
 
     if (upErr) {
       return NextResponse.json(
