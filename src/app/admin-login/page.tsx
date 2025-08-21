@@ -1,6 +1,7 @@
 // app/admin/login/page.tsx
 "use client";
 
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,7 +14,17 @@ import {
 import { loginAdmin } from "./actions";
 import { homePathByRole } from "@/lib/adminRoutes";
 
+// لایه‌ی بیرونی: فقط یک Suspense رندر می‌کند
 export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">...</div>}>
+      <AdminLoginInner />
+    </Suspense>
+  );
+}
+
+// لایه‌ی داخلی: استفاده از useSearchParams اینجاست
+function AdminLoginInner() {
   const router = useRouter();
   const search = useSearchParams();
   const dispatch = useDispatch();
@@ -34,7 +45,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    // سشن ادمین را ست کن (کوکی)
+    // ست‌کردن سشن ادمین
     await fetch("/api/admin/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,12 +53,17 @@ export default function AdminLoginPage() {
       body: JSON.stringify({ adminId: res.user.id }),
     });
 
-    // استور کلاینتی (اختیاری)
+    // آپدیت استور کلاینت
     dispatch(setAdmin(res.user));
 
-    // مقصد: اگر redirect امن بود همان؛ وگرنه خانه‌ی نقش
+    // redirect امن
     const raw = search.get("redirect") ?? "";
-    const target = decodeURIComponent(raw);
+    let target = "";
+    try {
+      target = decodeURIComponent(raw);
+    } catch {
+      target = "";
+    }
     const isSafe = target.startsWith("/admin");
     router.replace(isSafe ? target : homePathByRole(res.user.role));
   };
