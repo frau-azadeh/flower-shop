@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Plus, X, Save, Pencil } from "lucide-react";
 
@@ -16,10 +16,31 @@ type ProfileDto = {
 type ApiGetProfileResponse =
   | { ok: true; profile: ProfileDto | null }
   | { ok: false; message: string };
+
 type ApiPostProfileResponse = { ok: true } | { ok: false; message: string };
 
-/* ------------ Component ------------ */
-export default function UserAddress() {
+/* ------------ Wrapper with Suspense ------------ */
+export default function UserAddressPage() {
+  return (
+    <Suspense
+      fallback={
+        <section
+          dir="rtl"
+          className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right"
+        >
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+            در حال بارگذاری…
+          </div>
+        </section>
+      }
+    >
+      <UserAddressInner />
+    </Suspense>
+  );
+}
+
+/* ------------ Component using navigation hooks ------------ */
+function UserAddressInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -31,16 +52,16 @@ export default function UserAddress() {
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
 
   // state فرم
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [addrLine, setAddrLine] = useState("");
-  const [postal, setPostal] = useState("");
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [province, setProvince] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [addrLine, setAddrLine] = useState<string>("");
+  const [postal, setPostal] = useState<string>("");
 
-  const [saving, setSaving] = useState(false);
-  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [prefillLoading, setPrefillLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const openForm = () => {
@@ -102,18 +123,26 @@ export default function UserAddress() {
   }, [isFormOpen]);
 
   /* ——— ۳) ثبت/ویرایش آدرس ——— */
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
-    if (fullName.trim().length < 2)
-      return setError("نام و نام خانوادگی معتبر نیست.");
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      return setError("ایمیل معتبر نیست.");
-    if (!/^\d{10,11}$/.test(phone.trim()))
-      return setError("شماره تماس معتبر نیست.");
-    if (composedAddress.trim().length < 10)
-      return setError("آدرس خیلی کوتاه است.");
+    if (fullName.trim().length < 2) {
+      setError("نام و نام خانوادگی معتبر نیست.");
+      return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("ایمیل معتبر نیست.");
+      return;
+    }
+    if (!/^\d{10,11}$/.test(phone.trim())) {
+      setError("شماره تماس معتبر نیست.");
+      return;
+    }
+    if (composedAddress.trim().length < 10) {
+      setError("آدرس خیلی کوتاه است.");
+      return;
+    }
 
     setSaving(true);
     try {
@@ -131,13 +160,13 @@ export default function UserAddress() {
       if (!res.ok || !json.ok) throw new Error("ثبت اطلاعات ناموفق بود");
 
       // UI را به‌روز کن و فرم را ببند
-      setProfile({
-        id: profile?.id ?? "",
+      setProfile((prev) => ({
+        id: prev?.id ?? "",
         fullName: fullName.trim(),
         email: email.trim() || null,
         phone: phone.trim(),
         address: composedAddress.trim(),
-      });
+      }));
       closeForm();
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطا در ثبت اطلاعات");
