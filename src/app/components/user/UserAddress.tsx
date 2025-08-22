@@ -17,7 +17,9 @@ type ApiGetProfileResponse =
   | { ok: true; profile: ProfileDto | null }
   | { ok: false; message: string };
 
-type ApiPostProfileResponse = { ok: true } | { ok: false; message: string };
+type ApiPostProfileResponse =
+  | { ok: true }
+  | { ok: false; message: string };
 
 /* ------------ Wrapper with Suspense ------------ */
 export default function UserAddressPage() {
