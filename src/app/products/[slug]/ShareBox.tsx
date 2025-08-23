@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import {
   Share2,
   Send,
@@ -11,22 +12,22 @@ import {
 
 type Props = {
   title: string;
-  /** اگر داد‌ه شود، از همین URL برای اشتراک استفاده می‌شود. */
+  /** لینک کامل برای اشتراک‌گذاری (ترجیحاً ست بشود) */
   url?: string;
-  /** اگر url ندادی: مسیر پایه برای ساختن لینک. پیش‌فرض "blog" */
+  /** اگر url ندهی، از این‌ها برای ساخت لینک استفاده می‌شود */
   path?: "blog" | "products";
-  /** اگر url ندادی: اسلاگ آیتم */
   slug?: string;
 };
 
-export default function ShareBox({
-  title,
-  url,
-  path = "blog",
-  slug = "",
-}: Props) {
+export default function ShareBox({ title, url, path = "blog", slug = "" }: Props) {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "";
-  const finalUrl = url ?? `${base}/${path}/${slug}`;
+  const finalUrl = useMemo(() => url ?? `${base}/${path}/${slug}`, [url, base, path, slug]);
+
+  const copy = useCallback(() => {
+    void navigator.clipboard.writeText(finalUrl);
+  }, [finalUrl]);
+
+  const enc = (s: string) => encodeURIComponent(s);
 
   return (
     <div className="mt-4 rounded-xl bg-white p-4 shadow ring-1 ring-black/5">
@@ -35,35 +36,35 @@ export default function ShareBox({
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         <a
-          href={`https://t.me/share/url?url=${encodeURIComponent(finalUrl)}&text=${encodeURIComponent(title)}`}
-          target="_blank"
+          href={`https://t.me/share/url?url=${enc(finalUrl)}&text=${enc(title)}`}
+          target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Send size={16} /> تلگرام
         </a>
         <a
-          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(finalUrl)}&text=${encodeURIComponent(title)}`}
-          target="_blank"
+          href={`https://twitter.com/intent/tweet?url=${enc(finalUrl)}&text=${enc(title)}`}
+          target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Twitter size={16} /> X
         </a>
         <a
-          href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(finalUrl)}&title=${encodeURIComponent(title)}`}
-          target="_blank"
+          href={`https://www.linkedin.com/shareArticle?mini=true&url=${enc(finalUrl)}&title=${enc(title)}`}
+          target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Linkedin size={16} /> لینکدین
         </a>
         <a
-          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${title} ${finalUrl}`)}`}
-          target="_blank"
+          href={`https://api.whatsapp.com/send?text=${enc(`${title} ${finalUrl}`)}`}
+          target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <MessageCircle size={16} /> واتس‌اپ
         </a>
         <button
-          onClick={() => navigator.clipboard.writeText(finalUrl)}
+          onClick={copy}
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <LinkIcon size={16} /> کپی لینک
