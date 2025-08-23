@@ -22,13 +22,13 @@ export default function CartPage() {
 
   // فرض: s.cart.items یک آبجکت از آیتم‌هاست؛ به آرایه تبدیل می‌کنیم
   const items = useSelector((s: RootState) =>
-    Object.values(s.cart.items)
+    Object.values(s.cart.items),
   ) as CartEntry[];
 
   const { total, count } = useMemo(() => {
     const t = items.reduce(
       (sum, it) => sum + (typeof it.price === "number" ? it.price : 0) * it.qty,
-      0
+      0,
     );
     const c = items.reduce((s, it) => s + it.qty, 0);
     return { total: t, count: c };
@@ -38,21 +38,21 @@ export default function CartPage() {
   const onDec = useCallback(
     (id: string, current: number) =>
       dispatch(setQty({ productId: id, qty: clampQty(current - 1) })),
-    [dispatch]
+    [dispatch],
   );
   const onInc = useCallback(
     (id: string, current: number) =>
       dispatch(setQty({ productId: id, qty: clampQty(current + 1) })),
-    [dispatch]
+    [dispatch],
   );
   const onInput = useCallback(
     (id: string, value: string) =>
       dispatch(setQty({ productId: id, qty: clampQty(Number(value)) })),
-    [dispatch]
+    [dispatch],
   );
   const onRemove = useCallback(
     (id: string) => dispatch(removeItem({ productId: id })),
-    [dispatch]
+    [dispatch],
   );
 
   const goCheckout = (): void => {
