@@ -2,29 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import RichText from "@/app/admin/blog/RichText";
-
-import type { ComponentType } from "react";
-import type { RichTextProps } from "@/app/admin/blog/RichText";
 import Input from "../ui/Input";
+import PostList, { type PostRow, type Status } from "./PostList";
 
-type Status = "draft" | "published";
-
-interface PostEditorProps {
-  // ✅ تایپ صحیح prop
-  RichText: ComponentType<RichTextProps>;
-}
-interface PostRow {
-  id: string;
-  title: string;
-  slug: string;
-  status: Status;
-  content: string;
-  coverUrl?: string | null;
-  created_at?: string | null;
-  updatedAt?: string | null;
-  publishedAt?: string | null;
-}
-
+/* ---------- Types برای API ---------- */
 interface SavePayload {
   id?: string;
   title: string;
@@ -43,6 +24,7 @@ type ApiOk =
 type ApiErr = { error: string };
 type ApiResult = ApiOk | ApiErr | null;
 
+/* ---------- Helpers ---------- */
 function slugify(s: string) {
   return s
     .toLowerCase()
@@ -50,6 +32,7 @@ function slugify(s: string) {
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "");
 }
+
 async function safeJson(res: Response): Promise<ApiResult> {
   const text = await res.text();
   if (!text) return null;
@@ -59,6 +42,7 @@ async function safeJson(res: Response): Promise<ApiResult> {
     return null;
   }
 }
+
 function isPostRowArray(x: unknown): x is PostRow[] {
   return (
     Array.isArray(x) &&
@@ -66,7 +50,8 @@ function isPostRowArray(x: unknown): x is PostRow[] {
   );
 }
 
-export default function AdminBlogPage() {
+/* ---------- Component ---------- */
+export default function PostEditor() {
   // لیست
   const [loadingList, setLoadingList] = useState(false);
   const [rows, setRows] = useState<PostRow[]>([]);
@@ -157,7 +142,7 @@ export default function AdminBlogPage() {
     setStatus(row.status);
     setCoverUrl(row.coverUrl ?? null);
     setPreview(row.coverUrl ?? null);
-    setContent(row.content); // ← محتوای فعلی
+    setContent(row.content);
     setTagsInput("");
     setMsg("");
     if (typeof window !== "undefined")
@@ -242,7 +227,7 @@ export default function AdminBlogPage() {
     await loadList();
   }
 
-  // آپلود کاور (از Route سرور)
+  // آپلود کاور
   async function onPickCover(f: File) {
     if (!f || !slug.trim()) {
       setMsg("برای آپلود کاور، اول عنوان/اسلاگ را وارد کن.");
@@ -253,7 +238,6 @@ export default function AdminBlogPage() {
       return;
     }
 
-    // پیش‌نمایش لوکال
     setPreview(URL.createObjectURL(f));
     setUploading(true);
     setMsg("");
@@ -263,19 +247,16 @@ export default function AdminBlogPage() {
       fd.append("file", f);
       fd.append("slug", slug.trim().toLowerCase());
 
-      // توجه: هیچ هِدری از نوع JSON ست نکن!
       const res = await fetch("/api/admin/posts/upload", {
         method: "POST",
         body: fd,
       });
-
-      // پاسخ JSON را امن بخوانیم
       const text = await res.text();
       const data: { url?: string; error?: string } = (() => {
         try {
           return JSON.parse(text);
         } catch {
-          return { error: text }; // اگر باز HTML بود، همین متن را نشان بده
+          return { error: text };
         }
       })();
 
@@ -296,222 +277,155 @@ export default function AdminBlogPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-6xl p-4" dir="rtl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Editor */}
-          <section className="md:col-span-2 space-y-4">
+        {/* ادیتور */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">
+              {id ? "ویرایش پست" : "پست جدید"}
+            </h1>
+            {id && (
+              <button
+                onClick={resetForm}
+                className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50"
+              >
+                جدید
+              </button>
+            )}
+          </div>
+
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="عنوان…"
+            className="w-full rounded-xl border p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-gray-600">اسلاگ:</span>
+            <Input
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="my-post-slug"
+              className="flex-1 rounded-xl border p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+          {/* Cover */}
+          <div className="rounded-xl border border-gray-300 p-3">
             <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">
-                {id ? "ویرایش پست" : "پست جدید"}
-              </h1>
-              {id && (
-                <button
-                  onClick={resetForm}
-                  className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50"
-                >
-                  جدید
-                </button>
+              <div className="text-sm font-medium">کاور مقاله</div>
+              {uploading && (
+                <div className="text-xs text-emerald-600">در حال آپلود…</div>
               )}
+            </div>
+
+            <div className="mt-3 flex items-start gap-4">
+              <label className="inline-flex cursor-pointer items-center rounded-md px-3 py-2 text-sm hover:bg-gray-50">
+                انتخاب تصویر
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void onPickCover(f);
+                  }}
+                />
+              </label>
+
+              {preview && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={preview}
+                  alt="cover preview"
+                  className="h-24 w-24 rounded-lg border object-cover"
+                />
+              )}
+            </div>
+
+            {coverUrl && (
+              <p className="mt-2 break-all text-xs text-gray-600 ltr:font-mono">
+                {coverUrl}
+              </p>
+            )}
+          </div>
+
+          <RichText
+            value={content}
+            onChange={setContent}
+            onPickImage={async () => {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/*";
+
+              return new Promise<string | null>((resolve) => {
+                input.onchange = async () => {
+                  const f = input.files?.[0];
+                  if (!f) return resolve(null);
+                  const fd = new FormData();
+                  fd.append("file", f);
+                  fd.append("slug", slug.trim().toLowerCase());
+                  const res = await fetch("/api/admin/posts/upload", {
+                    method: "POST",
+                    body: fd,
+                  });
+                  const data: { url?: string; error?: string } =
+                    await res.json();
+                  resolve(data.url ?? null);
+                };
+                input.click();
+              });
+            }}
+          />
+
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600">وضعیت:</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as Status)}
+                className="rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="draft">پیش‌نویس</option>
+                <option value="published">منتشر شده</option>
+              </select>
             </div>
 
             <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="عنوان…"
-              className="w-full rounded-xl border p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="تگ‌ها با ویرگول: nextjs, supabase"
+              className="w-full rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 sm:flex-1"
             />
+          </div>
 
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-600">اسلاگ:</span>
-              <Input
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="my-post-slug"
-                className="flex-1 rounded-xl border p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-            </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={saveDraft}
+              className="rounded-lg border px-4 py-2 hover:bg-gray-50"
+            >
+              ذخیره
+            </button>
+            <button
+              onClick={publishNow}
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+            >
+              انتشار
+            </button>
+          </div>
 
-            {/* Cover */}
-            <div className="rounded-xl border border-gray-300 p-3">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">کاور مقاله</div>
-                {uploading && (
-                  <div className="text-xs text-emerald-600">در حال آپلود…</div>
-                )}
-              </div>
+          {msg && <p className="text-sm text-emerald-700">{msg}</p>}
+        </section>
 
-              <div className="mt-3 flex items-start gap-4">
-                <label className="inline-flex items-center rounded-md  px-3 py-2 text-sm cursor-pointer hover:bg-gray-50">
-                  انتخاب تصویر
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) void onPickCover(f);
-                    }}
-                  />
-                </label>
-
-                {preview && (
-                  <img
-                    src={preview}
-                    alt="cover preview"
-                    className="h-24 w-24 rounded-lg object-cover border"
-                  />
-                )}
-              </div>
-
-              {coverUrl && (
-                <p className="mt-2 text-xs ltr:font-mono break-all text-gray-600">
-                  {coverUrl}
-                </p>
-              )}
-            </div>
-
-            <RichText
-              value={content}
-              onChange={setContent}
-              onPickImage={async () => {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = "image/*";
-
-                return new Promise<string | null>((resolve) => {
-                  input.onchange = async () => {
-                    const f = input.files?.[0];
-                    if (!f) return resolve(null);
-                    const fd = new FormData();
-                    fd.append("file", f);
-                    fd.append("slug", slug.trim().toLowerCase());
-                    const res = await fetch("/api/admin/posts/upload", {
-                      method: "POST",
-                      body: fd,
-                    });
-                    const data: { url?: string; error?: string } =
-                      await res.json();
-                    resolve(data.url ?? null);
-                  };
-                  input.click();
-                });
-              }}
-            />
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600 w-full rounded-lg border  px-3 py-2 focus:outline-none focus:ring-2 transition-colors">
-                  وضعیت:
-                </label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as Status)}
-                  className="rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="draft">پیش‌نویس</option>
-                  <option value="published">منتشر شده</option>
-                </select>
-              </div>
-
-              <Input
-                value={tagsInput}
-                onChange={(e) => setTagsInput(e.target.value)}
-                placeholder="تگ‌ها با ویرگول: nextjs, supabase"
-                className="w-full sm:flex-1 rounded-md  p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={saveDraft}
-                className="rounded-lg border px-4 py-2 hover:bg-gray-50"
-              >
-                ذخیره
-              </button>
-              <button
-                onClick={publishNow}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
-              >
-                انتشار
-              </button>
-            </div>
-
-            {msg && <p className="text-emerald-700 text-sm">{msg}</p>}
-          </section>
-
-          {/* List */}
-          <aside className="md:col-span-1">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold">پست‌ها</h2>
-              <button
-                onClick={loadList}
-                className="text-xs rounded-md border px-3 py-1 hover:bg-gray-50"
-                disabled={loadingList}
-              >
-                بروزرسانی
-              </button>
-            </div>
-
-            {listError && (
-              <p className="text-red-600 text-sm mb-2">خطا: {listError}</p>
-            )}
-
-            <ul className="space-y-3">
-              {rows.map((r) => (
-                <li
-                  key={r.id}
-                  className="rounded-xl bg-white  p-3 flex items-start justify-between gap-3 shadow-md"
-                >
-                  <button
-                    onClick={() => pickForEdit(r)}
-                    className="flex-1 text-start"
-                    title="ویرایش"
-                  >
-                    <div className="font-medium">{r.title}</div>
-                    <div className="text-xs opacity-70 ltr:font-mono">
-                      /blog/{r.slug}
-                    </div>
-                    <div
-                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs ${
-                        r.status === "published"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-amber-100 text-amber-800"
-                      }`}
-                    >
-                      {r.status === "published" ? "منتشر شده" : "پیش‌نویس"}
-                    </div>
-                  </button>
-
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => pickForEdit(r)}
-                      className="text-blue-600 text-xs underline"
-                      title="ویرایش"
-                    >
-                      ویرایش
-                    </button>
-                    <button
-                      onClick={() => removePost(r)}
-                      className="text-red-600 text-xs underline"
-                      title="حذف"
-                    >
-                      حذف
-                    </button>
-                  </div>
-                </li>
-              ))}
-              {rows.length === 0 && !loadingList && (
-                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">
-                  هنوز پستی ندارید.
-                </li>
-              )}
-              {loadingList && (
-                <li className="rounded-xl bg-white border p-3 text-sm opacity-70">
-                  در حال بارگذاری…
-                </li>
-              )}
-            </ul>
-          </aside>
-        </div>
+        {/* لیست زیر ادیتور */}
+        <PostList
+          rows={rows}
+          loading={loadingList}
+          error={listError}
+          onRefresh={loadList}
+          onEdit={pickForEdit}
+          onDelete={removePost}
+        />
       </div>
     </div>
   );
