@@ -1,35 +1,23 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useEffect } from "react";
 import { Save, X, MapPin } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { saveProfile } from "./api";
 
-/* ---------- Schema ---------- */
-const AddressSchema = z.object({
-  fullName: z.string().trim().min(2, "نام و نام خانوادگی معتبر نیست."),
-  email: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal(""))
-    .refine((v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "ایمیل معتبر نیست."),
-  phone: z.string().trim().regex(/^\d{10,11}$/, "شماره تماس معتبر نیست."),
-  province: z.string().trim().optional(),
-  city: z.string().trim().optional(),
-  addrLine: z.string().trim().min(1, "آدرس را وارد کنید."),
-  postal: z.string().trim().optional(),
-});
-type AddressFormValues = z.infer<typeof AddressSchema>;
+import { saveProfile } from "../../../api/userAddress/api";
+import {
+  AddressSchema,
+  type AddressFormValues,
+  composeAddress,
+} from "@/schemas/userAddressSchema";
 
 type Initial = {
   fullName: string;
   email: string;
   phone: string;
-  addrLine: string; // کل آدرس قبلی اگر موجود باشد
+  addrLine: string;
   province?: string;
   city?: string;
   postal?: string;
@@ -38,7 +26,12 @@ type Initial = {
 type Props = {
   initial: Initial;
   onCancel: () => void;
-  onSaved: (payload: { fullName: string; email?: string; phone: string; address: string }) => void;
+  onSaved: (payload: {
+    fullName: string;
+    email?: string;
+    phone: string;
+    address: string;
+  }) => void;
 };
 
 export default function AddressForm({ initial, onCancel, onSaved }: Props) {
@@ -46,7 +39,6 @@ export default function AddressForm({ initial, onCancel, onSaved }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
     reset,
   } = useForm<AddressFormValues>({
     resolver: zodResolver(AddressSchema),
@@ -61,7 +53,7 @@ export default function AddressForm({ initial, onCancel, onSaved }: Props) {
     },
   });
 
-  // وقتی initial تغییر کرد (باز شدن فرم/لود پروفایل) فرم را ریست کن
+  // سینک شدن مقدارهای اولیه با فرم
   useEffect(() => {
     reset({
       fullName: initial.fullName,
@@ -74,34 +66,16 @@ export default function AddressForm({ initial, onCancel, onSaved }: Props) {
     });
   }, [initial, reset]);
 
-  // آدرس ترکیبی (بدون تغییر UI)
-  const province = watch("province");
-  const city = watch("city");
-  const addrLine = watch("addrLine");
-  const postal = watch("postal");
-  const composedAddress = useMemo(() => {
-    const parts: string[] = [];
-    if (province?.trim()) parts.push(`استان ${province.trim()}`);
-    if (city?.trim()) parts.push(`شهر ${city.trim()}`);
-    if (addrLine?.trim()) parts.push(addrLine.trim());
-    if (postal?.trim()) parts.push(`(کدپستی: ${postal.trim()})`);
-    return parts.join("، ");
-  }, [province, city, addrLine, postal]);
-
   const onSubmit = handleSubmit(async (values) => {
-    if (composedAddress.trim().length < 10) {
-      toast.error("آدرس خیلی کوتاه است.");
-      return;
-    }
     const payload = {
       fullName: values.fullName.trim(),
       email: values.email?.trim() || undefined,
       phone: values.phone.trim(),
-      address: composedAddress.trim(),
+      address: composeAddress(values).trim(),
     };
 
     try {
-      await saveProfile(payload);
+      await saveProfile(payload); // API بدون تغییر
       toast.success("با موفقیت ذخیره شد.");
       onSaved(payload);
     } catch (err) {
@@ -130,7 +104,9 @@ export default function AddressForm({ initial, onCancel, onSaved }: Props) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* نام */}
           <label className="block">
-            <span className="mb-1 block text-xs text-slate-600">نام و نام خانوادگی</span>
+            <span className="mb-1 block text-xs text-slate-600">
+              نام و نام خانوادگی
+            </span>
             <input
               {...register("fullName")}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
@@ -158,7 +134,9 @@ export default function AddressForm({ initial, onCancel, onSaved }: Props) {
 
           {/* تلفن */}
           <label className="block">
-            <span className="mb-1 block text-xs text-slate-600">شماره تماس</span>
+            <span className="mb-1 block text-xs text-slate-600">
+              شماره تماس
+            </span>
             <input
               {...register("phone")}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
