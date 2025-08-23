@@ -88,13 +88,19 @@ export default function ProductListCard({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={9} className="px-3 py-6 text-center text-slate-500">
+                <td
+                  colSpan={9}
+                  className="px-3 py-6 text-center text-slate-500"
+                >
                   در حال بارگذاری…
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-3 py-6 text-center text-slate-500">
+                <td
+                  colSpan={9}
+                  className="px-3 py-6 text-center text-slate-500"
+                >
                   محصولی یافت نشد
                 </td>
               </tr>
@@ -116,7 +122,9 @@ export default function ProductListCard({
                   <td className="px-3 py-2">{p.name}</td>
                   <td className="px-3 py-2 text-slate-500">{p.slug}</td>
                   <td className="px-3 py-2">{p.price.toLocaleString()}</td>
-                  <td className="px-3 py-2">{p.salePrice ? p.salePrice.toLocaleString() : "—"}</td>
+                  <td className="px-3 py-2">
+                    {p.salePrice ? p.salePrice.toLocaleString() : "—"}
+                  </td>
                   <td className="px-3 py-2">{p.category}</td>
                   <td className="px-3 py-2">{p.stock}</td>
                   <td className="px-3 py-2">
@@ -147,7 +155,11 @@ export default function ProductListCard({
                         className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs hover:bg-slate-50"
                         title={p.active ? "غیرفعال کردن" : "فعال کردن"}
                       >
-                        {p.active ? <ToggleLeft className="size-4" /> : <ToggleRight className="size-4" />}
+                        {p.active ? (
+                          <ToggleLeft className="size-4" />
+                        ) : (
+                          <ToggleRight className="size-4" />
+                        )}
                         {p.active ? "غیرفعال" : "فعال"}
                       </button>
                       <button

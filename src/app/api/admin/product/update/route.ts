@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
   const cover = form.get("cover") as File | null;
 
   if (!id || !name || !slug || !category) {
-    return NextResponse.json({ ok: false, message: "ورودی نامعتبر" }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: "ورودی نامعتبر" },
+      { status: 400 },
+    );
   }
 
   const admin = supabaseAdmin();
@@ -43,9 +46,13 @@ export async function POST(req: NextRequest) {
       contentType: cover.type || "image/jpeg",
     });
     if (up.error) {
-      return NextResponse.json({ ok: false, message: up.error.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, message: up.error.message },
+        { status: 500 },
+      );
     }
-    coverUrl = admin.storage.from("product-covers").getPublicUrl(path).data.publicUrl;
+    coverUrl = admin.storage.from("product-covers").getPublicUrl(path)
+      .data.publicUrl;
   }
 
   const update: {
@@ -72,7 +79,10 @@ export async function POST(req: NextRequest) {
 
   const { error } = await admin.from("products").update(update).eq("id", id);
   if (error) {
-    return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, message: error.message },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ ok: true });

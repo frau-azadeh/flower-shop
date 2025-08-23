@@ -7,7 +7,13 @@ export async function requireUser() {
   const { data } = await sb.auth.getUser();
   const user = data.user;
   if (!user) {
-    return { ok: false as const, res: NextResponse.json({ ok: false, message: "UNAUTHORIZED" }, { status: 401 }) };
+    return {
+      ok: false as const,
+      res: NextResponse.json(
+        { ok: false, message: "UNAUTHORIZED" },
+        { status: 401 },
+      ),
+    };
   }
   return { ok: true as const, userId: user.id };
 }

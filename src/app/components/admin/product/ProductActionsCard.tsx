@@ -27,7 +27,11 @@ export default function ProductActionsCard({ submitting, editing }: Props) {
           title={editing ? "ثبت ویرایش" : "انتشار (UI)"}
         >
           <Upload className="size-4" />
-          {submitting ? "در حال ارسال..." : editing ? "ثبت ویرایش" : "انتشار محصول"}
+          {submitting
+            ? "در حال ارسال..."
+            : editing
+              ? "ثبت ویرایش"
+              : "انتشار محصول"}
         </button>
       </div>
     </div>

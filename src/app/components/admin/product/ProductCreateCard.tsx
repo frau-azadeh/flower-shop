@@ -143,7 +143,9 @@ export default function ProductCreateCard() {
 
     try {
       setSubmitting(true);
-      const url = editingId ? "/api/admin/product/update" : "/api/admin/product/add";
+      const url = editingId
+        ? "/api/admin/product/update"
+        : "/api/admin/product/add";
       const res = await fetch(url, {
         method: "POST",
         body: fd,
@@ -152,7 +154,9 @@ export default function ProductCreateCard() {
 
       const json: { ok: boolean; message?: string } = await res.json();
       if (!json.ok) {
-        alert(json.message ?? (editingId ? "خطا در ویرایش" : "خطا در ثبت محصول"));
+        alert(
+          json.message ?? (editingId ? "خطا در ویرایش" : "خطا در ثبت محصول"),
+        );
         return;
       }
 
@@ -207,7 +211,9 @@ export default function ProductCreateCard() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-slate-600">
           <Package className="size-5" />
-          <span className="text-sm">{editingId ? "ویرایش محصول" : "افزودن محصول جدید"}</span>
+          <span className="text-sm">
+            {editingId ? "ویرایش محصول" : "افزودن محصول جدید"}
+          </span>
         </div>
 
         {/* دکمه‌های نمونه (UI) */}
@@ -240,7 +246,10 @@ export default function ProductCreateCard() {
       </div>
 
       {/* Form grid */}
-      <form onSubmit={onSubmit} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_300px]">
+      <form
+        onSubmit={onSubmit}
+        className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_300px]"
+      >
         {/* left */}
         <ProductMainForm
           name={name}
@@ -263,14 +272,21 @@ export default function ProductCreateCard() {
 
         {/* right (sidebar) */}
         <aside className="space-y-4">
-          <ProductCoverCard coverPreview={coverPreview} inputRef={fileRef} onPick={setCoverFile} />
+          <ProductCoverCard
+            coverPreview={coverPreview}
+            inputRef={fileRef}
+            onPick={setCoverFile}
+          />
           <ProductStatusCard
             active={active}
             onToggle={() => setActive((v) => !v)}
             editing={editingId !== null}
             onCancelEdit={resetForm}
           />
-          <ProductActionsCard submitting={submitting} editing={editingId !== null} />
+          <ProductActionsCard
+            submitting={submitting}
+            editing={editingId !== null}
+          />
         </aside>
       </form>
 

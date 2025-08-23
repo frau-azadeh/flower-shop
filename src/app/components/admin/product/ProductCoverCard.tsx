@@ -11,7 +11,11 @@ type Props = {
   onPick: (file: File | null) => void;
 };
 
-export default function ProductCoverCard({ coverPreview, inputRef, onPick }: Props) {
+export default function ProductCoverCard({
+  coverPreview,
+  inputRef,
+  onPick,
+}: Props) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <h4 className="mb-3 text-sm font-semibold text-slate-700">تصویر کاور</h4>

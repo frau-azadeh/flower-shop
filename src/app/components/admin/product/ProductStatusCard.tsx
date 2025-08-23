@@ -9,7 +9,12 @@ type Props = {
   onCancelEdit: () => void;
 };
 
-export default function ProductStatusCard({ active, onToggle, editing, onCancelEdit }: Props) {
+export default function ProductStatusCard({
+  active,
+  onToggle,
+  editing,
+  onCancelEdit,
+}: Props) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <h4 className="mb-3 text-sm font-semibold text-slate-700">وضعیت</h4>

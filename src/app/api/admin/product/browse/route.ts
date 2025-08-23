@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabasePublic } from "@/lib/supabasePublic";
 
-
 export const runtime = "nodejs";
 
 type Item = {

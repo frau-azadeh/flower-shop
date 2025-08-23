@@ -80,7 +80,9 @@ export default function ProductMainForm({
             placeholder="مثلاً 450000"
             className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
           />
-          <span className="mt-1 block text-[11px] text-slate-500">{priceLabel}</span>
+          <span className="mt-1 block text-[11px] text-slate-500">
+            {priceLabel}
+          </span>
         </label>
 
         <label className="block">
@@ -95,7 +97,9 @@ export default function ProductMainForm({
             placeholder="مثلاً 399000"
             className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
           />
-          <span className="mt-1 block text-[11px] text-slate-500">{saleLabel}</span>
+          <span className="mt-1 block text-[11px] text-slate-500">
+            {saleLabel}
+          </span>
         </label>
 
         <label className="block">
