@@ -42,7 +42,10 @@ export default function MobileDrawer({
       <div className="absolute bottom-0 left-0 right-0 max-h-[80vh] rounded-t-2xl bg-white p-4 shadow-xl">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold">فیلترها</h4>
-          <button className="rounded-lg border px-2 py-1 text-xs" onClick={onClose}>
+          <button
+            className="rounded-lg border px-2 py-1 text-xs"
+            onClick={onClose}
+          >
             <X className="size-4" />
           </button>
         </div>
@@ -60,7 +63,10 @@ export default function MobileDrawer({
         />
 
         <div className="mt-4 flex items-center justify-between">
-          <button className="rounded-lg border px-3 py-2 text-sm" onClick={onClearFilters}>
+          <button
+            className="rounded-lg border px-3 py-2 text-sm"
+            onClick={onClearFilters}
+          >
             پاک‌کردن
           </button>
           <button

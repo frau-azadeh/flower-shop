@@ -32,7 +32,9 @@ export default function FiltersPanel({
     >
       {/* دسته‌ها */}
       <div>
-        <div className="mb-2 text-sm font-semibold text-slate-700">دسته‌بندی</div>
+        <div className="mb-2 text-sm font-semibold text-slate-700">
+          دسته‌بندی
+        </div>
         <div className="max-h-60 overflow-auto pr-1">
           {categories.length === 0 ? (
             <div className="text-xs text-slate-500">دسته‌ای موجود نیست</div>
@@ -58,21 +60,27 @@ export default function FiltersPanel({
 
       {/* قیمت */}
       <div className="mt-4">
-        <div className="mb-2 text-sm font-semibold text-slate-700">بازه قیمت (تومان)</div>
+        <div className="mb-2 text-sm font-semibold text-slate-700">
+          بازه قیمت (تومان)
+        </div>
         <div className="max-h-40 overflow-auto pr-1">
           <div className="grid grid-cols-2 gap-2">
             <input
               inputMode="numeric"
               placeholder={range.min != null ? String(range.min) : "حداقل"}
               value={min ?? ""}
-              onChange={(e) => setMin(e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                setMin(e.target.value ? Number(e.target.value) : undefined)
+              }
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
             />
             <input
               inputMode="numeric"
               placeholder={range.max != null ? String(range.max) : "حداکثر"}
               value={max ?? ""}
-              onChange={(e) => setMax(e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                setMax(e.target.value ? Number(e.target.value) : undefined)
+              }
               className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
             />
           </div>
@@ -91,7 +99,9 @@ export default function FiltersPanel({
         >
           پاک‌کردن
         </button>
-        <span className="text-xs text-slate-400">تغییرات به‌صورت خودکار اعمال می‌شود</span>
+        <span className="text-xs text-slate-400">
+          تغییرات به‌صورت خودکار اعمال می‌شود
+        </span>
       </div>
     </div>
   );

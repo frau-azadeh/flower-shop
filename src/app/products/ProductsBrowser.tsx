@@ -9,10 +9,16 @@ import MobileDrawer from "./components/MobileDrawer";
 
 import type { InitialState, Item, BrowseRes, BrowseOk } from "@/types/product";
 
-export default function ProductsBrowser({ initial }: { initial?: InitialState }) {
+export default function ProductsBrowser({
+  initial,
+}: {
+  initial?: InitialState;
+}) {
   // ---------- filters state ----------
   const [q, setQ] = useState<string>(initial?.q ?? "");
-  const [selectedCats, setSelectedCats] = useState<string[]>(initial?.categories ?? []);
+  const [selectedCats, setSelectedCats] = useState<string[]>(
+    initial?.categories ?? [],
+  );
   const [min, setMin] = useState<number | undefined>(initial?.min);
   const [max, setMax] = useState<number | undefined>(initial?.max);
 
@@ -22,7 +28,10 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(12);
   const [total, setTotal] = useState<number>(0);
-  const [range, setRange] = useState<{ min: number | null; max: number | null }>({
+  const [range, setRange] = useState<{
+    min: number | null;
+    max: number | null;
+  }>({
     min: null,
     max: null,
   });
@@ -66,14 +75,18 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
       controllerRef.current = controller;
 
       try {
-        const res = await fetch(`/api/admin/product/browse?${buildQuery(nextPage).toString()}`, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
+        const res = await fetch(
+          `/api/admin/product/browse?${buildQuery(nextPage).toString()}`,
+          {
+            cache: "no-store",
+            signal: controller.signal,
+          },
+        );
         const json: BrowseRes = await res.json();
 
         if (!res.ok || !json.ok) {
-          const msg = (json as { message?: string }).message ?? "خطا در دریافت محصولات";
+          const msg =
+            (json as { message?: string }).message ?? "خطا در دریافت محصولات";
           alert(msg);
           return;
         }
@@ -112,7 +125,9 @@ export default function ProductsBrowser({ initial }: { initial?: InitialState })
 
   // ---------- UI helpers ----------
   const toggleCat = useCallback((c: string) => {
-    setSelectedCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+    setSelectedCats((prev) =>
+      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
+    );
   }, []);
 
   const clearFilters = useCallback(() => {
