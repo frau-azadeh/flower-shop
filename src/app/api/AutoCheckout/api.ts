@@ -1,9 +1,17 @@
-import type { CheckoutItem, Profile, ProfileRes, SubmitOrderRes } from "@/types/AutoCheckout/types";
+import type {
+  CheckoutItem,
+  Profile,
+  ProfileRes,
+  SubmitOrderRes,
+} from "@/types/AutoCheckout/types";
 
 export async function getProfileViaApi(): Promise<Profile | null> {
-  const res = await fetch("/api/profile", { credentials: "include", cache: "no-store" });
+  const res = await fetch("/api/profile", {
+    credentials: "include",
+    cache: "no-store",
+  });
   const data = (await res.json()) as ProfileRes;
-  return res.ok && data.ok ? data.profile ?? null : null;
+  return res.ok && data.ok ? (data.profile ?? null) : null;
 }
 
 export async function submitOrder(payload: {

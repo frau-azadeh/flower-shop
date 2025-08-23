@@ -62,11 +62,14 @@ export default function AutoCheckout() {
       const fullName = profile?.fullName?.trim() ?? "";
       const phone = profile?.phone?.trim() ?? "";
       const address = profile?.address?.trim() ?? "";
-      const incomplete = fullName.length < 2 || phone.length < 5 || address.length < 10;
+      const incomplete =
+        fullName.length < 2 || phone.length < 5 || address.length < 10;
 
       if (incomplete) {
         setSessionForReturn(items);
-        router.replace("/user/address?address=new&next=/user/dashboard?checkout=1");
+        router.replace(
+          "/user/address?address=new&next=/user/dashboard?checkout=1",
+        );
         return;
       }
 

@@ -11,7 +11,12 @@ type Props = {
   onPay: (id: string) => void;
 };
 
-export default function OrderCard({ order: o, profileIncomplete, onCancel, onPay }: Props) {
+export default function OrderCard({
+  order: o,
+  profileIncomplete,
+  onCancel,
+  onPay,
+}: Props) {
   return (
     <article className="rounded-2xl border border-slate-200 bg-slate-50">
       <header className="flex flex-col gap-2 border-b border-slate-200 px-4 py-3 md:flex-row md:items-center md:justify-between">
@@ -24,7 +29,8 @@ export default function OrderCard({ order: o, profileIncomplete, onCancel, onPay
                   ? "border-emerald-300 text-emerald-700 bg-emerald-50"
                   : norm(o.status) === "sent"
                     ? "border-blue-300 text-blue-700 bg-blue-50"
-                    : norm(o.status) === "canceled" || norm(o.status) === "cancelled"
+                    : norm(o.status) === "canceled" ||
+                        norm(o.status) === "cancelled"
                       ? "border-rose-300 text-rose-700 bg-rose-50"
                       : "border-slate-300 text-slate-600 bg-white"
             }`}
@@ -64,7 +70,9 @@ export default function OrderCard({ order: o, profileIncomplete, onCancel, onPay
                     <td className="px-3 py-2">{it.productName}</td>
                     <td className="px-3 py-2 text-center">× {it.qty}</td>
                     <td className="px-3 py-2">{rial(it.unitPrice)}</td>
-                    <td className="px-3 py-2 font-medium">{rial(it.lineTotal)}</td>
+                    <td className="px-3 py-2 font-medium">
+                      {rial(it.lineTotal)}
+                    </td>
                   </tr>
                 ))}
               </tbody>

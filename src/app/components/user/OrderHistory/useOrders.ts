@@ -47,7 +47,12 @@ export function useOrders(refreshKey: string) {
       .channel(`orders-${userId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "orders", filter: `userId=eq.${userId}` },
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+          filter: `userId=eq.${userId}`,
+        },
         () => loadOrders(),
       )
       .subscribe();
