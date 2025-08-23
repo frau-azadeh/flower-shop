@@ -1,16 +1,17 @@
 "use client";
-import React from "react";
-import Tabs, { TabItem } from "../ui/Tabs";
+
+import Tabs, { type TabItem } from "./Tabs";
 import { Bell, Heart, Info, List, ToggleRight } from "lucide-react";
 import Button from "../ui/Button";
 
-const wishListTabs: TabItem[] = [
+const wishListTabs = [
   {
     key: "favorites",
     label: "لیست علاقه مندی",
     icon: <Heart className="size-4" />,
     emptyIcon: <Heart className="size-24 text-slate-300" />,
-    emptyText: "لیست غلاقه مندی های شما خالی است",
+    // اختیاری: "غلاقه" -> "علاقه"
+    emptyText: "لیست علاقه مندی های شما خالی است",
   },
   {
     key: "others",
@@ -47,14 +48,8 @@ const wishListTabs: TabItem[] = [
     emptyIcon: <Bell className="size-24 text-slate-300" />,
     emptyText: "هنوز هیچ اعلان فعالی ندارید",
   },
-];
+] satisfies ReadonlyArray<TabItem>; // immutable + type-safe
 
-const WishLists: React.FC = () => {
-  return (
-    <div>
-      <Tabs tabs={wishListTabs} paramsName="status" />
-    </div>
-  );
-};
-
-export default WishLists;
+export default function WishLists() {
+  return <Tabs tabs={wishListTabs} paramsName="status" />;
+}
