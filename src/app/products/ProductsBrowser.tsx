@@ -1,90 +1,41 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Filter, X } from "lucide-react";
-import ProductCard from "./ProductCard";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Filter } from "lucide-react";
 
-type Item = {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  salePrice: number | null;
-  category: string;
-  coverUrl: string | null;
-  createdAt: string;
-};
+import FiltersPanel from "./components/FiltersPanel";
+import ProductGrid from "./components/ProductGrid";
+import MobileDrawer from "./components/MobileDrawer";
 
-type BrowseOk = {
-  ok: true;
-  items: Item[];
-  total: number;
-  page: number;
-  pageSize: number;
-  categories: string[];
-  price: { min: number | null; max: number | null };
-};
-type BrowseBad = { ok: false; message: string };
-type BrowseRes = BrowseOk | BrowseBad;
+import type { InitialState, Item, BrowseRes, BrowseOk } from "@/types/product";
 
-type InitialState = {
-  q?: string;
-  categories?: string[];
-  min?: number;
-  max?: number;
-};
-
-export default function ProductsBrowser({
-  initial,
-}: {
-  initial?: InitialState;
-}) {
+export default function ProductsBrowser({ initial }: { initial?: InitialState }) {
   // ---------- filters state ----------
-  const [q, setQ] = useState(initial?.q ?? "");
-  const [selectedCats, setSelectedCats] = useState<string[]>(
-    initial?.categories ?? [],
-  );
+  const [q, setQ] = useState<string>(initial?.q ?? "");
+  const [selectedCats, setSelectedCats] = useState<string[]>(initial?.categories ?? []);
   const [min, setMin] = useState<number | undefined>(initial?.min);
   const [max, setMax] = useState<number | undefined>(initial?.max);
 
   // ---------- data state ----------
   const [items, setItems] = useState<Item[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
-  const [total, setTotal] = useState(0);
-  const [range, setRange] = useState<{
-    min: number | null;
-    max: number | null;
-  }>({ min: null, max: null });
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(12);
+  const [total, setTotal] = useState<number>(0);
+  const [range, setRange] = useState<{ min: number | null; max: number | null }>({
+    min: null,
+    max: null,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
 
   // mobile filter drawer
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-  // debounce سرچ
-  const qRef = useRef<number | undefined>(undefined);
-  function debouncedLoad(_page = 1) {
-    window.clearTimeout(qRef.current);
-    qRef.current = window.setTimeout(() => load(_page), 300);
-  }
+  // ---------- helpers ----------
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-  // ساخت querystring
-  const qs = useMemo(() => {
-    const u = new URLSearchParams();
-    if (q.trim()) u.set("q", q.trim());
-    selectedCats.forEach((c) => u.append("category", c));
-    if (min != null && min >= 0) u.set("min", String(min));
-    if (max != null && max >= 0) u.set("max", String(max));
-    u.set("page", String(page));
-    u.set("limit", String(pageSize));
-    return u.toString();
-  }, [q, selectedCats, min, max, page, pageSize]);
-
-  // fetcher
-  async function load(nextPage = 1) {
-    setLoading(true);
-    try {
+  const buildQuery = useCallback(
+    (nextPage: number) => {
       const u = new URLSearchParams();
       if (q.trim()) u.set("q", q.trim());
       selectedCats.forEach((c) => u.append("category", c));
@@ -92,57 +43,86 @@ export default function ProductsBrowser({
       if (max != null && max >= 0) u.set("max", String(max));
       u.set("page", String(nextPage));
       u.set("limit", String(pageSize));
+      return u;
+    },
+    [q, selectedCats, min, max, pageSize],
+  );
 
-      const res = await fetch(`/api/admin/product/browse?${u.toString()}`, {
-        cache: "no-store",
-      });
-      const json: BrowseRes = await res.json();
+  // debounce
+  const debounceRef = useRef<number | undefined>(undefined);
+  const debounced = useCallback((fn: () => void, wait = 300) => {
+    window.clearTimeout(debounceRef.current);
+    debounceRef.current = window.setTimeout(fn, wait);
+  }, []);
 
-      if (!json.ok) {
-        alert(json.message ?? "خطا در دریافت محصولات");
-        return;
+  // ---------- data fetch ----------
+  const controllerRef = useRef<AbortController | null>(null);
+
+  const load = useCallback(
+    async (nextPage: number) => {
+      setLoading(true);
+      controllerRef.current?.abort();
+      const controller = new AbortController();
+      controllerRef.current = controller;
+
+      try {
+        const res = await fetch(`/api/admin/product/browse?${buildQuery(nextPage).toString()}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const json: BrowseRes = await res.json();
+
+        if (!res.ok || !json.ok) {
+          const msg = (json as { message?: string }).message ?? "خطا در دریافت محصولات";
+          alert(msg);
+          return;
+        }
+
+        const ok = json as BrowseOk;
+        setItems(ok.items);
+        setTotal(ok.total);
+        setPage(ok.page);
+        setPageSize(ok.pageSize);
+        setCategories(ok.categories);
+        setRange(ok.price);
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          alert("خطا در ارتباط با سرور");
+        }
+      } finally {
+        setLoading(false);
       }
-      setItems(json.items);
-      setTotal(json.total);
-      setPage(json.page);
-      setPageSize(json.pageSize);
-      setCategories(json.categories);
-      setRange(json.price);
-    } catch {
-      alert("خطا در ارتباط با سرور");
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+    [buildQuery],
+  );
 
+  // initial load
   useEffect(() => {
     void load(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // هر تغییری در فیلترها => صفحه 1 و fetch
+  // filters changed -> reset page & fetch (debounced)
   useEffect(() => {
-    debouncedLoad(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, selectedCats, min, max]);
-
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    debounced(() => {
+      setPage(1);
+      void load(1);
+    });
+  }, [q, selectedCats, min, max, debounced, load]);
 
   // ---------- UI helpers ----------
-  function toggleCat(c: string) {
-    setSelectedCats((prev) =>
-      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
-    );
-  }
+  const toggleCat = useCallback((c: string) => {
+    setSelectedCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  }, []);
 
-  function clearFilters() {
+  const clearFilters = useCallback(() => {
     setSelectedCats([]);
     setMin(undefined);
     setMax(undefined);
     setQ("");
     setPage(1);
     void load(1);
-  }
+  }, [load]);
 
   // ---------- UI ----------
   return (
@@ -169,31 +149,7 @@ export default function ProductsBrowser({
         </div>
 
         {/* گرید محصولات */}
-        {loading ? (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="animate-pulse rounded-2xl border border-slate-200 bg-white"
-              >
-                <div className="aspect-[4/3] w-full rounded-t-2xl bg-slate-100" />
-                <div className="p-3 space-y-2">
-                  <div className="h-3 w-24 rounded bg-slate-100" />
-                  <div className="h-4 w-40 rounded bg-slate-100" />
-                  <div className="h-4 w-28 rounded bg-slate-100" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : items.length === 0 ? (
-          <p className="text-slate-500">محصولی یافت نشد.</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3">
-            {items.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
+        <ProductGrid items={items} loading={loading} />
 
         {/* صفحه‌بندی */}
         <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
@@ -226,7 +182,7 @@ export default function ProductsBrowser({
             categories={categories}
             selectedCats={selectedCats}
             toggleCat={toggleCat}
-            clearFilters={clearFilters}
+            onClearFilters={clearFilters}
             min={min}
             max={max}
             setMin={setMin}
@@ -237,158 +193,23 @@ export default function ProductsBrowser({
       </aside>
 
       {/* mobile drawer */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div
-            className="absolute inset-0 bg-black/30"
-            onClick={() => setDrawerOpen(false)}
-          />
-          <div className="absolute bottom-0 left-0 right-0 max-h-[80vh] rounded-t-2xl bg-white p-4 shadow-xl">
-            <div className="mb-3 flex items-center justify-between">
-              <h4 className="text-sm font-semibold">فیلترها</h4>
-              <button
-                className="rounded-lg border px-2 py-1 text-xs"
-                onClick={() => setDrawerOpen(false)}
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-
-            <FiltersPanel
-              categories={categories}
-              selectedCats={selectedCats}
-              toggleCat={toggleCat}
-              clearFilters={clearFilters}
-              min={min}
-              max={max}
-              setMin={setMin}
-              setMax={setMax}
-              range={range}
-            />
-
-            <div className="mt-4 flex items-center justify-between">
-              <button
-                className="rounded-lg border px-3 py-2 text-sm"
-                onClick={clearFilters}
-              >
-                پاک‌کردن
-              </button>
-              <button
-                className="rounded-lg bg-accent px-3 py-2 text-sm text-white"
-                onClick={() => {
-                  setDrawerOpen(false);
-                  void load(1);
-                }}
-              >
-                اعمال فیلتر
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FiltersPanel(props: {
-  categories: string[];
-  selectedCats: string[];
-  toggleCat: (c: string) => void;
-  clearFilters: () => void;
-  min: number | undefined;
-  max: number | undefined;
-  setMin: (n: number | undefined) => void;
-  setMax: (n: number | undefined) => void;
-  range: { min: number | null; max: number | null };
-}) {
-  const {
-    categories,
-    selectedCats,
-    toggleCat,
-    min,
-    max,
-    setMin,
-    setMax,
-    range,
-  } = props;
-  return (
-    <div
-      className="  rounded-2xl border border-slate-200 bg-white p-4
-        max-h-[calc(100vh-8rem)] overflow-auto"
-    >
-      {/* دسته‌ها */}
-      <div>
-        <div className="mb-2 text-sm font-semibold text-slate-700">
-          دسته‌بندی
-        </div>
-        <div className="max-h-60 overflow-auto pr-1">
-          {categories.length === 0 ? (
-            <div className="text-xs text-slate-500">دسته‌ای موجود نیست</div>
-          ) : (
-            <ul className="space-y-1">
-              {categories.map((c) => (
-                <li key={c}>
-                  <label className="flex cursor-pointer items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={selectedCats.includes(c)}
-                      onChange={() => toggleCat(c)}
-                      className="size-4 rounded border-slate-300"
-                    />
-                    <span>{c}</span>
-                  </label>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-
-      {/* قیمت */}
-      <div className="mt-4">
-        <div className="mb-2 text-sm font-semibold text-slate-700">
-          بازه قیمت (تومان)
-        </div>
-        <div className="max-h-40 overflow-auto pr-1">
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              inputMode="numeric"
-              placeholder={range.min != null ? String(range.min) : "حداقل"}
-              value={min ?? ""}
-              onChange={(e) =>
-                setMin(e.target.value ? Number(e.target.value) : undefined)
-              }
-              className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
-            />
-            <input
-              inputMode="numeric"
-              placeholder={range.max != null ? String(range.max) : "حداکثر"}
-              value={max ?? ""}
-              onChange={(e) =>
-                setMax(e.target.value ? Number(e.target.value) : undefined)
-              }
-              className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent"
-            />
-          </div>
-          <div className="mt-2 text-[11px] text-slate-500">
-            {range.min != null && range.max != null
-              ? `حداقل ${range.min.toLocaleString("fa-IR")} — حداکثر ${range.max.toLocaleString("fa-IR")}`
-              : "حداقل و حداکثر قابل دسترس نمایش داده می‌شود"}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between">
-        <button
-          className="rounded-lg border px-3 py-2 text-sm"
-          onClick={props.clearFilters}
-        >
-          پاک‌کردن
-        </button>
-        <span className="text-xs text-slate-400">
-          تغییرات به‌صورت خودکار اعمال می‌شود
-        </span>
-      </div>
+      <MobileDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        categories={categories}
+        selectedCats={selectedCats}
+        toggleCat={toggleCat}
+        onClearFilters={clearFilters}
+        min={min}
+        max={max}
+        setMin={setMin}
+        setMax={setMax}
+        range={range}
+        onApply={() => {
+          setDrawerOpen(false);
+          void load(1);
+        }}
+      />
     </div>
   );
 }
