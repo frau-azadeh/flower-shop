@@ -8,6 +8,7 @@ import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
 
 import { Toaster } from "react-hot-toast";
+import ConfirmTracer from "../components/dev/ConfirmTracer";
 
 export default function UserLayout({
   children,
@@ -63,6 +64,7 @@ export default function UserLayout({
         <main className="p-4 md:p-6">{children}</main>
       </div>
       <Toaster position="top-center" />
+      {process.env.NODE_ENV !== "production" && <ConfirmTracer />}
       <ScrollToTop />
       <UserFooter />
     </div>

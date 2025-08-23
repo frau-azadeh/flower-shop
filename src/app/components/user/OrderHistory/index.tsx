@@ -7,6 +7,8 @@ import { Clock, PackageCheck, Undo2, XCircle } from "lucide-react";
 import { useOrders } from "./useOrders";
 import { groupByStatus } from "./utils";
 import OrderCard from "./OrderCard";
+import { toast } from "react-hot-toast";
+import { confirmToast } from "@/app/components/ui/confirmToast";
 
 const baseTabs: TabItem[] = [
   { key: "current", label: "جاری", icon: <Clock className="size-4" /> },
@@ -43,25 +45,55 @@ export default function OrderHistory() {
   const visible = groups[activeKey] ?? [];
   const profileIncomplete = !profile?.fullName || !profile?.phone;
 
+  // --- اکشن‌ها با toast ---
   const cancelOrder = async (id: string) => {
-    const ok = await fetch(`/api/orders/${id}/cancel`, { method: "POST" }).then(
-      (r) => r.ok,
-    );
-    if (ok) loadOrders();
+    const ok = await confirmToast({
+      message: "لغو سفارش انجام شود؟",
+      confirmText: "بله، لغو کن",
+      cancelText: "انصراف",
+    });
+    if (!ok) return;
+
+    try {
+      await toast.promise(
+        fetch(`/api/orders/${id}/cancel`, { method: "POST" }).then((r) => {
+          if (!r.ok) throw new Error("FAILED");
+        }),
+        {
+          loading: "در حال لغو…",
+          success: "سفارش لغو شد.",
+          error: "لغو سفارش ناموفق بود.",
+        },
+      );
+      loadOrders();
+    } catch {
+      /* پیام خطا در toast.promise نمایش داده شد */
+    }
   };
 
   const payOrder = async (id: string) => {
-    const ok = await fetch(`/api/orders/${id}/pay`, { method: "POST" }).then(
-      (r) => r.ok,
-    );
-    if (ok) loadOrders();
+    try {
+      await toast.promise(
+        fetch(`/api/orders/${id}/pay`, { method: "POST" }).then((r) => {
+          if (!r.ok) throw new Error("FAILED");
+        }),
+        {
+          loading: "در حال ثبت پرداخت…",
+          success: "پرداخت ثبت شد.",
+          error: "ثبت پرداخت ناموفق بود.",
+        },
+      );
+      loadOrders();
+    } catch {
+      /* پیام خطا در toast.promise نمایش داده شد */
+    }
   };
 
   return (
     <section dir="rtl" className="mx-auto max-w-6xl p-4 md:p-6">
       {profileIncomplete && (
         <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
-          نام و تلفن شما کامل نیست.{" "}
+          نام و تلفن شما کامل نیست{" "}
           <a
             href="/user/address?address=new"
             className="text-amber-700 underline"
