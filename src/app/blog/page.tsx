@@ -1,23 +1,13 @@
-// app/blog/page.tsx
-
 import BlogIndexClient from "./BlogIndexClient";
 import { createSupabaseClient } from "@/lib/supabase";
+import { PostRow } from "@/types/blog";
 
-type Row = {
-  title: string;
-  slug: string;
-  content: string;
-  publishedAt: string | null;
-  coverUrl: string | null;
-};
-
-// در Next 15: searchParams یک Promise است
 export default async function BlogPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const sp = await searchParams; // ← حتماً await
+  const sp = await searchParams;
   const page = Number(sp?.page) || 1;
 
   const supabase = await createSupabaseClient();
@@ -27,7 +17,7 @@ export default async function BlogPage({
     .eq("status", "published")
     .order("publishedAt", { ascending: false });
 
-  const posts: Row[] = (data ?? []) as Row[];
+  const posts: PostRow[] = (data ?? []) as PostRow[];
 
   return <BlogIndexClient posts={posts} page={page} />;
 }
