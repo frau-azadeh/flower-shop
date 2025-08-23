@@ -1,4 +1,8 @@
-import type { ApiGetProfileResponse, ApiPostProfileResponse, ProfileDto } from "@/types/userAddress";
+import type {
+  ApiGetProfileResponse,
+  ApiPostProfileResponse,
+  ProfileDto,
+} from "@/types/userAddress";
 
 export async function fetchProfile(): Promise<ProfileDto | null> {
   const res = await fetch("/api/profile", {
@@ -22,6 +26,8 @@ export async function saveProfile(payload: {
   });
   const json: ApiPostProfileResponse = await res.json();
   if (!res.ok || !json.ok) {
-    throw new Error((json as { message?: string }).message ?? "ثبت اطلاعات ناموفق بود");
+    throw new Error(
+      (json as { message?: string }).message ?? "ثبت اطلاعات ناموفق بود",
+    );
   }
 }

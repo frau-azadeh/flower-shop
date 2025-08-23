@@ -62,7 +62,7 @@ export default function UserLayout({
         <UserNavbar />
         <main className="p-4 md:p-6">{children}</main>
       </div>
-       <Toaster position="top-center" />
+      <Toaster position="top-center" />
       <ScrollToTop />
       <UserFooter />
     </div>

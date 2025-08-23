@@ -8,8 +8,14 @@ const BaseSchema = z.object({
     .trim()
     .optional()
     .or(z.literal(""))
-    .refine((v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "ایمیل معتبر نیست."),
-  phone: z.string().trim().regex(/^\d{10,11}$/, "شماره تماس معتبر نیست."),
+    .refine(
+      (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      "ایمیل معتبر نیست.",
+    ),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\d{10,11}$/, "شماره تماس معتبر نیست."),
   province: z.string().trim().optional(),
   city: z.string().trim().optional(),
   addrLine: z.string().trim().min(1, "آدرس را وارد کنید."),
@@ -19,7 +25,9 @@ const BaseSchema = z.object({
 export type AddressFormValues = z.infer<typeof BaseSchema>;
 
 /** تبدیل فیلدهای فرم به آدرس نهایی ذخیره‌شونده */
-export function composeAddress(v: Pick<AddressFormValues, "province" | "city" | "addrLine" | "postal">): string {
+export function composeAddress(
+  v: Pick<AddressFormValues, "province" | "city" | "addrLine" | "postal">,
+): string {
   const parts: string[] = [];
   if (v.province?.trim()) parts.push(`استان ${v.province.trim()}`);
   if (v.city?.trim()) parts.push(`شهر ${v.city.trim()}`);
