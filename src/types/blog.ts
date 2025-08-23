@@ -22,3 +22,11 @@ export interface IdSlug {
   id: string;
   slug: string;
 }
+
+export type PostRow = {
+  title: string;
+  slug: string;
+  content: string; // HTML
+  publishedAt: string | null;
+  coverUrl: string | null;
+};
