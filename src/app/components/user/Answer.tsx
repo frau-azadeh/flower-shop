@@ -1,13 +1,13 @@
 "use client";
-import React from "react";
-import Tabs, { TabItem } from "../ui/Tabs";
+
+import Tabs, { type TabItem } from "./Tabs";
 import {
   MessageCircleHeart,
   MessageCircleWarning,
   MessageSquare,
 } from "lucide-react";
 
-const answerTabs: TabItem[] = [
+const answerTabs = [
   {
     key: "waiting",
     label: "در انتظار دیدگاه",
@@ -29,14 +29,8 @@ const answerTabs: TabItem[] = [
     emptyIcon: <MessageSquare className="size-24 text-slate-300" />,
     emptyText: "لیست سوال های شما خالی است",
   },
-];
+] satisfies ReadonlyArray<TabItem>; // immutable + type-safe
 
-const Answer: React.FC = () => {
-  return (
-    <div>
-      <Tabs tabs={answerTabs} paramsName="status" />
-    </div>
-  );
-};
-
-export default Answer;
+export default function Answer() {
+  return <Tabs tabs={answerTabs} paramsName="status" />;
+}
