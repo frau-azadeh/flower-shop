@@ -19,9 +19,17 @@ type Props = {
   slug?: string;
 };
 
-export default function ShareBox({ title, url, path = "blog", slug = "" }: Props) {
+export default function ShareBox({
+  title,
+  url,
+  path = "blog",
+  slug = "",
+}: Props) {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "";
-  const finalUrl = useMemo(() => url ?? `${base}/${path}/${slug}`, [url, base, path, slug]);
+  const finalUrl = useMemo(
+    () => url ?? `${base}/${path}/${slug}`,
+    [url, base, path, slug],
+  );
 
   const copy = useCallback(() => {
     void navigator.clipboard.writeText(finalUrl);
@@ -37,28 +45,32 @@ export default function ShareBox({ title, url, path = "blog", slug = "" }: Props
       <div className="mt-3 flex flex-wrap gap-2">
         <a
           href={`https://t.me/share/url?url=${enc(finalUrl)}&text=${enc(title)}`}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Send size={16} /> تلگرام
         </a>
         <a
           href={`https://twitter.com/intent/tweet?url=${enc(finalUrl)}&text=${enc(title)}`}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Twitter size={16} /> X
         </a>
         <a
           href={`https://www.linkedin.com/shareArticle?mini=true&url=${enc(finalUrl)}&title=${enc(title)}`}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <Linkedin size={16} /> لینکدین
         </a>
         <a
           href={`https://api.whatsapp.com/send?text=${enc(`${title} ${finalUrl}`)}`}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"
         >
           <MessageCircle size={16} /> واتس‌اپ

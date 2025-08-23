@@ -19,7 +19,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
   // محصول اصلی
   const { data: product } = await sb
     .from("products")
-    .select("id, name, slug, price, salePrice, category, coverUrl, description, createdAt")
+    .select(
+      "id, name, slug, price, salePrice, category, coverUrl, description, createdAt",
+    )
     .eq("active", true)
     .eq("slug", slug)
     .maybeSingle<PublicProduct>();
@@ -66,17 +68,25 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <div className="md:sticky md:top-24">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 md:max-h-[calc(100vh-8rem)] md:overflow-auto">
               <h1 className="mb-2 text-xl font-bold">{product.name}</h1>
-              <div className="mb-3 text-sm text-slate-500">{product.category}</div>
+              <div className="mb-3 text-sm text-slate-500">
+                {product.category}
+              </div>
 
               {/* بلوک قیمت (اینلاین و ساده) */}
               <div className="mb-4">
                 {product.salePrice ? (
                   <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold">{toman(product.salePrice)}</span>
-                    <span className="text-sm text-slate-400 line-through">{toman(product.price)}</span>
+                    <span className="text-lg font-bold">
+                      {toman(product.salePrice)}
+                    </span>
+                    <span className="text-sm text-slate-400 line-through">
+                      {toman(product.price)}
+                    </span>
                   </div>
                 ) : (
-                  <span className="text-lg font-bold">{toman(product.price)}</span>
+                  <span className="text-lg font-bold">
+                    {toman(product.price)}
+                  </span>
                 )}
               </div>
 
@@ -99,7 +109,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
         {related.length > 0 && (
           <section className="order-3 md:col-start-1 md:row-start-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <h2 className="mb-3 text-sm font-semibold text-slate-700">محصولات مرتبط</h2>
+              <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                محصولات مرتبط
+              </h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {related.map((rp) => (
                   <ProductCard key={rp.id} product={rp} />
