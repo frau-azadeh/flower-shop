@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Plus, X, Save, Pencil } from "lucide-react";
 
@@ -21,28 +21,18 @@ type ApiPostProfileResponse =
   | { ok: true }
   | { ok: false; message: string };
 
-/* ------------ Wrapper with Suspense ------------ */
-export default function UserAddressPage() {
-  return (
-    <Suspense
-      fallback={
-        <section
-          dir="rtl"
-          className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 text-right"
-        >
-          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
-            در حال بارگذاری…
-          </div>
-        </section>
-      }
-    >
-      <UserAddressInner />
-    </Suspense>
-  );
+/* ------------ Helpers ------------ */
+async function fetchProfile(): Promise<ProfileDto | null> {
+  const res = await fetch("/api/profile", {
+    credentials: "include",
+    cache: "no-store",
+  });
+  const json: ApiGetProfileResponse = await res.json();
+  return json.ok ? json.profile : null;
 }
 
-/* ------------ Component using navigation hooks ------------ */
-function UserAddressInner() {
+/* ------------ Component ------------ */
+export default function UserAddressClient() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -89,39 +79,34 @@ function UserAddressInner() {
     return parts.join("، ");
   }, [province, city, addrLine, postal]);
 
-  /* ——— ۱) پروفایل برای نمایش کارت (همیشه فچ شو) ——— */
+  /* ——— ۱) فچ پروفایل برای نمایش کارت ——— */
   useEffect(() => {
     (async () => {
       setLoadingProfile(true);
-      const res = await fetch("/api/profile", {
-        credentials: "include",
-        cache: "no-store",
-      });
-      const json: ApiGetProfileResponse = await res.json();
-      setProfile(json.ok ? json.profile : null);
+      const p = await fetchProfile();
+      setProfile(p);
       setLoadingProfile(false);
     })();
   }, []);
 
-  /* ——— ۲) پیش‌پر کردن فرم وقتی باز می‌شود ——— */
+  /* ——— ۲) پیش‌پر کردن فرم فقط هنگام باز شدن ——— */
   useEffect(() => {
     if (!isFormOpen) return;
+
     setPrefillLoading(true);
     (async () => {
-      const res = await fetch("/api/profile", {
-        credentials: "include",
-        cache: "no-store",
-      });
-      const json: ApiGetProfileResponse = await res.json();
-      if (json.ok && json.profile) {
-        setFullName(json.profile.fullName ?? "");
-        setEmail(json.profile.email ?? "");
-        setPhone(json.profile.phone ?? "");
+      const p = profile ?? (await fetchProfile());
+      if (p) {
+        setFullName(p.fullName ?? "");
+        setEmail(p.email ?? "");
+        setPhone(p.phone ?? "");
         // اگر قبلا آدرسی ذخیره بوده، کلش را در addrLine بریز تا از دست نرود
-        setAddrLine(json.profile.address ?? "");
+        setAddrLine(p.address ?? "");
       }
       setPrefillLoading(false);
     })();
+    // فقط به isFormOpen وابسته نیستیم، چون profile ممکن است بعداً بیاید
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFormOpen]);
 
   /* ——— ۳) ثبت/ویرایش آدرس ——— */
@@ -158,6 +143,7 @@ function UserAddressInner() {
           address: composedAddress.trim(),
         }),
       });
+
       const json: ApiPostProfileResponse = await res.json();
       if (!res.ok || !json.ok) throw new Error("ثبت اطلاعات ناموفق بود");
 
@@ -210,7 +196,6 @@ function UserAddressInner() {
               در حال بارگذاری…
             </div>
           ) : profile?.address ? (
-            // کارت آدرس ثبت‌شده
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="mb-3 flex items-center gap-2">
                 <MapPin className="size-5 text-accent" />
@@ -247,7 +232,6 @@ function UserAddressInner() {
               </div>
             </div>
           ) : (
-            // Empty فقط وقتی آدرسی نیست
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <MapPin className="size-24 text-slate-300" />
               <p className="mt-6 text-sm md:text-base text-slate-700">
