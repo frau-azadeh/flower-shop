@@ -1,7 +1,10 @@
 export const POSTS_PER_PAGE = 9;
 
 export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function readingTime(text: string): number {

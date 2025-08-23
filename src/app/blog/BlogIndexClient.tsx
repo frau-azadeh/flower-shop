@@ -11,13 +11,19 @@ import EmptyState from "./components/EmptyState";
 import { PostRow } from "@/types/blog";
 import { POSTS_PER_PAGE, stripHtml } from "@/lib/blog/utils";
 
-export default function BlogIndexClient({ posts, page }: { posts: PostRow[]; page: number }) {
+export default function BlogIndexClient({
+  posts,
+  page,
+}: {
+  posts: PostRow[];
+  page: number;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const initial: BlogFiltersState = {
     q: searchParams.get("q") ?? "",
-    sort: ((searchParams.get("sort") ?? "new") as "new" | "old"),
+    sort: (searchParams.get("sort") ?? "new") as "new" | "old",
     onlyCover: (searchParams.get("cover") ?? "0") === "1",
     onlyLong: (searchParams.get("long") ?? "0") === "1",
   };
@@ -76,7 +82,12 @@ export default function BlogIndexClient({ posts, page }: { posts: PostRow[]; pag
   };
 
   const resetFilters = () => {
-    const clean: BlogFiltersState = { q: "", sort: "new", onlyCover: false, onlyLong: false };
+    const clean: BlogFiltersState = {
+      q: "",
+      sort: "new",
+      onlyCover: false,
+      onlyLong: false,
+    };
     setFilters(clean);
     router.push("?page=1");
     setCurrentPage(1);
@@ -90,10 +101,16 @@ export default function BlogIndexClient({ posts, page }: { posts: PostRow[]; pag
             مجلهٔ گل‌فروش
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های جدید.
+            نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های
+            جدید.
           </p>
 
-          <BlogFilters state={filters} setState={setFilters} onSubmit={onSubmit} onReset={resetFilters} />
+          <BlogFilters
+            state={filters}
+            setState={setFilters}
+            onSubmit={onSubmit}
+            onReset={resetFilters}
+          />
 
           <ResultCount count={filtered.length} />
         </div>

@@ -16,7 +16,12 @@ type Props = {
   onReset: () => void;
 };
 
-export default function BlogFilters({ state, setState, onSubmit, onReset }: Props) {
+export default function BlogFilters({
+  state,
+  setState,
+  onSubmit,
+  onReset,
+}: Props) {
   const { q, sort, onlyCover, onlyLong } = state;
 
   return (
@@ -36,7 +41,9 @@ export default function BlogFilters({ state, setState, onSubmit, onReset }: Prop
       <div className="flex flex-wrap items-center gap-2">
         <select
           value={sort}
-          onChange={(e) => setState({ ...state, sort: e.target.value as "new" | "old" })}
+          onChange={(e) =>
+            setState({ ...state, sort: e.target.value as "new" | "old" })
+          }
           className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary"
         >
           <option value="new">جدیدترین</option>

@@ -9,7 +9,12 @@ type Props = {
   onPageChange?: (page: number) => void;
 };
 
-export default function Pagination({ currentPage, totalPages, buildQS, onPageChange }: Props) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  buildQS,
+  onPageChange,
+}: Props) {
   const router = useRouter();
   const go = (p: number) => {
     router.push(buildQS(p));
