@@ -92,7 +92,9 @@ export default function PostEditor() {
     setLoadingList(true);
     setListError("");
     try {
-      const res = await fetch("/api/admin/posts/list", { credentials: "include" });
+      const res = await fetch("/api/admin/posts/list", {
+        credentials: "include",
+      });
       const data = await safeJson(res);
       if (!res.ok || !data || "error" in (data ?? {})) {
         setRows([]);
@@ -245,10 +247,17 @@ export default function PostEditor() {
       fd.append("file", f);
       fd.append("slug", slug.trim().toLowerCase());
 
-      const res = await fetch("/api/admin/posts/upload", { method: "POST", body: fd });
+      const res = await fetch("/api/admin/posts/upload", {
+        method: "POST",
+        body: fd,
+      });
       const text = await res.text();
       const data: { url?: string; error?: string } = (() => {
-        try { return JSON.parse(text); } catch { return { error: text }; }
+        try {
+          return JSON.parse(text);
+        } catch {
+          return { error: text };
+        }
       })();
 
       if (!res.ok || data.error || !data.url) {
@@ -271,7 +280,9 @@ export default function PostEditor() {
         {/* ادیتور */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">{id ? "ویرایش پست" : "پست جدید"}</h1>
+            <h1 className="text-xl font-bold">
+              {id ? "ویرایش پست" : "پست جدید"}
+            </h1>
             {id && (
               <button
                 onClick={resetForm}
@@ -303,7 +314,9 @@ export default function PostEditor() {
           <div className="rounded-xl border border-gray-300 p-3">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">کاور مقاله</div>
-              {uploading && <div className="text-xs text-emerald-600">در حال آپلود…</div>}
+              {uploading && (
+                <div className="text-xs text-emerald-600">در حال آپلود…</div>
+              )}
             </div>
 
             <div className="mt-3 flex items-start gap-4">
@@ -356,7 +369,8 @@ export default function PostEditor() {
                     method: "POST",
                     body: fd,
                   });
-                  const data: { url?: string; error?: string } = await res.json();
+                  const data: { url?: string; error?: string } =
+                    await res.json();
                   resolve(data.url ?? null);
                 };
                 input.click();

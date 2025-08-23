@@ -5,7 +5,9 @@ import RequireAuth from "@/app/components/admin/RequireAuth";
 
 const PostEditor = dynamic(() => import("@/app/components/admin/PostEditor"), {
   ssr: false,
-  loading: () => <div className="rounded border p-3">در حال بارگذاری ادیتور…</div>,
+  loading: () => (
+    <div className="rounded border p-3">در حال بارگذاری ادیتور…</div>
+  ),
 });
 
 export default function AdminBlogClient() {
