@@ -1,4 +1,4 @@
-import ProductCreateCard from "@/app/components/admin/ProductCreateCard";
+import ProductCreateCard from "@/app/components/admin/product/ProductCreateCard";
 import RequireAuth from "@/app/components/admin/RequireAuth";
 
 export default function Page() {
