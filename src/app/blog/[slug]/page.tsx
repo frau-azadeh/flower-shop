@@ -55,7 +55,10 @@ export default async function BlogPost({
           <div className="md:sticky md:top-24">
             <CoverCard title={data.title} coverUrl={data.coverUrl} />
             <ShareBox slug={slug} title={data.title} />
-            <RecentPosts posts={recent ?? []} className="mt-4 hidden md:block" />
+            <RecentPosts
+              posts={recent ?? []}
+              className="mt-4 hidden md:block"
+            />
           </div>
         </aside>
 

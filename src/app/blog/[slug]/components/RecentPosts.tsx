@@ -8,7 +8,11 @@ type Props = {
   title?: string;
 };
 
-export default function RecentPosts({ posts, className = "", title = "آخرین مطالب" }: Props) {
+export default function RecentPosts({
+  posts,
+  className = "",
+  title = "آخرین مطالب",
+}: Props) {
   if (!posts?.length) return null;
 
   return (
@@ -40,7 +44,9 @@ export default function RecentPosts({ posts, className = "", title = "آخرین
 
               <div className="flex min-w-0 flex-1 items-center pr-2">
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-medium text-gray-900">{p.title}</div>
+                  <div className="truncate text-sm font-medium text-gray-900">
+                    {p.title}
+                  </div>
                   {p.publishedAt && (
                     <div className="mt-0.5 text-xs text-gray-500">
                       {new Date(p.publishedAt).toLocaleDateString("fa-IR")}

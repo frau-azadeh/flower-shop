@@ -1,6 +1,13 @@
 "use client";
 
-import { Share2, Send, Twitter, Linkedin, Link as LinkIcon, MessageCircle } from "lucide-react";
+import {
+  Share2,
+  Send,
+  Twitter,
+  Linkedin,
+  Link as LinkIcon,
+  MessageCircle,
+} from "lucide-react";
 import { useCallback, useMemo } from "react";
 
 type Props = { slug: string; title: string };
