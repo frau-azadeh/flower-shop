@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, Pencil } from "lucide-react";
-import type { ProfileDto } from "./types";
+import type { ProfileDto } from "@/types/userAddress";
 
 type Props = {
   loading: boolean;
