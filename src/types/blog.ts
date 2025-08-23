@@ -30,3 +30,18 @@ export type PostRow = {
   publishedAt: string | null;
   coverUrl: string | null;
 };
+
+export type MiniPost = {
+  slug: string;
+  title: string;
+  coverUrl: string | null;
+  publishedAt: string | null;
+};
+
+export type FullPost = {
+  title: string;
+  content: string | null;
+  publishedAt: string | null;
+  status: "draft" | "published";
+  coverUrl: string | null;
+};
