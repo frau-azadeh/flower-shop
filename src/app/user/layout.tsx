@@ -7,6 +7,8 @@ import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import UserFooter from "@/app/components/user/UserFooter";
 import UserNavbar from "@/app/components/user/UserNavbar";
 
+import { Toaster } from "react-hot-toast";
+
 export default function UserLayout({
   children,
 }: {
@@ -60,6 +62,7 @@ export default function UserLayout({
         <UserNavbar />
         <main className="p-4 md:p-6">{children}</main>
       </div>
+       <Toaster position="top-center" />
       <ScrollToTop />
       <UserFooter />
     </div>
