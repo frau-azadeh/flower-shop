@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
-import Tabs, { TabItem } from "../ui/Tabs";
+
+import Tabs, { type TabItem } from "./Tabs";
 import { Archive, Inbox, Mail, Star } from "lucide-react";
 
-const messageTabs: TabItem[] = [
+const messageTabs = [
   {
     key: "inbox",
     label: "همه پیامها",
@@ -32,14 +32,8 @@ const messageTabs: TabItem[] = [
     emptyIcon: <Archive className="size-24 text-slate-300" />,
     emptyText: "پیامی در بایگانی وجود ندارد",
   },
-];
+] satisfies ReadonlyArray<TabItem>; // immutable + type-safe
 
-const UserMessage: React.FC = () => {
-  return (
-    <div>
-      <Tabs tabs={messageTabs} paramsName="status" />
-    </div>
-  );
-};
-
-export default UserMessage;
+export default function UserMessage() {
+  return <Tabs tabs={messageTabs} paramsName="status" />;
+}
