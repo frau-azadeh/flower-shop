@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import UserAddressClient from "@/app/components/user/UserAddress";
 
 // جلوگیری از prerender در زمان build
-export const dynamic = "force-dynamic";           // یا: export const revalidate = 0;
+export const dynamic = "force-dynamic"; // یا: export const revalidate = 0;
 // اگر کش فچ را هم می‌خواهی غیرفعال کنی:
 // export const fetchCache = "default-no-store";
 

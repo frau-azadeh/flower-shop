@@ -17,9 +17,7 @@ type ApiGetProfileResponse =
   | { ok: true; profile: ProfileDto | null }
   | { ok: false; message: string };
 
-type ApiPostProfileResponse =
-  | { ok: true }
-  | { ok: false; message: string };
+type ApiPostProfileResponse = { ok: true } | { ok: false; message: string };
 
 /* ------------ Helpers ------------ */
 async function fetchProfile(): Promise<ProfileDto | null> {
