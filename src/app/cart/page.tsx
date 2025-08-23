@@ -1,24 +1,61 @@
 "use client";
 
+import { useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store/store";
 import { removeItem, setQty } from "@/store/orders/cartSlice";
 import { useRouter } from "next/navigation";
 
+import CartItemCard, { CartEntry } from "./components/CartItemCard";
+import CartSummary from "./components/CartSummary";
+import EmptyCart from "./components/EmptyCart";
+
 type MinimalItem = { productId: string; qty: number };
+
+function clampQty(n: number): number {
+  return Number.isFinite(n) ? Math.max(1, Math.floor(n)) : 1;
+}
 
 export default function CartPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const items = useSelector((s: RootState) => Object.values(s.cart.items));
 
-  const total = items.reduce(
-    (sum, it) => sum + (typeof it.price === "number" ? it.price : 0) * it.qty,
-    0,
+  // فرض: s.cart.items یک آبجکت از آیتم‌هاست؛ به آرایه تبدیل می‌کنیم
+  const items = useSelector((s: RootState) =>
+    Object.values(s.cart.items)
+  ) as CartEntry[];
+
+  const { total, count } = useMemo(() => {
+    const t = items.reduce(
+      (sum, it) => sum + (typeof it.price === "number" ? it.price : 0) * it.qty,
+      0
+    );
+    const c = items.reduce((s, it) => s + it.qty, 0);
+    return { total: t, count: c };
+  }, [items]);
+
+  // اکشن‌ها را به‌صورت کال‌بک به کامپوننت‌ها می‌دهیم
+  const onDec = useCallback(
+    (id: string, current: number) =>
+      dispatch(setQty({ productId: id, qty: clampQty(current - 1) })),
+    [dispatch]
+  );
+  const onInc = useCallback(
+    (id: string, current: number) =>
+      dispatch(setQty({ productId: id, qty: clampQty(current + 1) })),
+    [dispatch]
+  );
+  const onInput = useCallback(
+    (id: string, value: string) =>
+      dispatch(setQty({ productId: id, qty: clampQty(Number(value)) })),
+    [dispatch]
+  );
+  const onRemove = useCallback(
+    (id: string) => dispatch(removeItem({ productId: id })),
+    [dispatch]
   );
 
   const goCheckout = (): void => {
-    // فقط فیلدهای لازم برای API
     const minimal: MinimalItem[] = items
       .map((it) => ({ productId: it.productId, qty: it.qty }))
       .filter((x) => x.productId && x.qty > 0);
@@ -33,99 +70,31 @@ export default function CartPage() {
   };
 
   if (items.length === 0) {
-    return <div className="container mx-auto px-4 py-6">سبد شما خالی است.</div>;
+    return <EmptyCart />;
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-4">سبد خرید</h1>
+    <main dir="rtl" className="mx-auto max-w-6xl px-4 py-8 h-screen">
+      <h1 className="mb-5 text-xl font-extrabold tracking-tight text-slate-900">
+        سبد خرید
+      </h1>
 
-      <div className="grid gap-3">
-        {items.map((it) => (
-          <div
-            key={it.productId}
-            className="border rounded-2xl p-4 flex items-center gap-4"
-          >
-            {it.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={it.coverUrl}
-                alt={it.name}
-                className="w-16 h-16 object-cover rounded-xl border"
-              />
-            )}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
+        <section className="space-y-3">
+          {items.map((it) => (
+            <CartItemCard
+              key={it.productId}
+              item={it}
+              onDec={onDec}
+              onInc={onInc}
+              onInput={onInput}
+              onRemove={onRemove}
+            />
+          ))}
+        </section>
 
-            <div className="flex-1">
-              <div className="font-semibold">{it.name}</div>
-              {typeof it.price === "number" && (
-                <div className="text-sm text-slate-600">
-                  {it.price.toLocaleString()} تومان
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                className="px-3 py-1 rounded-xl border"
-                onClick={() =>
-                  dispatch(
-                    setQty({
-                      productId: it.productId,
-                      qty: Math.max(1, it.qty - 1),
-                    }),
-                  )
-                }
-                aria-label="کاهش تعداد"
-              >
-                −
-              </button>
-
-              <input
-                className="w-16 text-center border rounded-xl py-1"
-                type="number"
-                min={1}
-                value={it.qty}
-                onChange={(e) =>
-                  dispatch(
-                    setQty({
-                      productId: it.productId,
-                      qty: Math.max(1, Number(e.target.value) || 1),
-                    }),
-                  )
-                }
-                aria-label="تعداد"
-              />
-
-              <button
-                className="px-3 py-1 rounded-xl border"
-                onClick={() =>
-                  dispatch(setQty({ productId: it.productId, qty: it.qty + 1 }))
-                }
-                aria-label="افزایش تعداد"
-              >
-                +
-              </button>
-            </div>
-
-            <button
-              className="rounded-xl border px-3 py-2"
-              onClick={() => dispatch(removeItem({ productId: it.productId }))}
-            >
-              حذف
-            </button>
-          </div>
-        ))}
+        <CartSummary count={count} total={total} onCheckout={goCheckout} />
       </div>
-
-      <div className="mt-6 flex items-center justify-between">
-        <div className="font-semibold">جمع: {total.toLocaleString()} تومان</div>
-        <button
-          onClick={goCheckout}
-          className="rounded-2xl bg-black text-white px-6 py-3"
-        >
-          ادامه و ثبت نهایی
-        </button>
-      </div>
-    </div>
+    </main>
   );
 }
