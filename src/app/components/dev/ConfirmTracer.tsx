@@ -9,7 +9,9 @@ export default function ConfirmTracer() {
       console.trace("window.confirm called with:", msg);
       return oldConfirm(msg);
     };
-    return () => { window.confirm = oldConfirm; };
+    return () => {
+      window.confirm = oldConfirm;
+    };
   }, []);
   return null;
 }

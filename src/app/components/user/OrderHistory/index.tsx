@@ -12,7 +12,11 @@ import { confirmToast } from "@/app/components/ui/confirmToast";
 
 const baseTabs: TabItem[] = [
   { key: "current", label: "جاری", icon: <Clock className="size-4" /> },
-  { key: "delivered", label: "تحویل شده", icon: <PackageCheck className="size-4" /> },
+  {
+    key: "delivered",
+    label: "تحویل شده",
+    icon: <PackageCheck className="size-4" />,
+  },
   { key: "returned", label: "مرجوع شده", icon: <Undo2 className="size-4" /> },
   { key: "canceled", label: "لغو شده", icon: <XCircle className="size-4" /> },
   { key: "other", label: "دیگر", icon: <Clock className="size-4" /> },
@@ -59,7 +63,7 @@ export default function OrderHistory() {
           loading: "در حال لغو…",
           success: "سفارش لغو شد.",
           error: "لغو سفارش ناموفق بود.",
-        }
+        },
       );
       loadOrders();
     } catch {
@@ -77,7 +81,7 @@ export default function OrderHistory() {
           loading: "در حال ثبت پرداخت…",
           success: "پرداخت ثبت شد.",
           error: "ثبت پرداخت ناموفق بود.",
-        }
+        },
       );
       loadOrders();
     } catch {
@@ -90,7 +94,10 @@ export default function OrderHistory() {
       {profileIncomplete && (
         <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
           نام و تلفن شما کامل نیست{" "}
-          <a href="/user/address?address=new" className="text-amber-700 underline">
+          <a
+            href="/user/address?address=new"
+            className="text-amber-700 underline"
+          >
             ثبت اطلاعات
           </a>
         </div>

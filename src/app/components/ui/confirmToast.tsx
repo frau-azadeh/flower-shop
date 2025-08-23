@@ -20,7 +20,9 @@ export function confirmToast({
         <div
           dir="rtl"
           className={`rounded-xl border border-slate-200 bg-white px-4 py-3 shadow ring-1 ring-black/5 ${
-            t.visible ? "animate-in fade-in-0 zoom-in-95" : "animate-out fade-out-0 zoom-out-95"
+            t.visible
+              ? "animate-in fade-in-0 zoom-in-95"
+              : "animate-out fade-out-0 zoom-out-95"
           }`}
         >
           <p className="text-sm text-slate-800">{message}</p>
@@ -47,7 +49,7 @@ export function confirmToast({
           </div>
         </div>
       ),
-      { duration: 60000 } // زمان کافی برای کلیک
+      { duration: 60000 }, // زمان کافی برای کلیک
     );
   });
 }

@@ -64,7 +64,7 @@ export default function UserLayout({
         <main className="p-4 md:p-6">{children}</main>
       </div>
       <Toaster position="top-center" />
-         {process.env.NODE_ENV !== "production" && <ConfirmTracer />}
+      {process.env.NODE_ENV !== "production" && <ConfirmTracer />}
       <ScrollToTop />
       <UserFooter />
     </div>
