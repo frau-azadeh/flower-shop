@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import Tabs, { TabItem } from "../ui/Tabs";
+import Tabs, { TabItem } from "./Tabs";
 import { Clock, PackageCheck, Undo2, XCircle } from "lucide-react";
 import { createSupabaseClient } from "@/lib/supabase";
 
