@@ -4,6 +4,7 @@ import { getAdminOrThrow } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 
+
 export async function GET(req: NextRequest) {
   try {
     await getAdminOrThrow(["FULL", "PRODUCTS"]);

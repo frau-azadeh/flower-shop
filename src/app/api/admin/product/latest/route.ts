@@ -3,6 +3,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export const revalidate = 60; // هر ۱ دقیقه رفرش ISR
 
+
 type Row = { id: string; name: string; slug: string };
 
 export async function GET() {

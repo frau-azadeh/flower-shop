@@ -8,6 +8,7 @@ import { uploadProductCover } from "@/lib/storage";
 // گزینه‌ای ولی مفید: اطمینان از Node runtime
 export const runtime = "nodejs";
 
+
 // فقط برای تست اینکه route دیده می‌شود
 export function GET() {
   return NextResponse.json({ ok: true, route: "/api/admin/product/add" });

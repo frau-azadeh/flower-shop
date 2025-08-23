@@ -5,6 +5,7 @@ import { deleteProductSchema } from "@/schemas/product.schema";
 
 export const runtime = "nodejs";
 
+
 export async function POST(req: NextRequest) {
   try {
     await getAdminOrThrow(["FULL", "PRODUCTS"]);
