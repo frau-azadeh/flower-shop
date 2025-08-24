@@ -74,7 +74,8 @@ export default function CartPage() {
   }
 
   return (
-    <main dir="rtl" className="mx-auto max-w-6xl px-4 py-8 h-screen">
+    <div className="bg-background">
+    <main dir="rtl" className="mx-auto max-w-6xl px-4 py-8 min-h-[50vh]">
       <h1 className="mb-5 text-xl font-extrabold tracking-tight text-slate-900">
         سبد خرید
       </h1>
@@ -96,5 +97,7 @@ export default function CartPage() {
         <CartSummary count={count} total={total} onCheckout={goCheckout} />
       </div>
     </main>
+    </div>
+
   );
 }
