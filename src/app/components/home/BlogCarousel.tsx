@@ -1,15 +1,12 @@
 // src/app/components/home/BlogCarousel.tsx
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { BlogItem } from "./BlogPreview";
 
-type Props = {
-  items: BlogItem[];
-  intervalMs?: number; // پیش‌فرض ۳.۵ ثانیه
-};
+type Props = { items: BlogItem[]; intervalMs?: number };
 
 function formatDateFa(iso?: string | null) {
   if (!iso) return null;
@@ -24,10 +21,7 @@ function formatDateFa(iso?: string | null) {
 
 function estimateReadMins(content?: string | null) {
   if (!content) return null;
-  const txt = content
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  const txt = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   if (!txt) return null;
   const words = txt.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 180));
@@ -39,17 +33,13 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  // به‌خاطر سازگاری scrollLeft در RTL، کانتینر را LTR می‌گذاریم.
-  // محتوای کارت‌ها همچنان RTL است.
   const dir = "ltr";
 
-  // محاسبه‌ی offsetLeft فرزندان برای اسکرول دقیق روی snapها
   const computeOffsets = () => {
     const el = viewportRef.current;
     if (!el) return;
     const kids = Array.from(el.children) as HTMLElement[];
-    const arr = kids.map((k) => k.offsetLeft);
-    setOffsets(arr);
+    setOffsets(kids.map((k) => k.offsetLeft));
   };
 
   useEffect(() => {
@@ -59,7 +49,6 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
     return () => ro.disconnect();
   }, []);
 
-  // تشخیص نزدیک‌ترین اسلاید در اسکرول دستی
   useEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
@@ -88,23 +77,27 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
     };
   }, [offsets]);
 
-  // اتوپلی: توقف روی هاور/فوکوس/وقت پنهان‌شدن تب
+  // ✅ پایدار کردن goTo
+  const goTo = useCallback(
+    (i: number) => {
+      const el = viewportRef.current;
+      if (!el || !offsets.length) return;
+      const next = (i + offsets.length) % offsets.length;
+      el.scrollTo({ left: offsets[next], behavior: "smooth" });
+      setIndex(next);
+    },
+    [offsets],
+  );
+
+  // ✅ استفاده از const برای تایمر + افزودن goTo به deps
   useEffect(() => {
     if (paused || !offsets.length) return;
-    let t = window.setInterval(() => {
+    const timerId = window.setInterval(() => {
       if (document.hidden) return;
       goTo(index + 1);
     }, intervalMs);
-    return () => clearInterval(t);
-  }, [index, paused, offsets, intervalMs]);
-
-  const goTo = (i: number) => {
-    const el = viewportRef.current;
-    if (!el || !offsets.length) return;
-    const next = (i + offsets.length) % offsets.length;
-    el.scrollTo({ left: offsets[next], behavior: "smooth" });
-    setIndex(next);
-  };
+    return () => window.clearInterval(timerId);
+  }, [index, paused, offsets.length, intervalMs, goTo]);
 
   const cards = useMemo(
     () =>
@@ -115,12 +108,7 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
           <Link
             key={p.id}
             href={`/blog/${p.slug}`}
-            className="
-              snap-start shrink-0
-              basis-[86%] sm:basis-[58%] lg:basis-[33%] xl:basis-[25%]
-              rounded-2xl border border-border bg-white shadow-sm transition
-              hover:shadow-lg
-            "
+            className="snap-start shrink-0 basis-[86%] sm:basis-[58%] lg:basis-[33%] xl:basis-[25%] rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-lg"
             dir="rtl"
           >
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-b-none rounded-t-2xl bg-slate-100">
@@ -143,13 +131,9 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
               )}
             </div>
             <div className="p-4">
-              <h3 className="line-clamp-1 text-base font-bold text-slate-800">
-                {p.title}
-              </h3>
+              <h3 className="line-clamp-1 text-base font-bold text-slate-800">{p.title}</h3>
               {p.excerpt && (
-                <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-600">
-                  {p.excerpt}
-                </p>
+                <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-600">{p.excerpt}</p>
               )}
               <div className="mt-3 text-xs text-primary/70">ادامه مطلب ←</div>
             </div>
@@ -167,25 +151,18 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      {/* ماسک محو شونده کناری */}
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent" />
 
-      {/* Viewport */}
       <div
         ref={viewportRef}
         dir={dir}
-        className="
-          flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory
-          px-1 pb-2 pt-1
-          [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-        "
+        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="اسلایدر پست‌های وبلاگ"
       >
         {cards}
       </div>
 
-      {/* Controls */}
       <button
         type="button"
         onClick={() => goTo(index - 1)}
@@ -203,7 +180,6 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
         <ChevronLeft className="h-5 w-5" />
       </button>
 
-      {/* Dots */}
       <div className="mt-3 flex items-center justify-center gap-2">
         {items.map((_, i) => (
           <button
