@@ -57,7 +57,11 @@ export async function GET(req: NextRequest) {
   const tables: readonly string[] = ["posts", "blogPosts"]; // هر کدوم که موجود باشد
 
   for (const table of tables) {
-    const { data, error } = await sb.from(table).select("*").order("id", { ascending: false }).limit(limit);
+    const { data, error } = await sb
+      .from(table)
+      .select("*")
+      .order("id", { ascending: false })
+      .limit(limit);
 
     if (isRelationMissing(error?.code)) continue; // جدول بعدی را امتحان کن
     if (error) {
@@ -70,23 +74,29 @@ export async function GET(req: NextRequest) {
 
         const id = normalizeId(row) ?? crypto.randomUUID();
         const title = pickString(row, ["title", "name"]) ?? "بدون عنوان";
-        const slug =
-          pickString(row, ["slug"]) ??
-          id; // اگر اسلاگ نداریم از id استفاده می‌کنیم
+        const slug = pickString(row, ["slug"]) ?? id; // اگر اسلاگ نداریم از id استفاده می‌کنیم
 
         const coverUrl =
-          pickString(row, ["coverUrl", "cover_url", "cover", "image", "coverURL"]) ?? null;
+          pickString(row, [
+            "coverUrl",
+            "cover_url",
+            "cover",
+            "image",
+            "coverURL",
+          ]) ?? null;
         const excerpt =
           pickString(row, ["excerpt", "summary", "description"]) ?? null;
-        const content =
-          pickString(row, ["content", "body", "html"]) ?? null;
+        const content = pickString(row, ["content", "body", "html"]) ?? null;
         const created_at =
-          pickString(row, ["created_at", "createdAt", "publishedAt", "date"]) ?? null;
+          pickString(row, ["created_at", "createdAt", "publishedAt", "date"]) ??
+          null;
 
         // اگر ستونی برای وضعیت/منتشر شده دارید؛ در غیر این صورت نادیده گرفته می‌شود
         const status = pickString(row, ["status", "state"]);
         const published = pickBool(row, ["published"]);
-        const isDraft = status ? status.toLowerCase() === "draft" : published === false;
+        const isDraft = status
+          ? status.toLowerCase() === "draft"
+          : published === false;
         // می‌خواهی در همین‌جا درفت‌ها حذف شوند؟ اگر بله، می‌توانی این شرط را فعال کنی:
         // if (isDraft) return null as never;
 

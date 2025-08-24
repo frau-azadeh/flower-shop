@@ -24,7 +24,10 @@ function formatDateFa(iso?: string | null) {
 
 function estimateReadMins(content?: string | null) {
   if (!content) return null;
-  const txt = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const txt = content
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   if (!txt) return null;
   const words = txt.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 180));
@@ -126,7 +129,7 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
                 alt={p.title}
                 src={
                   p.coverUrl ||
-                  'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?q=80&w=1200&auto=format&fit=crop'
+                  "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?q=80&w=1200&auto=format&fit=crop"
                 }
                 className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.03]"
               />
@@ -140,9 +143,13 @@ export default function BlogCarousel({ items, intervalMs = 3500 }: Props) {
               )}
             </div>
             <div className="p-4">
-              <h3 className="line-clamp-1 text-base font-bold text-slate-800">{p.title}</h3>
+              <h3 className="line-clamp-1 text-base font-bold text-slate-800">
+                {p.title}
+              </h3>
               {p.excerpt && (
-                <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-600">{p.excerpt}</p>
+                <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-600">
+                  {p.excerpt}
+                </p>
               )}
               <div className="mt-3 text-xs text-primary/70">ادامه مطلب ←</div>
             </div>

@@ -54,7 +54,7 @@ export default function Hero() {
     if (timer.current) window.clearInterval(timer.current);
     timer.current = window.setInterval(
       () => setIndex((i) => (i + 1) % SLIDES.length),
-      AUTOPLAY_MS
+      AUTOPLAY_MS,
     );
     return () => {
       if (timer.current) window.clearInterval(timer.current);
@@ -122,8 +122,8 @@ export default function Hero() {
                     </h1>
 
                     <p className="mt-5 max-w-xl text-white/90 md:text-lg leading-8">
-                      از دسته‌گل‌های خاص تا گل‌های شاخه‌ای، با قیمت رقابتی و ارسال همان‌روز.
-                      انتخاب کن و لحظه‌ها رو قشنگ‌تر کن.
+                      از دسته‌گل‌های خاص تا گل‌های شاخه‌ای، با قیمت رقابتی و
+                      ارسال همان‌روز. انتخاب کن و لحظه‌ها رو قشنگ‌تر کن.
                     </p>
 
                     {/* CTA buttons */}
@@ -207,7 +207,9 @@ export default function Hero() {
                           onClick={() => setIndex(i)}
                           className={[
                             "h-2.5 w-2.5 rounded-full border border-white/80 transition",
-                            i === index ? "bg-white" : "bg-white/40 hover:bg-white/70",
+                            i === index
+                              ? "bg-white"
+                              : "bg-white/40 hover:bg-white/70",
                           ].join(" ")}
                         />
                       ))}

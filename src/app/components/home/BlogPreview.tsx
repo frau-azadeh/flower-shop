@@ -16,12 +16,19 @@ export type BlogItem = {
 function isBlogItem(x: unknown): x is BlogItem {
   if (!x || typeof x !== "object") return false;
   const o = x as Record<string, unknown>;
-  return typeof o.id === "string" && typeof o.slug === "string" && typeof o.title === "string";
+  return (
+    typeof o.id === "string" &&
+    typeof o.slug === "string" &&
+    typeof o.title === "string"
+  );
 }
 
 function stripHtml(html?: string | null) {
   if (!html) return "";
-  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function makeExcerpt(item: BlogItem) {
@@ -59,7 +66,10 @@ async function loadPosts(limit = 8): Promise<BlogItem[]> {
       for (const c of candidates) {
         if (Array.isArray(c) && c.every(isBlogItem)) {
           // تکمیل excerpt برای زیبایی کارت
-          return (c as BlogItem[]).map((p) => ({ ...p, excerpt: makeExcerpt(p) }));
+          return (c as BlogItem[]).map((p) => ({
+            ...p,
+            excerpt: makeExcerpt(p),
+          }));
         }
       }
     } catch {}
@@ -74,8 +84,13 @@ export default async function BlogPreview() {
     <section dir="rtl" className="bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-12">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-extrabold text-primary">از وبلاگ</h2>
-          <Link href="/blog" className="text-sm font-semibold text-primary hover:underline">
+          <h2 className="text-xl md:text-2xl font-extrabold text-primary">
+            از وبلاگ
+          </h2>
+          <Link
+            href="/blog"
+            className="text-sm font-semibold text-primary hover:underline"
+          >
             مشاهده همه مطالب
           </Link>
         </div>
@@ -83,7 +98,10 @@ export default async function BlogPreview() {
         {posts.length === 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="overflow-hidden rounded-2xl border border-border bg-white">
+              <div
+                key={i}
+                className="overflow-hidden rounded-2xl border border-border bg-white"
+              >
                 <div className="aspect-[16/10] w-full animate-pulse bg-slate-200" />
                 <div className="p-4 space-y-2">
                   <div className="h-4 w-2/3 animate-pulse rounded bg-slate-200" />

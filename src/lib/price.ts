@@ -22,9 +22,7 @@ export function computePrice(price: NumLike, sale: NumLike) {
   const hasSale = s != null && s > 0 && base > 0 && s < base;
 
   // اگر قیمت پایه صفر است ولی sale گذاشتی، فعلی = sale
-  const current =
-    base <= 0 && s != null && s > 0 ? s :
-    hasSale ? s! : base;
+  const current = base <= 0 && s != null && s > 0 ? s : hasSale ? s! : base;
 
   const offPercent =
     hasSale && base > 0 ? Math.round((1 - current / base) * 100) : 0;

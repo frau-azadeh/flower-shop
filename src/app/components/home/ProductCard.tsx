@@ -32,7 +32,7 @@ export default function ProductCard({
 }: Props) {
   const { base, current, hasSale, offPercent } = computePrice(
     product.price,
-    product.salePrice
+    product.salePrice,
   );
 
   const showContact = base <= 0 && current <= 0; // هیچ قیمتی ثبت نشده

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-export const dynamic = "force-dynamic";  // یا: export const revalidate = 0;
+export const dynamic = "force-dynamic"; // یا: export const revalidate = 0;
 
 type Row = {
   id: string;
