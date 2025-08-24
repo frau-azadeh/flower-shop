@@ -2,7 +2,11 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addItem } from "@/store/orders/cartSlice";
+import {
 
+  ShoppingCart,
+
+} from "lucide-react";
 type Props = {
   productId: string;
   productName: string;
@@ -73,9 +77,11 @@ export default function AddToCartBar({
         <button
           onClick={onAdd}
           disabled={adding || qty < 1}
-          className="flex-1 rounded-2xl bg-black text-white py-3 disabled:opacity-50"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 p-5 py-3 font-semibold text-white shadow-lg shadow-emerald-600/25 transition-colors hover:bg-emerald-700 sm:order-1"
         >
           {adding ? "در حال افزودن..." : "افزودن به سبد"}
+                    <ShoppingCart className="size-5" />
+
         </button>
       </div>
 
