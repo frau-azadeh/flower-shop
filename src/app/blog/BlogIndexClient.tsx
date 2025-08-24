@@ -94,7 +94,8 @@ export default function BlogIndexClient({
   };
 
   return (
-    <main dir="rtl" className="mt-12 bg-gradient-to-b from-white to-slate-50">
+    <div className="bg-background">
+    <main dir="rtl" >
       <header className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-6 backdrop-blur sm:px-6">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
@@ -139,5 +140,7 @@ export default function BlogIndexClient({
         )}
       </section>
     </main>
+    </div>
+
   );
 }
