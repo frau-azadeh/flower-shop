@@ -17,13 +17,13 @@ export default function RecentPosts({
 
   return (
     <div className={className}>
-      <div className="mb-3 text-sm font-semibold text-gray-700">{title}</div>
+      <div className="mb-3 text-sm font-semibold text-gray-700 ">{title}</div>
 
       <ul className="space-y-3">
         {posts.map((p) => (
           <li
             key={p.slug}
-            className="overflow-hidden rounded-xl border bg-white shadow-sm hover:shadow transition"
+            className="overflow-hidden rounded-xl shadow bg-white  hover:shadow transition "
           >
             <Link href={`/blog/${p.slug}`} className="flex gap-3">
               <div className="relative h-20 w-28 shrink-0 bg-gray-100">
@@ -32,7 +32,7 @@ export default function RecentPosts({
                     src={p.coverUrl}
                     alt={p.title}
                     fill
-                    className="object-cover"
+                    className="object-cover "
                     sizes="112px"
                   />
                 ) : (
