@@ -7,7 +7,14 @@ import { toman } from "@/lib/format";
 import ShareBox from "@/app/products/[slug]/ShareBox";
 import ProductCard from "../ProductCard";
 import AddToCartBar from "@/app/components/user/AddToCartBar";
+import {
+  Minus,
+  Plus,
 
+  Truck,
+  ShieldCheck,
+  Headphones,
+} from "lucide-react";
 export const revalidate = 60;
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -41,7 +48,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   // انتخاب خیلی ساده: ۳ مورد اول (بدون تابع جدا)
   // اگر خواستی تصادفی ولی ساده: بجای خط زیر از sort(() => Math.random() - 0.5).slice(0,3) استفاده کن
-  const related: PublicProduct[] = (sameCat ?? []).slice(0, 3);
+  const related: PublicProduct[] = (sameCat ?? []).slice(0, 2);
 
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const productUrl = `${base}/products/${product.slug}`;
@@ -91,29 +98,51 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-              <AddToCartBar
-                productId={product.id}
-                productName={product.name}
-                price={product.salePrice ?? product.price}
-                coverUrl={product.coverUrl ?? undefined}
-                slug={product.slug}
-              />
+                {/* مزایا (چیپ) */}
+                <ul className="mt-4 flex flex-wrap gap-2 text-[13px]">
+                  <li className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-emerald-800 ring-1 ring-emerald-200">
+                    <Truck className="size-4" />
+                    ارسال رایگان
+                  </li>
+                  <li className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-emerald-800 ring-1 ring-emerald-200">
+                    <ShieldCheck className="size-4" />
+                    ضمانت کیفیت
+                  </li>
+                  <li className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-emerald-800 ring-1 ring-emerald-200">
+                    <Headphones className="size-4" />
+                    پشتیبانی ۲۴/۷
+                  </li>
+                </ul>
 
-              <p className="whitespace-pre-line leading-7 text-slate-700">
-                {product.description || "—"}
-              </p>
+                {/* نوار خرید (خودت قبلاً سبزش کردی) */}
+                <div className="mt-4">
+                  <AddToCartBar
+                    productId={product.id}
+                    productName={product.name}
+                    price={product.salePrice ?? product.price}
+                    coverUrl={product.coverUrl ?? undefined}
+                    slug={product.slug}
+                  />
+                </div>
+
+                {/* توضیحات */}
+                <div className="mt-6">
+                  <p className="whitespace-pre-line leading-8 text-slate-700">
+                    {product.description || "—"}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
         {/* محصولات مرتبط (اینلاین و ساده) */}
         {related.length > 0 && (
-          <section className="order-3 md:col-start-1 md:row-start-2">
+          <section className="order-2 md:col-start-1 md:row-start-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <h2 className="mb-3 text-sm font-semibold text-slate-700">
                 محصولات مرتبط
               </h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4 ">
                 {related.map((rp) => (
                   <ProductCard key={rp.id} product={rp} />
                 ))}
