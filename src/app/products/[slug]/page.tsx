@@ -47,7 +47,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const productUrl = `${base}/products/${product.slug}`;
 
   return (
-    <main dir="rtl" className="mx-auto max-w-6xl p-4">
+    <div className="bg-background">
+      <main dir="rtl" className="mx-auto max-w-6xl p-4 ">
       {/* دسکتاپ: چپ 500px (عکس/اشتراک) | راست 1fr (متن) */}
       <div className="grid gap-6 md:grid-cols-[500px_1fr] md:auto-rows-min">
         {/* ستون چپ: عکس + ShareBox (استیکی) */}
@@ -122,5 +123,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         )}
       </div>
     </main>
+    </div>
+    
   );
 }

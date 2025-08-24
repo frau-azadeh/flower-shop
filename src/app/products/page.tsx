@@ -12,6 +12,7 @@ type PageProps = {
 export default async function ProductsPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   return (
+    <div className="bg-background">
     <main dir="rtl" className="mx-auto max-w-6xl p-4">
       <h1 className="mb-4 text-lg font-bold">محصولات</h1>
       <ProductsBrowser
@@ -23,5 +24,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
         }}
       />
     </main>
+    </div>
+
   );
 }

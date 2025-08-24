@@ -1,11 +1,21 @@
+import Hero from "@/app/components/home/Hero";
+import Categories from "@/app/components/home/Categories";
+import FeaturedProducts from "@/app/components/home/FeaturedProducts";
 import WhyUs from "./components/WhyUs";
+import BlogPreview from "@/app/components/home/BlogPreview";
+import CTA from "@/app/components/home/CTA";
+
+export const revalidate = 60;
 
 export default function Home() {
   return (
-    <div className="bg-background flex flex-col items-center justify-items-center min-h-screen ">
-      <h1 className="text-accent font-bold text-2xl m-10">گل فروش</h1>
-
+    <main className="bg-background">
+      <Hero />
+      <Categories />
+      <FeaturedProducts />
       <WhyUs />
-    </div>
+      <BlogPreview />
+      <CTA />
+    </main>
   );
 }
