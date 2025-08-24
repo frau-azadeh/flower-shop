@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-const SCROLL_SHOW_PX = 100; 
+const SCROLL_SHOW_PX = 100;
 
 export default function BackButton() {
   const pathname = usePathname();
@@ -17,8 +17,8 @@ export default function BackButton() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const keyEntry = "gf_entry_path";        
-    const keyNav   = "gf_has_navigated";    
+    const keyEntry = "gf_entry_path";
+    const keyNav = "gf_has_navigated";
 
     if (!sessionStorage.getItem(keyEntry)) {
       sessionStorage.setItem(keyEntry, window.location.pathname);
@@ -30,7 +30,7 @@ export default function BackButton() {
     sessionStorage.setItem(keyNav, navigated ? "1" : "0");
 
     const onScroll = () => setVisibleByScroll(window.scrollY > SCROLL_SHOW_PX);
-    onScroll(); 
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);

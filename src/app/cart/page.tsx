@@ -75,29 +75,28 @@ export default function CartPage() {
 
   return (
     <div className="bg-background">
-    <main dir="rtl" className="mx-auto max-w-6xl px-4 py-8 min-h-[50vh]">
-      <h1 className="mb-5 text-xl font-extrabold tracking-tight text-slate-900">
-        سبد خرید
-      </h1>
+      <main dir="rtl" className="mx-auto max-w-6xl px-4 py-8 min-h-[50vh]">
+        <h1 className="mb-5 text-xl font-extrabold tracking-tight text-slate-900">
+          سبد خرید
+        </h1>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
-        <section className="space-y-3">
-          {items.map((it) => (
-            <CartItemCard
-              key={it.productId}
-              item={it}
-              onDec={onDec}
-              onInc={onInc}
-              onInput={onInput}
-              onRemove={onRemove}
-            />
-          ))}
-        </section>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
+          <section className="space-y-3">
+            {items.map((it) => (
+              <CartItemCard
+                key={it.productId}
+                item={it}
+                onDec={onDec}
+                onInc={onInc}
+                onInput={onInput}
+                onRemove={onRemove}
+              />
+            ))}
+          </section>
 
-        <CartSummary count={count} total={total} onCheckout={goCheckout} />
-      </div>
-    </main>
+          <CartSummary count={count} total={total} onCheckout={goCheckout} />
+        </div>
+      </main>
     </div>
-
   );
 }

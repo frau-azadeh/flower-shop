@@ -29,7 +29,7 @@ export default function ProductCard({
 }: Props) {
   const { base, current, hasSale, offPercent } = computePrice(
     product.price,
-    product.salePrice
+    product.salePrice,
   );
 
   // اگر قیمت نامعتبر بود، کارت را رندر نکن (یا می‌توان پیام دلخواه گذاشت)
@@ -80,7 +80,10 @@ export default function ProductCard({
           aria-pressed={fav}
           className="absolute top-3 left-3 grid place-items-center rounded-full bg-white/90 p-2 text-rose-600 shadow ring-1 ring-black/5 hover:bg-white"
         >
-          <Heart className={`size-4 ${fav ? "fill-current" : ""}`} strokeWidth={1.8} />
+          <Heart
+            className={`size-4 ${fav ? "fill-current" : ""}`}
+            strokeWidth={1.8}
+          />
         </button>
       </div>
 
@@ -98,7 +101,11 @@ export default function ProductCard({
         {/* قیمت‌ها — بدون «تماس بگیرید» */}
         {hasValidPrice && (
           <div className="mt-1 flex items-baseline gap-2">
-            {hasSale && <span className="text-sm text-slate-400 line-through">{rial(base)}</span>}
+            {hasSale && (
+              <span className="text-sm text-slate-400 line-through">
+                {rial(base)}
+              </span>
+            )}
             <span className="text-emerald-700 font-extrabold tracking-tighter">
               {rial(current)}
             </span>

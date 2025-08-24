@@ -93,7 +93,7 @@ export default async function BlogPreview() {
             className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-slate-50"
           >
             مشاهده همه مطالب
- <ChevronLeft  className="size-4" />
+            <ChevronLeft className="size-4" />
           </Link>
         </div>
 

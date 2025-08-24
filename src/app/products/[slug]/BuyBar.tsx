@@ -17,7 +17,12 @@ type Props = {
   onAdd?: (info: { productId: string; qty: number }) => void;
 };
 
-export default function BuyBar({ productId, productName, price, onAdd }: Props) {
+export default function BuyBar({
+  productId,
+  productName,
+  price,
+  onAdd,
+}: Props) {
   const [qty, setQty] = useState(1);
 
   const dec = () => setQty((q) => Math.max(1, q - 1));
