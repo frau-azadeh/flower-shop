@@ -2,6 +2,7 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import BlogCarousel from "./BlogCarousel";
+import { ChevronLeft } from "lucide-react";
 
 export type BlogItem = {
   id: string;
@@ -89,9 +90,10 @@ export default async function BlogPreview() {
           </h2>
           <Link
             href="/blog"
-            className="text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-slate-50"
           >
             مشاهده همه مطالب
+            <ChevronLeft className="size-4" />
           </Link>
         </div>
 

@@ -28,7 +28,7 @@ export default function CartSummary({ count, total, onCheckout }: Props) {
 
         <button
           onClick={onCheckout}
-          className="mt-4 w-full rounded-xl bg-black px-4 py-3 text-sm font-medium text-white hover:opacity-90"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 p-5 py-3 font-semibold text-white shadow-lg shadow-emerald-600/25 transition-colors hover:bg-emerald-700 sm:order-1"
         >
           ادامه و ثبت نهایی
         </button>

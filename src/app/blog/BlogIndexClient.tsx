@@ -94,50 +94,52 @@ export default function BlogIndexClient({
   };
 
   return (
-    <main dir="rtl" className="mt-12 bg-gradient-to-b from-white to-slate-50">
-      <header className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-6 backdrop-blur sm:px-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            مجلهٔ گل‌فروش
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های
-            جدید.
-          </p>
+    <div className="bg-background">
+      <main dir="rtl">
+        <header className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-6 backdrop-blur sm:px-6">
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+              مجلهٔ گل‌فروش
+            </h1>
+            <p className="mt-1 text-sm text-slate-600">
+              نکات نگهداری، ایده‌های دیزاین و معرفی گل‌ها — هر هفته با مقاله‌های
+              جدید.
+            </p>
 
-          <BlogFilters
-            state={filters}
-            setState={setFilters}
-            onSubmit={onSubmit}
-            onReset={resetFilters}
-          />
-
-          <ResultCount count={filtered.length} />
-        </div>
-      </header>
-
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {filtered.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <>
-            {featured && <FeatureCard post={featured} />}
-
-            <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row-dense gap-6 sm:gap-7">
-              {(featured ? rest : pageItems).map((p) => (
-                <PostCard key={p.slug} post={p} />
-              ))}
-            </ul>
-
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              buildQS={buildQS}
-              onPageChange={setCurrentPage}
+            <BlogFilters
+              state={filters}
+              setState={setFilters}
+              onSubmit={onSubmit}
+              onReset={resetFilters}
             />
-          </>
-        )}
-      </section>
-    </main>
+
+            <ResultCount count={filtered.length} />
+          </div>
+        </header>
+
+        <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          {filtered.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <>
+              {featured && <FeatureCard post={featured} />}
+
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row-dense gap-6 sm:gap-7">
+                {(featured ? rest : pageItems).map((p) => (
+                  <PostCard key={p.slug} post={p} />
+                ))}
+              </ul>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                buildQS={buildQS}
+                onPageChange={setCurrentPage}
+              />
+            </>
+          )}
+        </section>
+      </main>
+    </div>
   );
 }
