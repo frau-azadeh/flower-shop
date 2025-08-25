@@ -48,6 +48,8 @@ Repo: https://github.com/frau-azadeh/flower-shop
 - 🎯 **Redux Toolkit** – Global state with local persistence
 
 - 🧼 **Prettier** – Code formatting and consistency
+  
+- 🐘 **Supabase** – Postgres DB, Auth, (optional Storage)
 
 - 🧱 **Headless UI & Lucide** – Accessible components & icons
 
