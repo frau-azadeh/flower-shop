@@ -23,6 +23,16 @@ Repo: https://github.com/frau-azadeh/flower-shop
 - 🧱 **Headless UI & Lucide** – Accessible components & icons
 
 ---
+## 🖼️ UI Preview
+
+![Hero section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/1.png)
+![Product section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/2.png)
+![User Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/3.png)
+![Admin Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/4.png)
+![Admin Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/5.png)
+![Admin Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/6.png)
+
+---
 
 ## 💻 Getting Started
 
