@@ -25,8 +25,8 @@ Repo: https://github.com/frau-azadeh/flower-shop
 ---
 ## 🖼️ UI Preview
 
-![Hero section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/1.png)
-![Product section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/2.png)
+![Hero section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/7.png)
+![Product section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/8.png)
 ![User Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/3.png)
 ![Admin Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/4.png)
 ![Admin Panel](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/5.png)
