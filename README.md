@@ -9,6 +9,7 @@ Live Demo: https://flower-shop-beta-taupe.vercel.app/
 Repo: https://github.com/frau-azadeh/flower-shop
 
 ---
+
 ✨ Features
 
 ⚡ Blazing fast performance with SSR/ISR via App Router
@@ -26,6 +27,7 @@ Repo: https://github.com/frau-azadeh/flower-shop
 🧼 Consistent code formatting with Prettier
 
 ---
+
 ## 🖼️ UI Preview
 
 ![Hero section](https://raw.githubusercontent.com/frau-azadeh/flower-shop/master/public/7.png)
@@ -48,7 +50,6 @@ Repo: https://github.com/frau-azadeh/flower-shop
 - 🎯 **Redux Toolkit** – Global state with local persistence
 
 - 🧼 **Prettier** – Code formatting and consistency
-  
 - 🐘 **Supabase** – Postgres DB, Auth, (optional Storage)
 
 - 🧱 **Headless UI & Lucide** – Accessible components & icons
@@ -138,14 +139,14 @@ Repo: https://github.com/frau-azadeh/flower-shop
 ```
 
 ---
+
 ## 🧪 Code Quality
 
 Fully typed with TypeScript
 
 Enforced code style via ESLint & Prettier
 
-Follows Redux Toolkit best practices
----
+## Follows Redux Toolkit best practices
 
 ## 🤝 Contributing
 
