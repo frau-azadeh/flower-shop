@@ -6,7 +6,6 @@ import { Truck, AlarmClock, Headset, ShieldCheck, Phone } from "lucide-react";
 import Input from "./Input";
 import Button from "./Button";
 
-/* ===== Types (بدون any) ===== */
 type Status = "draft" | "published";
 interface PostRow {
   id: string;
