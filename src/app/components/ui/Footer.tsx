@@ -97,10 +97,8 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-border bg-background text-text bg-white">
-      {/* ویژگی‌ها */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
-          {/* ... همان 4 باکس ویژگی ... */}
           <div className="flex flex-col items-center gap-2">
             <div className="rounded-full p-3 ring-1 ring-border bg-white text-accent">
               <Truck className="w-6 h-6" />
@@ -140,13 +138,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* لینک‌ها + خبرنامه */}
       <div className="bg-surface border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* خبرنامه */}
             <div>
-              {/* ... همانی که داشتی ... */}
               <div className="rounded-2xl bg-muted p-5 shadow-sm">
                 <h3 className="text-base font-bold mb-3">
                   همیشه اولین نفر باش!
@@ -170,9 +165,7 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* ستون‌های لینک + مجله */}
             <div className="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-6">
-              {/* محصولات جدید (به‌جای دسته‌بندی ثابت) */}
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   محصولات جدید
@@ -202,7 +195,6 @@ export default function Footer() {
                 </ul>
               </div>
 
-              {/* لینک‌های خدمات مشتریان (بدون تغییر) */}
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   خدمات مشتریان
@@ -239,7 +231,6 @@ export default function Footer() {
                 </ul>
               </div>
 
-              {/* مجله گل‌فروش (همانی که داشتی) */}
               <div>
                 <h4 className="mb-3 text-base font-extrabold text-primary">
                   مجله گل‌فروش
