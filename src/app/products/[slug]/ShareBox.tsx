@@ -12,9 +12,7 @@ import {
 
 type Props = {
   title: string;
-  /** لینک کامل برای اشتراک‌گذاری (ترجیحاً ست بشود) */
   url?: string;
-  /** اگر url ندهی، از این‌ها برای ساخت لینک استفاده می‌شود */
   path?: "blog" | "products";
   slug?: string;
 };
