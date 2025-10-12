@@ -19,7 +19,6 @@ interface ProductRow {
   slug: string;
 }
 
-/* ===== Footer ===== */
 export default function Footer() {
   const [phone, setPhone] = useState<string>("");
   const onSubmit = (e: FormEvent) => {
