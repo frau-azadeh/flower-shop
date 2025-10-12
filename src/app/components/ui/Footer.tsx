@@ -29,12 +29,10 @@ export default function Footer() {
     setPhone("");
   };
 
-  // مقالات
   const [articles, setArticles] = useState<PostRow[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string>("");
 
-  // آخرین محصولات
   const [latestProducts, setLatestProducts] = useState<ProductRow[]>([]);
   const [pLoading, setPLoading] = useState<boolean>(false);
   const [pErr, setPErr] = useState<string>("");
