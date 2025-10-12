@@ -32,7 +32,6 @@ export default function ProductCard({
     product.salePrice,
   );
 
-  // اگر قیمت نامعتبر بود، کارت را رندر نکن (یا می‌توان پیام دلخواه گذاشت)
   const hasValidPrice = Number.isFinite(current) && current > 0;
 
   const [fav, setFav] = useState(initialFavorite);
@@ -44,7 +43,6 @@ export default function ProductCard({
 
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-border/60 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg">
-      {/* تصویر */}
       <div className="relative">
         <Link href={`/products/${product.slug}`} className="block">
           <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
@@ -66,14 +64,12 @@ export default function ProductCard({
           </div>
         </Link>
 
-        {/* نشان تخفیف */}
         {hasSale && (
           <span className="absolute top-3 right-3 rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow ring-1 ring-white/30">
             ٪{offPercent} تخفیف
           </span>
         )}
 
-        {/* قلب */}
         <button
           type="button"
           onClick={toggleFav}
@@ -87,7 +83,6 @@ export default function ProductCard({
         </button>
       </div>
 
-      {/* بدنه */}
       <div className="p-4">
         <Link href={`/products/${product.slug}`} className="block">
           <h3
@@ -98,7 +93,6 @@ export default function ProductCard({
           </h3>
         </Link>
 
-        {/* قیمت‌ها — بدون «تماس بگیرید» */}
         {hasValidPrice && (
           <div className="mt-1 flex items-baseline gap-2">
             {hasSale && (
