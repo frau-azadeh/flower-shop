@@ -24,7 +24,6 @@ export default function Footer() {
   const [phone, setPhone] = useState<string>("");
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // TODO: ارسال شماره به API
     setPhone("");
   };
 
